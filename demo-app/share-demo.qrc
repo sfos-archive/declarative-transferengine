@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>main.qml</file>
+        <file>ShareUIPage.qml</file>
+        <file>GridPage.qml</file>
+        <file>AccountsSelectionPage.qml</file>
+        <file>TransferItemTestPage.qml</file>
+    </qresource>
+</RCC>

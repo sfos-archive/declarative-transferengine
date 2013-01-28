@@ -1,0 +1,261 @@
+#include "declarativeshare.h"
+#include "declarativeshare_p.h"
+#include "transferengineinterface.h"
+#include <qdeclarative.h>
+#include <QtDBus>
+#include <QDBusPendingCallWatcher>
+
+DeclarativeSharePrivate::DeclarativeSharePrivate(DeclarativeShare *parent):
+    QObject(),
+    m_source(),
+    m_title(),
+    m_description(),
+    m_serviceId(),
+    m_mimeType(),
+    m_metadataStripped(false),
+    m_notificationsEnabled(false),
+    m_transferId(-1),
+    m_accountId(0),
+    m_progress(0),
+    m_status(DeclarativeShare::NotStarted),
+    m_cachedStatus(DeclarativeShare::NotStarted),
+    m_client(0),
+    q_ptr(parent)
+{
+    m_client = new TransferEngineInterface("org.nemo.transferengine",
+                                           "/org/nemo/transferengine",
+                                            QDBusConnection::sessionBus(),
+                                           this);
+    connect(m_client, SIGNAL(progressChanged(int,double)),
+            this,     SLOT(progressChanged(int,double)));
+    connect(m_client, SIGNAL(statusChanged(int,int)),
+            this,     SLOT(statusChanged(int,int)));
+}
+
+void DeclarativeSharePrivate::progressChanged(int transferId, double progress)
+{
+    if (transferId != m_transferId) {
+        return;
+    }
+
+    if (m_progress != progress) {
+        m_progress = progress;
+        Q_Q(DeclarativeShare);
+        emit q->progressChanged(m_progress);
+    }
+}
+
+void DeclarativeSharePrivate::statusChanged(int transferId, int status)
+{
+    if (m_transferId == -1) {
+        m_cachedStatus = static_cast<DeclarativeShare::Status>(status);
+        return;
+    }
+
+    if (transferId != m_transferId) {
+        return;
+    }
+
+    if (m_status != status) {
+        m_status = static_cast<DeclarativeShare::Status>(status);
+        Q_Q(DeclarativeShare);
+        emit q->statusChanged(m_status);
+    }
+}
+
+void DeclarativeSharePrivate::transferIdReceived(QDBusPendingCallWatcher *call)
+{
+    QDBusPendingReply<int> reply = *call;
+    if (reply.isError()) {
+        qWarning() << "DeclarativeSharePrivate::transferIdReceived: failed to get transferId";
+        return;
+    }
+
+    m_transferId = reply.value();
+    call->deleteLater();
+
+    // Make sure that we have status set right.
+    if (m_cachedStatus != DeclarativeShare::NotStarted) {
+        m_status = m_cachedStatus;
+        m_cachedStatus = DeclarativeShare::NotStarted;
+        Q_Q(DeclarativeShare);
+        emit q->statusChanged(m_status);
+    }
+}
+
+DeclarativeShare::DeclarativeShare(QDeclarativeItem *parent):
+    QDeclarativeItem(parent),
+    d_ptr(new DeclarativeSharePrivate(this))
+{
+
+}
+
+DeclarativeShare::~DeclarativeShare()
+{
+    delete d_ptr;
+    d_ptr = 0;
+}
+
+void DeclarativeShare::setSource(const QUrl source)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_source != source) {
+        d->m_source = source;
+        emit sourceChanged();
+    }
+}
+
+QUrl DeclarativeShare::source() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_source;
+}
+
+void DeclarativeShare::setTitle(const QString &title)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_title != title) {
+        d->m_title = title;
+        emit titleChanged();
+    }
+}
+
+QString DeclarativeShare::title() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_title;
+}
+
+void DeclarativeShare::setDescription(const QString &description)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_description != description) {
+        d->m_description = description;
+        emit descriptionChanged();
+    }
+}
+
+QString DeclarativeShare::description() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_description;
+}
+
+void DeclarativeShare::setMetadataStripped(bool strip)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_metadataStripped != strip) {
+        d->m_metadataStripped = strip;
+        emit metadataStrippedChanged();
+    }
+}
+
+bool DeclarativeShare::metadataStripped() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_metadataStripped;
+}
+
+void DeclarativeShare::setServiceId(const QString &id)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_serviceId != id) {
+        d->m_serviceId = id;
+        emit serviceIdChanged();
+    }
+}
+
+QString DeclarativeShare::serviceId() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_serviceId;
+}
+
+void DeclarativeShare::setAccountId(quint32 id)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_accountId != id) {
+        d->m_accountId = id;
+        emit accountIdChanged();
+    }
+}
+
+quint32 DeclarativeShare::accountId() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_accountId;
+}
+
+
+void DeclarativeShare::setMimeType(const QString &mimeType)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_mimeType != mimeType) {
+        d->m_mimeType = mimeType;
+        emit mimeTypeChanged();
+    }
+}
+
+QString DeclarativeShare::mimeType() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_mimeType;
+}
+
+
+void DeclarativeShare::setNotificationsEnabled(bool enable)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_notificationsEnabled != enable) {
+        d->m_notificationsEnabled = enable;
+        d->m_client->enableNotifications(enable);
+        emit notificationsEnabledChanged();
+    }
+}
+
+bool DeclarativeShare::notificationsEnabled() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_notificationsEnabled;
+}
+
+qreal DeclarativeShare::progress() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_progress;
+}
+
+DeclarativeShare::Status DeclarativeShare::status() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_status;
+}
+
+
+void DeclarativeShare::start()
+{
+    Q_D(DeclarativeShare);
+    QDBusPendingCall async = d->m_client->uploadMediaItem(d->m_source.toString(),
+                                                      d->m_title,
+                                                      d->m_description,
+                                                      d->m_serviceId,
+                                                      d->m_mimeType,
+                                                      d->m_metadataStripped,
+                                                      d->m_accountId);
+
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(async, this);
+
+    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            d,      SLOT(transferIdReceived(QDBusPendingCallWatcher*)));
+}
+
+
+
+void DeclarativeShare::cancel()
+{
+    Q_D(DeclarativeShare);
+    if (d->m_status == TransferEngineData::TransferStarted &&
+        d->m_transferId != -1){
+        d->m_client->cancelTransfer(d->m_transferId);
+    }
+}

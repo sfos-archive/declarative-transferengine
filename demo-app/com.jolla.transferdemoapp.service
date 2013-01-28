@@ -1,0 +1,5 @@
+[D-BUS Service]
+Interface=/com/jolla/transferdemoapp
+Name=com.jolla.transferdemoapp
+Exec=/usr/bin/transfer-demo
+

@@ -1,0 +1,19 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node name="/com/jolla/transferdemoapp">
+    <interface name="com.jolla.transferdemoapp">
+
+        # cancel a specific transfer
+        <method name="cancelTransfer">
+            <arg name="transferId" type="i" direction="in"/>
+        </method>
+
+        # enable or disable notifications
+        <method name="restartTransfer">
+            <arg name="transferId" type="i" direction="in"/>
+        </method>
+
+   </interface>
+</node>
+
