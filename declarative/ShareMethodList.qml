@@ -2,47 +2,46 @@ import QtQuick 1.1
 import com.jolla.components 1.0
 import Sailfish.Silica.TransferEngine 1.0
 
+
 JollaListView {
     id: rootList
     signal shareMethodClicked(string displayName, string userName, string methodId, int accountId, bool accountRequired)
     property alias listHeader: header.text
-
+    spacing: 10
 
     model:  SilicaTransferMethodsModel {id: transferMethodsModel }
     delegate: BackgroundItem {
         width: parent.width
-        height: Math.max(container.height * 1.1, theme.pageHeaderHeight)
+        height: 100
 
-        Column {
-            id: container
-            x: 5
-            spacing: 10
+        Label {
+            id: displayNameLabel
+            text: displayName
+            anchors.verticalCenter: userName === "" ? parent.verticalCenter : undefined
+        }
 
-            Label {
-                text: displayName
-                color: theme.highlightColor
-                font {
-                    family: theme.fontFamilyHeading
-                    pixelSize: theme.fontSizeLarge
-                }
-            }
-
-            Label {
-                text: accountRequired ? userName : ""
+        SecondaryLabel {
+            text: accountRequired ? userName : ""
+            anchors {
+                top: displayNameLabel.bottom
+                topMargin: 10
             }
         }
 
         onClicked: rootList.shareMethodClicked(displayName, userName, methodId, accountId, accountRequired)
     }
 
+
     Label {
         id: header
         color: theme.highlightColor
         height: theme.standardItemHeight
         verticalAlignment: Text.AlignVCenter
+        font.pixelSize: theme.fontSizeLarge
+
         anchors {
             top: parent.top
-            topMargin: theme.pageHeaderHeight - rootList.contentY
+            topMargin: 100 - rootList.contentY
             right: parent.right
             rightMargin: 24
         }
