@@ -1,6 +1,7 @@
 declarative-transferengine
 
-- QML bindings ie. QML API to nemo transfer engine
+Provides:
+- QML bindings ie. QML API to nemo transfer engine. See declarative/*cpp|h.
 - Transfer UI extension for Jolla Settings
 - Sharing UIs
 - Share method list
