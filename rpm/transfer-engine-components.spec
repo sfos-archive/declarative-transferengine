@@ -1,7 +1,7 @@
 Name: declarative-transferengine
 Version: 0.0.1
 Release: 0
-Summary: Sailfish declarative bindings for Nemo Transfer Engine. Provides also Transfer and Sharing UIs.
+Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
 License: TBD
 URL: TBD
