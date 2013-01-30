@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import com.jolla.components 1.0
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 
 Page {
@@ -20,7 +20,6 @@ Page {
 
         Button {
             text: "Share"
-            //enabled: shareItem.status === SilicaShare.NotStarted
             opacity: enabled ? 1.0 : 0.5
             anchors {
                 bottom: parent.bottom

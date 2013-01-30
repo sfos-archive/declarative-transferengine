@@ -7,6 +7,8 @@
 class DeclarativeTransferMethodsModelPrivate;
 class DeclarativeTransferMethodsModel: public QAbstractListModel, public QDeclarativeParserStatus
 {
+    Q_OBJECT
+    Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)
 public:
 
     explicit  DeclarativeTransferMethodsModel(QObject *parent = 0);
@@ -17,6 +19,9 @@ public:
 
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+
+Q_SIGNALS:
+    void rowCountChanged();
 
 private:
     DeclarativeTransferMethodsModelPrivate * d_ptr;

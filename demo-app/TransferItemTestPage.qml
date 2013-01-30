@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import com.jolla.components 1.0
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 
 Page  {
 
@@ -191,7 +191,7 @@ Page  {
         if (transferProgress < 1.0 ) {
             transferInterface.updateTransferProgress(transferId, transferProgress)
         } else {
-            transferInterface.finishTransfer(transferId, SilicaTransferInterface.TransferFinished, "");
+            transferInterface.finishTransfer(transferId, SailfishTransferInterface.TransferFinished, "");
             transferTimer.stop()
             transferProgress = 0
         }
@@ -211,7 +211,7 @@ Page  {
             console.log("Transfer Canceled")
             transferTimer.stop()
             transferProgress = 0
-            transferInterface.finishTransfer(transferId, SilicaTransferInterface.TransferCanceled, "Canceled by user")
+            transferInterface.finishTransfer(transferId, SailfishTransferInterface.TransferCanceled, "Canceled by user")
         }
 
         onTransferRestarted: {
@@ -222,5 +222,5 @@ Page  {
         }
     }
 
-    SilicaTransferInterface { id: transferInterface }
+    SailfishTransferInterface { id: transferInterface }
 }

@@ -2,7 +2,7 @@ import QtQuick 1.1
 import QtMobility.gallery 1.1
 import org.nemomobile.thumbnailer 1.0
 import com.jolla.components 1.0
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 import org.nemomobile.accounts 1.0
 import com.jolla.components.accounts 1.0
 

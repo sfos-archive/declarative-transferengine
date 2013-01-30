@@ -18,8 +18,8 @@ Requires: nemo-transferengine = %{version}-%{release}
 
 %files -n declarative-transferengine
 %defattr(-,root,root,-)
-%{_libdir}/qt4/imports/Sailfish/Silica/TransferEngine/*
-%{_datadir}/translations/silica_transferengine_eng_en.qm
+%{_libdir}/qt4/imports/Sailfish/TransferEngine/*
+%{_datadir}/translations/sailfish_transferengine_eng_en.qm
 
 
 %package -n jolla-transferdemo
@@ -54,16 +54,16 @@ Requires: jolla-settings
 
 
 %package ts-devel
-Summary:   Translation source for Silica TransferEngine
+Summary:   Translation source for Sailfish TransferEngine
 License:   TBD
 Group:     System/Libraries
 
 %description ts-devel
-Translation source for Silica TransferEngine
+Translation source for Sailfish TransferEngine
 
 %files ts-devel
 %defattr(-,root,root,-)
-%{_datadir}/translations/source/silica_transferengine.ts
+%{_datadir}/translations/source/sailfish_transferengine.ts
 
 
 

@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import com.jolla.components 1.0
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 
 
@@ -16,19 +16,19 @@ Page {
     {
         // TODO: Localization
         switch(status) {
-        case SilicaTransferModel.NotStarted:
+        case SailfishTransferModel.NotStarted:
             //% "Waiting"
             return qsTrId("transferui_transfer-waiting")
 
-        case SilicaTransferModel.TransferStarted:
+        case SailfishTransferModel.TransferStarted:
             return ""
 
-        case SilicaTransferModel.TransferFinished:
+        case SailfishTransferModel.TransferFinished:
             return timestamp(date)
 
-        case SilicaTransferModel.TransferInterrupted:
+        case SailfishTransferModel.TransferInterrupted:
         {
-            if (transferType === SilicaTransferModel.Sync) {
+            if (transferType === SailfishTransferModel.Sync) {
                 //% "Synchronization failed"
                 return qsTrId("transferui_synchronization_failed")
             } else {
@@ -36,7 +36,7 @@ Page {
                 return qsTrId("transferui_transfer-failed")
             }
         }
-        case SilicaTransferModel.TransferCanceled:
+        case SailfishTransferModel.TransferCanceled:
             //% "Canceled"
             return qsTrId("transferui_transfer-canceled");
         }
@@ -83,11 +83,11 @@ Page {
     function transferIcon(transferType)
     {
         switch (transferType) {
-        case SilicaTransferModel.Upload:
+        case SailfishTransferModel.Upload:
             return "image://theme/icon-m-upload"
-        case SilicaTransferModel.Download:
+        case SailfishTransferModel.Download:
             return "image://theme/icon-m-download"
-        case SilicaTransferModel.Sync:
+        case SailfishTransferModel.Sync:
             return "image://theme/icon-m-sync"
         default:
             console.log("TransfersPage::transferIcon: failed to get transfer type")
@@ -157,7 +157,7 @@ Page {
                 sourceSize.width: 80
                 sourceSize.height: 80
                 fillMode: Image.PreserveAspectCrop
-                source: transferType === SilicaTransferModel.Upload ? url : serviceIcon
+                source: transferType === SailfishTransferModel.Upload ? url : serviceIcon
                 smooth: true
             }
 
@@ -178,7 +178,7 @@ Page {
             // Home made progress bar. Components could provide something like this.
             ProgressBar {
                 value: progress
-                visible: status === SilicaTransferModel.TransferStarted
+                visible: status === SailfishTransferModel.TransferStarted
 
                 height: 30
                 anchors {
@@ -193,7 +193,7 @@ Page {
             Label {
                 id: statusLabel
                 text: statusText(transferType, status, dateFromISO8601(timestamp))
-                visible: status !== SilicaTransferModel.TransferStarted
+                visible: status !== SailfishTransferModel.TransferStarted
                 anchors {
                     left: thumbnail.right
                     leftMargin: 20
@@ -204,7 +204,7 @@ Page {
 
             Image {
                 id: mimeTypeIconIcon
-                source: transferType !== SilicaTransferModel.Sync ? mimeTypeIcon(mimeType) : ""
+                source: transferType !== SailfishTransferModel.Sync ? mimeTypeIcon(mimeType) : ""
                 width: 40
                 height: 40
 
@@ -229,7 +229,7 @@ Page {
             Label {
                 id: sizeLabel
                 text: formatFileSize(fileSize)
-                visible: transferType !== SilicaTransferModel.Sync
+                visible: transferType !== SailfishTransferModel.Sync
                 anchors {
                     right: transferTypeIcon.right
                     bottom: thumbnail.bottom
@@ -250,7 +250,7 @@ Page {
 
             onClicked: {
                 // No actions for properly finished transfers
-                if (status === SilicaTransferModel.TransferFinished) {
+                if (status === SailfishTransferModel.TransferFinished) {
                     return;
                 }
 
@@ -265,7 +265,7 @@ Page {
     }
 
     // Interface for e.g. canceling a transfer
-    SilicaTransferInterface {
+    SailfishTransferInterface {
         id: transferInterface
     }
 
@@ -290,7 +290,7 @@ Page {
 
         anchors.fill: parent
         spacing: 15
-        model: SilicaTransferModel {id: transferModel}
+        model: SailfishTransferModel {id: transferModel}
         delegate: transferDelegate
     }
 
@@ -307,14 +307,14 @@ Page {
             function setText()
             {
                 switch (status) {
-                case SilicaTransferModel.TransferStarted:
+                case SailfishTransferModel.TransferStarted:
                     //% "Cancel"
                     return qsTrId("transferui-la_cancel-transfer")
-                case SilicaTransferModel.TransferCanceled:
-                case SilicaTransferModel.TransferInterrupted:
+                case SailfishTransferModel.TransferCanceled:
+                case SailfishTransferModel.TransferInterrupted:
                     //% "Restart"
                     return qsTrId("transferui-la_restart-transfer")
-                case SilicaTransferModel.TransferFinished:
+                case SailfishTransferModel.TransferFinished:
                 default:
                     return ""
                 }
@@ -324,14 +324,14 @@ Page {
             function menuAction()
             {
                 switch (status) {
-                case SilicaTransferModel.TransferStarted:
+                case SailfishTransferModel.TransferStarted:
                     transferInterface.cbCancelTransfer(transferId)
                     break;
-                case SilicaTransferModel.TransferCanceled:
-                case SilicaTransferModel.TransferInterrupted:
+                case SailfishTransferModel.TransferCanceled:
+                case SailfishTransferModel.TransferInterrupted:
                     transferInterface.cbRestartTransfer(transferId)
                     break;
-                case SilicaTransferModel.TransferFinished:
+                case SailfishTransferModel.TransferFinished:
                     console.log("Not implemented")
                     break
                 }

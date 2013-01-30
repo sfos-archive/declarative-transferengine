@@ -14,10 +14,12 @@ public:
 
     DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent);
     ~DeclarativeTransferMethodsModelPrivate();
-
-    void transferMethods();
     QVariant value(int row, int role) const;
 
+public Q_SLOTS:
+    void transferMethods();
+
+public:
 // Member vars
     DeclarativeTransferMethodsModel *q_ptr;
     Q_DECLARE_PUBLIC(DeclarativeTransferMethodsModel)

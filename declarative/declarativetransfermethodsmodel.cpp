@@ -8,11 +8,11 @@ DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(D
     QObject(parent),
     q_ptr(parent)
 {
-   m_client = new TransferEngineInterface("org.nemo.transferengine",
+    m_client = new TransferEngineInterface("org.nemo.transferengine",
                                                "/org/nemo/transferengine",
                                                QDBusConnection::sessionBus(),
                                                this);
-
+    connect(m_client, SIGNAL(transferMethodListChanged()), this, SLOT(transferMethods()));
 }
 
 DeclarativeTransferMethodsModelPrivate::~DeclarativeTransferMethodsModelPrivate()
@@ -33,13 +33,15 @@ void DeclarativeTransferMethodsModelPrivate::transferMethods()
 
     Q_Q(DeclarativeTransferMethodsModel);
     QList<TransferMethodInfo> newData = reply.value();
-    if (newData.count() > m_data.count()) {
-        q->beginInsertRows(QModelIndex(), 0, (newData.count() - m_data.count())-1);
-        m_data = newData;
-        q->endInsertRows();
-    }
+    bool rowCountChanged = m_data.count() != newData.count();
 
-    // TODO: Handle other cases here too. Atm the list shouldn't change much on the fly
+    // Not so nice, but we are dealing here relatively small amount of items,
+    // let's just reset the model on changes.
+    m_data = newData;
+    q->reset();
+    if (rowCountChanged) {
+        emit q->rowCountChanged();
+    }
 }
 
 QVariant DeclarativeTransferMethodsModelPrivate::value(int row, int role) const

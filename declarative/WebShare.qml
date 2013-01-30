@@ -2,7 +2,7 @@ import QtQuick 1.1
 import com.jolla.components 1.0
 import org.nemomobile.thumbnailer 1.0
 import QtMobility.gallery 1.1
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 
 Item {
     id: sharePage
@@ -153,7 +153,7 @@ Item {
         PrimaryLabel { text: qsTrId("shareui_scale-image") }
     }
 
-    SilicaShare {
+    SailfishShare {
         id: shareItem
         source: parent.source
         title: captionTextField.text

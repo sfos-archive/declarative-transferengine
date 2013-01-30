@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import com.jolla.components 1.0
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 import com.jolla.components.accounts 1.0
 
 ApplicationWindow {
@@ -8,7 +8,7 @@ ApplicationWindow {
     initialPage: Page {
 
         PageHeader { title: "Share demo" }
-        SilicaTransferInterface { id: transferInterface}
+        SailfishTransferInterface { id: transferInterface}
 
         Column {
             anchors.centerIn: parent

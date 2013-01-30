@@ -4,7 +4,7 @@ QT += declarative dbus sql
 CONFIG += qt plugin
 
 TARGET = $$qtLibraryTarget($$TARGET)
-uri = Sailfish.Silica.TransferEngine
+uri = Sailfish.TransferEngine
 
 
 CONFIG += link_pkgconfig
@@ -39,8 +39,8 @@ OTHER_FILES = qmldir \
     WebShare.qml
 
 
-TS_FILE = $$OUT_PWD/silica_transferengine.ts
-EE_QM = $$OUT_PWD/silica_transferengine_eng_en.qm
+TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
+EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
 
 translations.commands += lupdate $$PWD -ts $$TS_FILE
 translations.depends = $$PWD/*.qml

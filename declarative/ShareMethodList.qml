@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import com.jolla.components 1.0
-import Sailfish.Silica.TransferEngine 1.0
+import Sailfish.TransferEngine 1.0
 
 
 JollaListView {
@@ -9,9 +9,9 @@ JollaListView {
     property alias listHeader: header.text
     spacing: 10
 
-    model:  SilicaTransferMethodsModel {id: transferMethodsModel }
+    model:  SailfishTransferMethodsModel {id: transferMethodsModel }
     delegate: BackgroundItem {
-        width: parent.width
+        width: rootList.width
         height: 100
 
         Label {
