@@ -11,7 +11,7 @@ BuildRequires: pkgconfig(QtDBus)
 BuildRequires: pkgconfig(accounts-qt)
 BuildRequires: pkgconfig(nemotransferengine)
 
-Requires: nemo-transferengine = %{version}-%{release}
+Requires: nemo-transferengine = %{version}
 
 %description -n declarative-transferengine
 %{summary}.
@@ -25,8 +25,8 @@ Requires: nemo-transferengine = %{version}-%{release}
 %package -n jolla-transferdemo
 Summary: Jolla Transfer Demo Application
 Group: Applications/Multimedia
-Requires: nemo-transferengine = %{version}-%{release}
-Requires: declarative-transferengine = %{version}-%{release}
+Requires: nemo-transferengine = %{version}
+Requires: declarative-transferengine = %{version}
 
 %description -n jolla-transferdemo
 %{summary}.
@@ -41,7 +41,7 @@ Requires: declarative-transferengine = %{version}-%{release}
 %package -n jolla-settings-transferui
 Summary: Jolla Transfer UI extension for the Settings FW
 Group: Applications/Multimedia
-Requires: declarative-transferengine = %{version}-%{release}
+Requires: declarative-transferengine = %{version}
 Requires: jolla-settings
 
 %description -n jolla-settings-transferui
