@@ -1,5 +1,5 @@
 import QtQuick 1.1
-import com.jolla.components 1.0
+import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 

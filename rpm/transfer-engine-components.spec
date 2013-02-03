@@ -12,6 +12,7 @@ BuildRequires: pkgconfig(accounts-qt)
 BuildRequires: pkgconfig(nemotransferengine)
 
 Requires: nemo-transferengine = %{version}
+Requires: sailfishsilica
 
 %description -n declarative-transferengine
 %{summary}.
