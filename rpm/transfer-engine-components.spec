@@ -1,5 +1,5 @@
 Name: declarative-transferengine
-Version: 0.0.1
+Version: 0.0.2
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
@@ -11,7 +11,8 @@ BuildRequires: pkgconfig(QtDBus)
 BuildRequires: pkgconfig(accounts-qt)
 BuildRequires: pkgconfig(nemotransferengine)
 
-Requires: nemo-transferengine = %{version}
+Requires: nemo-transferengine 
+Requires: sailfishsilica
 
 %description -n declarative-transferengine
 %{summary}.
@@ -25,8 +26,8 @@ Requires: nemo-transferengine = %{version}
 %package -n jolla-transferdemo
 Summary: Jolla Transfer Demo Application
 Group: Applications/Multimedia
-Requires: nemo-transferengine = %{version}
-Requires: declarative-transferengine = %{version}
+Requires: nemo-transferengine 
+Requires: declarative-transferengine
 
 %description -n jolla-transferdemo
 %{summary}.
@@ -41,7 +42,7 @@ Requires: declarative-transferengine = %{version}
 %package -n jolla-settings-transferui
 Summary: Jolla Transfer UI extension for the Settings FW
 Group: Applications/Multimedia
-Requires: declarative-transferengine = %{version}
+Requires: declarative-transferengine
 Requires: jolla-settings
 
 %description -n jolla-settings-transferui

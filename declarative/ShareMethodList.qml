@@ -1,9 +1,9 @@
 import QtQuick 1.1
-import com.jolla.components 1.0
+import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 
 
-JollaListView {
+SilicaListView {
     id: rootList
     signal shareMethodClicked(string displayName, string userName, string methodId, int accountId, bool accountRequired)
     property alias listHeader: header.text
