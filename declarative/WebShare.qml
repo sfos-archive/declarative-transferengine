@@ -77,6 +77,7 @@ Item {
 
     // Top menu
     SilicaListView {
+        id: topMenu
         anchors {
             top: parent.top
             bottom: parent.verticalCenter
@@ -108,6 +109,8 @@ Item {
                 Label {
                     anchors.centerIn: parent
                     id: fileInfoLabel
+                    width: topMenu.width
+                    truncationMode: TruncationMode.Fade
                 }
             }
         }
