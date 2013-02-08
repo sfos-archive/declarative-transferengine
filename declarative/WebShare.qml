@@ -72,7 +72,7 @@ Item {
         id: header;
         //% "Share"
         acceptText: qsTrId("webshareui-he_share")
-        visible: isPortrait || (!isPortrait && !comboBoxOpen)
+        visible: isPortrait || !comboBoxOpen
     }
 
     // Top menu
@@ -142,11 +142,8 @@ Item {
                 width: parent.width - (2 * theme.paddingLarge)
                 horizontalAlignment: Text.AlignHCenter
                 smooth: true
-                anchors {
-                    top: parent.top
-                    topMargin: 110 // Defined by the UI spec
-                    horizontalCenter: parent.horizontalCenter
-                }
+                y: theme.itemSizeExtraLarge
+                anchors.horizontalCenter: parent.horizontalCenter
             }
         }
     }
