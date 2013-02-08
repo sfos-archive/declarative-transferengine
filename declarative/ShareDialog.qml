@@ -11,23 +11,19 @@ Dialog {
     property bool accountRequired
     property string methodId
 
-    // TODO: Based on accountRequired property, load different page
-    sourceComponent: WebShare {id: sharePage; anchors.fill: parent }
+    // TODO: Add dynamic Share UI loading here, when we have more than one Share method
+    WebShare {id: sharePage; anchors.fill: parent }
 
     onOpened: {
-        item.source = source
-        item.mimeType = mimeType
-        item.docItemId = docItemId
-        item.displayName = displayName
-        item.accountName = accountName
-        item.accountId = accountId
-        item.accountRequired = accountRequired
-        item.methodId = methodId
+        sharePage.source = source
+        sharePage.mimeType = mimeType
+        sharePage.docItemId = docItemId
+        sharePage.displayName = displayName
+        sharePage.accountName = accountName
+        sharePage.accountId = accountId
+        sharePage.accountRequired = accountRequired
+        sharePage.methodId = methodId
     }
 
-    onDone: {
-        if (result === DialogResult.Accepted) {
-            item.share()
-        }
-    }
+    onDone: if (result === DialogResult.Accepted) sharePage.share()
 }

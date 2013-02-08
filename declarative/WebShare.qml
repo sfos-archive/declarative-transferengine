@@ -10,10 +10,11 @@ Item {
     property string mimeType
     property alias docItemId: galleryItem.item
     property alias displayName: displayNameLabel.text
-    property alias accountName: accountNameLabel.text
+    property string accountName
     property int accountId
     property bool accountRequired
     property string methodId
+    property bool comboBoxOpen
 
     function share()
     {
@@ -27,11 +28,11 @@ Item {
         properties: [ 'fileName', 'fileSize', 'dateTaken', 'duration' ]
         onStatusChanged: {
             if (status == DocumentGalleryItem.Finished) {
-                fileNameLabel.text  = galleryItem.metaData.fileName
                 fileSizeLabel.text  = sizeDescription(galleryItem.metaData.fileSize)
                 var dateTime        = new Date(galleryItem.metaData.dateTaken)
-                dateTakenLabel.text = formatter.formatDate(dateTime, Formatter.Timepoint)
+                fileInfoLabel.text  = galleryItem.metaData.fileName + ", " + formatter.formatDate(dateTime, Formatter.Timepoint)
 
+                // TODO: Info for videos
                 if (itemType == DocumentGallery.Video) {
                     //% "Duration"
                     //durationHeading.text = qsTrId("gallery-la-duration")
@@ -41,14 +42,13 @@ Item {
         }
 
         function sizeDescription(size) {
-            // FIXME: in french these should be mega/kilo octets
             var bytes = parseInt(size)
             if (bytes > (1024 * 1024)) {
                 //% "MB"
                 return Math.floor(bytes / (1024 * 1024)) + qsTrId("webshareui-la_megabyte")
             }
             if (bytes > 1024) {
-                //% "KB"
+                //% "kB"
                 return Math.floor(bytes / 1024) + qsTrId("webshareui-la_kilobyte")
             }
             //% "B"
@@ -67,98 +67,206 @@ Item {
 
     Formatter { id: formatter }
 
-    // Visual items
-    PageHeader {
+    // Header, which is hidden on landscape and if the comboBox is open
+    DialogHeader {
         id: header;
         //% "Share"
-        title: qsTrId("webshareui-he_share")
+        acceptText: qsTrId("webshareui-he_share")
+        visible: isPortrait || !comboBoxOpen
     }
 
-    Thumbnail {
-        id: thumbnail
-        source: parent.source
-        //mimeType: parent.mimeType
-        width: 160
-        height: 160
-        sourceSize.width: 160
-        sourceSize.height: 160
-        anchors.top: header.bottom
-        onSourceChanged: console.log("source: " + parent.source)
-    }
-
-    // File information
-    Column {
+    // Top menu
+    SilicaListView {
+        id: topMenu
         anchors {
-            left: thumbnail.right
-            leftMargin: 20
-            top: thumbnail.top
-        }
-        PrimaryLabel { id: fileNameLabel; truncationMode: TruncationMode.Fade; width: sharePage.width - thumbnail.width - 30 }
-        PrimaryLabel { id: fileSizeLabel }
-        SecondaryLabel { id: dateTakenLabel }
-    }
-
-    // Account information
-    Column {
-        id: accountInfo
-        anchors {
-            top: thumbnail.bottom
-            topMargin: 20
-            leftMargin: 20
-        }
-        PrimaryLabel {id: displayNameLabel }
-        SecondaryLabel { id: accountNameLabel }
-    }
-
-    // Text fields
-    Column {
-        id: textInputFields
-        anchors {
-            top: accountInfo.bottom
-            topMargin: 50
+            top: parent.top
+            bottom: parent.verticalCenter
             left: parent.left
-            right: parent.right
+            right: isPortrait ? parent.right : parent.horizontalCenter
         }
 
-        TextField {
-            id: captionTextField
-            width: parent.width
-            inputMethodHints: Qt.ImhNoPredictiveText
-            //% "Caption"
-            placeholderText: qsTrId("webshareui-ph_caption_placeholder")
-            Keys.onReturnPressed:  descriptionTextField.focus = true
+        PullDownMenu {
+            id: pulldownMenu
+            MenuItem {
+                // Helper method to get label text and to get engineer eng/untranslated string correctly
+                function menuItemText()
+                {
+                    if (shareItem.metadataStripped) {
+                        //% "Keep metadata"
+                        return qsTrId("webshareui-keep-metadata")
+                    } else {
+                        //% "Remove metadata"
+                        return qsTrId("webshareui-remove-metadata")
+                    }
+                }
+
+                text: menuItemText()
+                onClicked: shareItem.metadataStripped = !shareItem.metadataStripped
+            }
+
+            // Placeholder for file info
+            BackgroundItem {
+                Label {
+                    anchors.centerIn: parent
+                    id: fileInfoLabel
+                    width: topMenu.width
+                    truncationMode: TruncationMode.Fade
+                }
+            }
         }
+
+        header: Thumbnail {
+            id: thumbnail
+            source: sharePage.source
+            mimeType: sharePage.mimeType
+            sourceSize.width: isPortrait ? sharePage.width : sharePage.width / 2
+            sourceSize.height: isPortrait ? 540 : sharePage.height
+            opacity: 0.6
+
+            SecondaryLabel {
+                // Helper method to get label text and to get engineer eng/untranslated string correctly
+                function labelText()
+                {
+                    if (shareItem.metadataStripped) {
+                        //% "Metadata removed"
+                        return qsTrId("webshareui-la-metadata-removed")
+                    } else {
+                        //% "Metadata included"
+                        return qsTrId("webshareui-la-metadata-included")
+                    }
+                }
+
+                font.pixelSize: theme.fontSizeExtraLarge
+                text: labelText()
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                width: parent.width - (2 * theme.paddingLarge)
+                horizontalAlignment: Text.AlignHCenter
+                smooth: true
+                y: theme.itemSizeExtraLarge
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+    }
+
+    // List for the options at the bottom of the view
+    SilicaListView {
+        id: optionList
+        anchors {
+            top: isPortrait ? parent.verticalCenter : parent.top
+            topMargin: isPortrait ? 40 : 80
+            left: isPortrait? parent.left : parent.horizontalCenter
+            right: parent.right
+            bottom: parent.bottom
+
+        }
+
+        model: optionModel
+    }
+
+    VisualItemModel {
+        id: optionModel
+
+        // TODO: when writing a long decription, this TextField should
+        //       extend towards the op and add there opacity ramp effect.
+        //       at this point, I'm not aware that TextField would support
+        //       extending to the top.
+        // Description
         TextField {
             id: descriptionTextField
-            width: parent.width
+            x: theme.paddingLarge
+            width: optionList.width - (theme.paddingLarge*2)
             inputMethodHints: Qt.ImhNoPredictiveText
-            //% "Description"
+            //% "Add a description"
             placeholderText: qsTrId("webshareui-ph_description_placeholder")
-            Keys.onReturnPressed:  parent.focus = true
+            Keys.onReturnPressed:  sharePage.focus = true
         }
-    }
 
-    // Currently only placeholders
-    Column {
-        id: actions
-        spacing: 40
-        anchors {
-            top: textInputFields.bottom
-            topMargin: 50
+        Row {
+            // Scale image combobox
+            ComboBox {
+                width: optionList.width / 2
+                //% "Scale image"
+                label: qsTrId("webshareui-la_scale_image")
+                wrap: true
+                currentIndex: 3
+
+                menu: ContextMenu {
+                    //% "25%"
+                    MenuItem { text: qsTrId("wbshareui-va_25_percent") }
+                    //% "50%"
+                    MenuItem { text: qsTrId("webshareui-va_50_percent") }
+                    //% "75%"
+                    MenuItem { text: qsTrId("webshareui-va_75_percent") }
+                    //% "Original"
+                    MenuItem { text: qsTrId("webshareui-va_original") }
+
+                    // Tell the page that we are open. On landscape we need to
+                    // hide the share title
+                    onActiveChanged: sharePage.comboBoxOpen = active
+                }
+            }
+
+            // File size
+            SecondaryLabel {
+                id: fileSizeLabel
+                width: (optionList.width / 2) - theme.paddingLarge
+                height: theme.itemSizeLarge
+                horizontalAlignment: Text.AlignRight
+                verticalAlignment: Text.AlignVCenter
+                color: theme.secondaryHighlightColor
+                font.pixelSize: theme.fontSizeExtraLarge
+            }
         }
-        // TODO: add controls here
-        //% "Remove metadata"
-        PrimaryLabel { text: qsTrId("shareui_remove-metadata") }
-        //% "Scale image"
-        PrimaryLabel { text: qsTrId("shareui_scale-image") }
+
+        // Account info
+        Item {
+            width: optionList.width - theme.paddingLarge
+            height: theme.itemSizeLarge
+            x: theme.paddingLarge
+
+            // Service name
+            PrimaryLabel {
+                id: displayNameLabel
+                anchors.bottom: parent.verticalCenter
+            }
+
+            // Account name
+            SecondaryLabel {
+                id: accountNameLabel
+                //% "No account name"
+                text: sharePage.accountName == "" ? qsTrId("webshareui_la-no-account-name") : sharePage.accountName
+                anchors.top: displayNameLabel.bottom
+            }
+        }
+
+        // Destination folder info
+        Item {
+            width: optionList.width - theme.paddingLarge
+            height: theme.itemSizeLarge
+            x: theme.paddingLarge
+
+            PrimaryLabel {
+                id: destinationFolderHeader
+                //% "Destination folder"
+                text: qsTrId("webshareui_la-destination-folder")
+                anchors.bottom: parent.verticalCenter
+            }
+
+            // TODO: This should come from the share plugin
+            SecondaryLabel {
+                id: destinationFolderNameLabel
+                //% "Jolla mobile uploads"
+                text: qsTrId("webshareui_la-upload-folder-name")
+                anchors.top: destinationFolderHeader.bottom
+            }
+        }
     }
 
     SailfishShare {
         id: shareItem
         source: parent.source
-        title: captionTextField.text
         description: descriptionTextField.text
-        metadataStripped: false // TODO: get the real selection here
+        metadataStripped: true
         mimeType: parent.mimeType
         accountId: parent.accountId
         serviceId: parent.methodId
