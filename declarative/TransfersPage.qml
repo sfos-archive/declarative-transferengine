@@ -146,33 +146,65 @@ Page {
             id: backgroundItem
             property bool menuOpen: transferList.contextMenu != null && transferList.contextMenu.parent === backgroundItem
             property int transferStatus: status
-            height: menuOpen ? transferList.contextMenu.height + 80 + fileNameLabel.paintedHeight + 20 :
-                               80 + fileNameLabel.paintedHeight + 20
+            //height: menuOpen ? transferList.contextMenu.height + 80 + fileNameLabel.paintedHeight + 20 :
+            //                   80 + fileNameLabel.paintedHeight + 20
+            height: theme.itemSizeExtraLarge
+
 
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
 
             // TODO: We should create this dynamically if we are using url->Thumbnail, other -> Image
             Image {
                 id: thumbnail
-                sourceSize.width: 80
-                sourceSize.height: 80
+                sourceSize.width: theme.itemSizeExtraLarge
+                sourceSize.height: theme.itemSizeExtraLarge
                 fillMode: Image.PreserveAspectCrop
                 source: transferType === SailfishTransferModel.Upload ? url : serviceIcon
                 smooth: true
+
+                Image {
+                    id: mimeTypeIconIcon
+                    source: transferType !== SailfishTransferModel.Sync ? mimeTypeIcon(mimeType) : ""
+                    width: 40
+                    height: 40
+                    anchors.centerIn: parent
+                }
+            }
+
+            Image {
+                id: transferTypeIcon
+                source: transferIcon(transferType)
+                width: 40
+                height: 40
+                anchors {
+                    top: thumbnail.top
+                    topMarging: theme.paddingLarge
+                    left: thumbnai.right
+                    leftMargin: theme.paddingLarge
+                }
+            }
+
+            Label {
+                id: sizeLabel
+                text: formatFileSize(fileSize)
+                visible: transferType !== SailfishTransferModel.Sync && status == SailfishTransferModel.TransferFinished
+                anchors {
+                    bottom: transferTypeIcon.bottom
+                    left: transferTypeIcon.left
+                    leftMargin: theme.paddingMedium
+                }
             }
 
 
             Label {
-                id: nameLabel
+                id: statusLabel
+                text: statusText(transferType, status, dateFromISO8601(timestamp))
+                visible: status !== SailfishTransferModel.TransferStarted
                 anchors {
-                    top: thumbnail.top
-                    left: thumbnail.right
-                    leftMargin: 20
+                    bottom: transferTypeIcon.bottom
+                    left: transferTypeIcon.left
+                    leftMargin: theme.paddingMedium
                 }
-
-                text: displayName
-                elide: Text.ElideRight
-                width: parent.width - thumbnail.width - 20 - mimeTypeIcon.width - transferTypeIcon.width - 40
             }
 
             // Home made progress bar. Components could provide something like this.
@@ -183,55 +215,9 @@ Page {
                 height: 30
                 anchors {
                     left: thumbnail.right
-                    leftMargin: 0
-                    right: mimeTypeIconIcon.left
-                    rightMargin: 60
-                    bottom: thumbnail.bottom
-                }
-            }
-
-            Label {
-                id: statusLabel
-                text: statusText(transferType, status, dateFromISO8601(timestamp))
-                visible: status !== SailfishTransferModel.TransferStarted
-                anchors {
-                    left: thumbnail.right
-                    leftMargin: 20
-                    bottom: thumbnail.bottom
-
-                }
-            }
-
-            Image {
-                id: mimeTypeIconIcon
-                source: transferType !== SailfishTransferModel.Sync ? mimeTypeIcon(mimeType) : ""
-                width: 40
-                height: 40
-
-                anchors {
-                    right: transferTypeIcon.left
-                    rightMargin: 10
-                }
-            }
-
-            Image {
-                id: transferTypeIcon
-                source: transferIcon(transferType)
-                width: 40
-                height: 40
-
-                anchors {
+                    leftMargin: theme.paddingLarge//0
                     right: parent.right
-                    rightMargin: 10
-                }
-            }
-
-            Label {
-                id: sizeLabel
-                text: formatFileSize(fileSize)
-                visible: transferType !== SailfishTransferModel.Sync
-                anchors {
-                    right: transferTypeIcon.right
+                    rightMargin: theme.paddingLarge
                     bottom: thumbnail.bottom
                 }
             }
@@ -239,14 +225,42 @@ Page {
             Label {
                 id: fileNameLabel
                 text: fileName(url)
-                wrapMode: Text.WrapAnywhere
-                width: parent.width - thumbnail.width - 20
+                truncationMode: TruncationMode.Fade
+                width: parent.width - thumbnail.width - 2 * theme.paddingLarge
+                visible: status == SailfishTransferModel.TransferFinished ||
+                         status == SailfishTransferModel.TransferCanceled ||
+                         status == SailfishTransferModel.TransferInterrupted
+
                 anchors {
-                    top: thumbnail.bottom
-                    topMargin: 20
-                    left: statusLabel.left
+                    left: thumbnail.right
+                    leftMargin: theme.paddingLarge//0
+                    right: parent.right
+                    rightMargin: theme.paddingLarge
+                    bottom: thumbnail.bottom
                 }
             }
+
+            /*
+            Label {
+                id: nameLabel                
+                text: displayName
+                elide: Text.ElideRight
+                width: parent.width - thumbnail.width - 20 - mimeTypeIcon.width - transferTypeIcon.width - 40
+                anchors {
+                    bottom: transferTypeIcon.bottom
+                    left: transferTypeIcon.left
+                    leftMargin: theme.paddingMedium
+                }
+            }
+            */
+
+
+
+
+
+
+
+
 
             onClicked: {
                 // No actions for properly finished transfers
