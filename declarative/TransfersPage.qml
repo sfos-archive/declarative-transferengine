@@ -12,9 +12,8 @@ Page {
         return splitString[splitString.length - 1]
     }
 
-    function statusText(transferType, status, date)
+    function statusTextX(transferType, status, date)
     {
-        // TODO: Localization
         switch(status) {
         case SailfishTransferModel.NotStarted:
             //% "Waiting"
@@ -41,6 +40,44 @@ Page {
             return qsTrId("transferui_transfer-canceled");
         }
     }
+
+    function statusText(transferType, status)
+    {
+        switch(status) {
+        case SailfishTransferModel.NotStarted:
+            //% "Waiting"
+            return qsTrId("transferui-la_transfer_waiting")
+
+        case SailfishTransferModel.TransferStarted:
+        {
+            if (transferType === SailfishTransferModel.Sync) {
+                //% "Syncing"
+                return qsTrId("transferui-la_transfer_syncing")
+            }
+            if (transferType === SailfishTransferModel.Download) {
+                //% "Downloading"
+                return qsTrId("transferui-la_transfer_downloading")
+            }
+            if (transferType === SailfishTransferModel.Uploading) {
+                //% "Uploading"
+                return qsTrId("transferui-la_transfer_uploading")
+            }
+        }
+
+        case SailfishTransferModel.TransferFinished:
+            //% "Finished"
+            return qsTrId("transferui-la_transfer_finished")
+
+        case SailfishTransferModel.TransferInterrupted:
+            //% "Failed"
+            return qsTrId("transferui-la_transfer_failed")
+
+        case SailfishTransferModel.TransferCanceled:
+            //% "Canceled"
+            return qsTrId("transferui-la-transfer_canceled");
+        }
+    }
+
     // For some reason date object can't hand ISO8601 standard.
     // This function makes it compatible
     function dateFromISO8601(isostr) {
@@ -161,6 +198,7 @@ Page {
                 fillMode: Image.PreserveAspectCrop
                 source: transferType === SailfishTransferModel.Upload ? url : serviceIcon
                 smooth: true
+                asynchronous: true
 
                 Image {
                     id: mimeTypeIconIcon
@@ -168,6 +206,7 @@ Page {
                     width: 40
                     height: 40
                     anchors.centerIn: parent
+                    asynchronous: true
                 }
             }
 
@@ -176,10 +215,11 @@ Page {
                 source: transferIcon(transferType)
                 width: 40
                 height: 40
+                asynchronous: true
                 anchors {
                     top: thumbnail.top
-                    topMarging: theme.paddingLarge
-                    left: thumbnai.right
+                    topMargin: theme.paddingLarge
+                    left: thumbnail.right
                     leftMargin: theme.paddingLarge
                 }
             }
@@ -190,7 +230,7 @@ Page {
                 visible: transferType !== SailfishTransferModel.Sync && status == SailfishTransferModel.TransferFinished
                 anchors {
                     bottom: transferTypeIcon.bottom
-                    left: transferTypeIcon.left
+                    left: transferTypeIcon.right
                     leftMargin: theme.paddingMedium
                 }
             }
@@ -198,11 +238,14 @@ Page {
 
             Label {
                 id: statusLabel
-                text: statusText(transferType, status, dateFromISO8601(timestamp))
-                visible: status !== SailfishTransferModel.TransferStarted
+                text: statusText(transferType, status)//statusText(transferType, status, dateFromISO8601(timestamp))
+                visible: status === SailfishTransferModel.TransferStarted ||
+                         status === SailfishTransferModel.TransferInterrupted ||
+                         status === SailfishTransferModel.TransferCanceled
+
                 anchors {
                     bottom: transferTypeIcon.bottom
-                    left: transferTypeIcon.left
+                    left: transferTypeIcon.right
                     leftMargin: theme.paddingMedium
                 }
             }
