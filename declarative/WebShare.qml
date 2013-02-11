@@ -121,7 +121,9 @@ Item {
             mimeType: sharePage.mimeType
             sourceSize.width: isPortrait ? sharePage.width : sharePage.width / 2
             sourceSize.height: isPortrait ? 540 : sharePage.height
-            opacity: 0.6
+            width: sourceSize.width
+            height: sourceSize.height
+            opacity: 0.5
 
             SecondaryLabel {
                 // Helper method to get label text and to get engineer eng/untranslated string correctly
