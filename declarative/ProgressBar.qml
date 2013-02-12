@@ -23,7 +23,7 @@ Item {
     GlassItem {
         id: highlight
         width: theme.itemSizeSmall / 2
-        height: theme.itemSizeSmall
+        height: theme.itemSizeSmall / 2
         anchors.verticalCenter: progressBar.verticalCenter
         transformOrigin: Item.Center
         visible: parent.value > 0
