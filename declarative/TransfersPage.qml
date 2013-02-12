@@ -12,35 +12,49 @@ Page {
         return splitString[splitString.length - 1]
     }
 
-    function statusText(transferType, status, date)
-    {
-        // TODO: Localization
+    function statusText(transferType, status)
+    {        
         switch(status) {
         case SailfishTransferModel.NotStarted:
             //% "Waiting"
-            return qsTrId("transferui_transfer-waiting")
+            return qsTrId("transferui-la_transfer_waiting")
 
         case SailfishTransferModel.TransferStarted:
-            return ""
+            // Just break and handle started transfers after this block
+            break
 
-        case SailfishTransferModel.TransferFinished:
-            return timestamp(date)
+        case SailfishTransferModel.TransferFinished:            
+            //% "Finished"
+            return qsTrId("transferui-la_transfer_finished")
+
 
         case SailfishTransferModel.TransferInterrupted:
-        {
-            if (transferType === SailfishTransferModel.Sync) {
-                //% "Synchronization failed"
-                return qsTrId("transferui_synchronization_failed")
-            } else {
-                //% "Failed"
-                return qsTrId("transferui_transfer-failed")
-            }
-        }
+            //% "Failed"
+            return qsTrId("transferui-la_transfer_failed")
+
+
         case SailfishTransferModel.TransferCanceled:
             //% "Canceled"
-            return qsTrId("transferui_transfer-canceled");
+            return qsTrId("transferui-la-transfer_canceled");
+
         }
+
+        switch (transferType) {
+        case SailfishTransferModel.Sync:
+            //% "Syncing"
+            return qsTrId("transferui-la_transfer_syncing")
+        case SailfishTransferModel.Download:
+            //% "Downloading"
+            return qsTrId("transferui-la_transfer_downloading")
+        case SailfishTransferModel.Upload:
+            //% "Uploading"
+            return qsTrId("transferui-la_transfer_uploading")
+        }
+
+        //% "Unknown"
+        return qsTrId("transferui-la-transfer_unknown")
     }
+
     // For some reason date object can't hand ISO8601 standard.
     // This function makes it compatible
     function dateFromISO8601(isostr) {
@@ -49,35 +63,50 @@ Page {
     }
 
 
-    function timestamp(dateTime) {
-        var txt = formatter.formatDate(dateTime, Formatter.TimepointRelative)
-        var elapsed = formatter.formatDate(dateTime, Formatter.DurationElapsed)
-        return elapsed ? elapsed : txt
+    function formattedTimestamp(dateTime) {
+        var today = new Date;
+
+        // return time, if it's today
+        if (dateTime.getFullYear() === today.getFullYear() &&
+            dateTime.getMonth() === today.getMonth() &&
+            dateTime.getDay() === today.getDay()) {
+            return formatter.formatDate(dateTime, Formatter.TimepointRelative)
+        }
+
+        return formatter.formatDate(dateTime, Formatter.DurationElapsed)
     }
 
 
+    // Format the size using max three digits
+    // e.g. 0.1, 1.1, 11.1
     function formatFileSize(size)
     {
-        if (size < 1024) {
+        if (size < 100) {
             //% "B"
-            return size + qsTrId("transferui-la_byte")
+            return size + qsTrId("transferui_la-byte")
         }
 
         var kb = size / 1024.0
-        if (kb < 1024) {
-            //% "KB"
+        if (kb < 100) {
+            //% "kB"
             return kb.toFixed(1) + qsTrId("transferui-la_kilobyte")
         }
 
         var mb = kb / 1024.0
-        if (mb < 1024) {
+        if (mb < 100) {
             //% "MB"
             return mb.toFixed(1) + qsTrId("transferui-la_megabyte")
         }
 
         var gb = mb / 1024.0
-        //% "GB"
-        return gb + qsTrId("transferui-la_gigabyte")
+        if (gb < 100) {
+            //% "GB"
+            return gb.toFixed(1) + qsTrId("transferui-la_gigabyte")
+        }
+
+        var tb = gb / 1024.0
+        //% "TB"
+        return tb.toFixed(2) + qsTrId("transferui-la_terabyte")
     }
 
     function transferIcon(transferType)
@@ -110,7 +139,6 @@ Page {
             return "image://theme/icon-m-sound"
         }
 
-        console.log("MIME TYPE: " + mimeType + ": " +type[1])
 
         // Next doc types
         // TODO: CHECK the rest of document types
@@ -145,106 +173,169 @@ Page {
         BackgroundItem {
             id: backgroundItem
             property bool menuOpen: transferList.contextMenu != null && transferList.contextMenu.parent === backgroundItem
-            property int transferStatus: status
-            height: menuOpen ? transferList.contextMenu.height + 80 + fileNameLabel.paintedHeight + 20 :
-                               80 + fileNameLabel.paintedHeight + 20
+            property int transferStatus: status            
+            property url thumbnailUrl: url
+            property Item thumbnail
 
+            height: menuOpen ? transferList.contextMenu.height + theme.itemSizeExtraLarge:
+                               theme.itemSizeExtraLarge
+
+
+            onThumbnailUrlChanged: {
+                if (transferType === SailfishTransferModel.Upload) {
+                    thumbnail = localThumbnail.createObject(backgroundItem)
+                } else {
+                    thumbnail = syncThumbnail.createObject(backgroundItem)
+                }
+            }
+
+            // Close open context menu, if the status changes
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
 
-            // TODO: We should create this dynamically if we are using url->Thumbnail, other -> Image
-            Image {
-                id: thumbnail
-                sourceSize.width: 80
-                sourceSize.height: 80
-                fillMode: Image.PreserveAspectCrop
-                source: transferType === SailfishTransferModel.Upload ? url : serviceIcon
-                smooth: true
-            }
-
-
-            Label {
-                id: nameLabel
-                anchors {
-                    top: thumbnail.top
-                    left: thumbnail.right
-                    leftMargin: 20
-                }
-
-                text: displayName
-                elide: Text.ElideRight
-                width: parent.width - thumbnail.width - 20 - mimeTypeIcon.width - transferTypeIcon.width - 40
-            }
-
-            // Home made progress bar. Components could provide something like this.
-            ProgressBar {
-                value: progress
-                visible: status === SailfishTransferModel.TransferStarted
-
-                height: 30
-                anchors {
-                    left: thumbnail.right
-                    leftMargin: 0
-                    right: mimeTypeIconIcon.left
-                    rightMargin: 60
-                    bottom: thumbnail.bottom
+            Component {
+                id: localThumbnail
+                Thumbnail {
+                    id: thumbnail
+                    width: theme.itemSizeExtraLarge
+                    height: width
+                    sourceSize.width: width
+                    sourceSize.height: height
+                    source: url
+                    opacity: 0.5
+                    priority: index >= transferList.firstVisible && index < transferList.firstVisible + 10
+                              ? Thumbnail.NormalPriority
+                              : Thumbnail.LowPriority
                 }
             }
 
-            Label {
-                id: statusLabel
-                text: statusText(transferType, status, dateFromISO8601(timestamp))
-                visible: status !== SailfishTransferModel.TransferStarted
-                anchors {
-                    left: thumbnail.right
-                    leftMargin: 20
-                    bottom: thumbnail.bottom
-
+            Component {
+                id: syncThumbnail
+                Image {
+                    id: thumbnail
+                    width: theme.itemSizeExtraLarge
+                    height: width
+                    sourceSize.width: width
+                    sourceSize.height: height
+                    source: url
+                    opacity: 0.5
+                    asynchronous: true
                 }
             }
 
             Image {
                 id: mimeTypeIconIcon
-                source: transferType !== SailfishTransferModel.Sync ? mimeTypeIcon(mimeType) : ""
-                width: 40
-                height: 40
-
-                anchors {
-                    right: transferTypeIcon.left
-                    rightMargin: 10
-                }
+                source: mimeTypeIcon(mimeType)
+                width: theme.itemSizeExtraLarge * 0.7
+                height: theme.itemSizeExtraLarge * 0.7
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: thumbnail
+                asynchronous: true
+                visible: transferType === SailfishTransferModel.Upload && thumbnail.status === Image.Ready
             }
 
             Image {
                 id: transferTypeIcon
                 source: transferIcon(transferType)
-                width: 40
-                height: 40
-
+                width: theme.itemSizeSmall / 2
+                height: theme.itemSizeSmall / 2
+                asynchronous: true
+                smooth: !transferList.moving
                 anchors {
-                    right: parent.right
-                    rightMargin: 10
+                    top: thumbnail.top
+                    topMargin: theme.paddingMedium
+                    left: thumbnail.right
+                    leftMargin: theme.paddingLarge
                 }
             }
 
             Label {
                 id: sizeLabel
                 text: formatFileSize(fileSize)
-                visible: transferType !== SailfishTransferModel.Sync
+                visible: transferType !== SailfishTransferModel.Sync && status == SailfishTransferModel.TransferFinished
+                font.pixelSize: theme.fontSizeMedium
+                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
                 anchors {
-                    right: transferTypeIcon.right
-                    bottom: thumbnail.bottom
+                    bottom: transferTypeIcon.bottom
+                    left: transferTypeIcon.right
+                    leftMargin: theme.paddingMedium
+                }
+            }
+
+
+            Label {
+                id: statusLabel
+                text: statusText(transferType, status)
+                visible: status === SailfishTransferModel.TransferStarted ||
+                         status === SailfishTransferModel.TransferInterrupted ||
+                         status === SailfishTransferModel.TransferCanceled
+                // Failed color comes from Jaakko.
+                color: status == SailfishTransferModel.TransferInterrupted ? "#ff4c4c" : backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                font.pixelSize: theme.fontSizeMedium
+                anchors {
+                    bottom: transferTypeIcon.bottom
+                    left: transferTypeIcon.right
+                    leftMargin: theme.paddingMedium
+                }
+            }
+
+            // Home made progress bar. Components could provide something like this.
+            ProgressBar {
+                value: progress
+                visible: status === SailfishTransferModel.TransferStarted
+                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                anchors {
+                    left: thumbnail.right
+                    leftMargin: theme.paddingLarge
+                    right: parent.right
+                    rightMargin: theme.paddingLarge * 2
+                    bottom: fileNameLabel.top
+                }
+            }
+
+            Label {
+                id: timeLabel
+                text:  formattedTimestamp(dateFromISO8601(timestamp))
+                font.pixelSize: theme.fontSizeExtraSmall
+                opacity: 0.5
+                visible: status !== SailfishTransferModel.TransferStarted
+                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                anchors {
+                    top: transferTypeIcon.bottom
+                    topMargin: theme.paddingSmall
+                    left: thumbnail.right
+                    leftMargin: theme.paddingLarge
                 }
             }
 
             Label {
                 id: fileNameLabel
                 text: fileName(url)
-                wrapMode: Text.WrapAnywhere
-                width: parent.width - thumbnail.width - 20
+                truncationMode: TruncationMode.Fade
+                width: parent.width - thumbnail.width - 2 * theme.paddingLarge
+                font.pixelSize: theme.fontSizeExtraSmall
+                opacity: 0.5
+                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
                 anchors {
-                    top: thumbnail.bottom
-                    topMargin: 20
-                    left: statusLabel.left
+                    left: thumbnail.right
+                    leftMargin: theme.paddingLarge
+                    right: parent.right
+                    rightMargin: theme.paddingLarge
+                    bottom: thumbnail.bottom
+                }
+            }
+
+
+            // Placeholder for a service icon
+            Image {
+                source: serviceIcon
+                width: theme.itemSizeSmall / 2
+                height: theme.itemSizeSmall / 2
+
+                anchors {
+                    right: parent.right
+                    rightMargin: theme.paddingLarge
+                    top: parent.top
+                    topMargin: theme.paddingMedium
                 }
             }
 
@@ -273,6 +364,7 @@ Page {
     SilicaListView {
         id: transferList
         property Item contextMenu
+        property int firstVisible: Math.max(0, indexAt(0, contentY))
 
         header: PageHeader {
             //% "Transfers"
@@ -288,10 +380,10 @@ Page {
             }
         }
 
-        anchors.fill: parent
-        spacing: 15
+        anchors.fill: parent        
         model: SailfishTransferModel {id: transferModel}
         delegate: transferDelegate
+        cacheBuffer: transferList.height
     }
 
     // Context menu for actions such as cancel and restart
