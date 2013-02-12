@@ -35,6 +35,7 @@ QList<TransferDBRecord>::iterator DeclarativeTransferModelPrivate::record(int ke
     QList<TransferDBRecord>::iterator i;
     for (i = m_data.begin(); i != m_data.end(); ++i) {
         ++row;
+
         if ((*i).transfer_id == key) {
             ok = true;
             return i;
@@ -42,7 +43,7 @@ QList<TransferDBRecord>::iterator DeclarativeTransferModelPrivate::record(int ke
     }
     row = -1;
     if (!ok) {
-        qWarning() << "DeclarativeTransferModelPrivate::refreshProgress: Failed to find the correct row";
+        qWarning() << "DeclarativeTransferModelPrivate::record: Failed to find the correct row";
         return i;
     }
 
@@ -103,7 +104,6 @@ void DeclarativeTransferModelPrivate::cancelTransfer(int transferId)
 
 void DeclarativeTransferModelPrivate::refreshData()
 {
-    qDebug() << "DeclarativeTransferModelPrivate::refreshData";    
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(m_client->transfers(), this);
 
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),

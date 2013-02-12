@@ -178,12 +178,20 @@ Page {
             id: backgroundItem
             property bool menuOpen: transferList.contextMenu != null && transferList.contextMenu.parent === backgroundItem
             property int transferStatus: status            
-            property Item thumbnail: transferType === SailfishTransferModel.Upload ?
-                                         localThumbnail.createObject(backgroundItem) :
-                                         syncThumbnail.createObject(backgroundItem)
+            property url thumbnailUrl: url
+            property Item thumbnail
 
             height: menuOpen ? transferList.contextMenu.height + theme.itemSizeExtraLarge:
                                theme.itemSizeExtraLarge
+
+
+            onThumbnailUrlChanged: {
+                if (transferType === SailfishTransferModel.Upload) {
+                    thumbnail = localThumbnail.createObject(backgroundItem)
+                } else {
+                    thumbnail = syncThumbnail.createObject(backgroundItem)
+                }
+            }
 
             // Close open context menu, if the status changes
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
