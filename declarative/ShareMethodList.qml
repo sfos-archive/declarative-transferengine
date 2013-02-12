@@ -11,6 +11,7 @@ SilicaListView {
     model:  SailfishTransferMethodsModel {id: transferMethodsModel }
 
     delegate: BackgroundItem {
+        id: backgroundItem
         width: rootList.width
         height: theme.itemSizeLarge
 
@@ -18,6 +19,7 @@ SilicaListView {
             id: displayNameLabel
             text: displayName
             x:  theme.paddingLarge
+            color: backgroundItem.down ? theme.highlightColor : theme.primaryColor
             anchors {
                 verticalCenter: userName === "" ? parent.verticalCenter : undefined
                 bottom: userName !== "" ? parent.verticalCenter: undefined
@@ -27,6 +29,7 @@ SilicaListView {
         SecondaryLabel {
             text: accountRequired ? userName : ""
             x:  theme.paddingLarge
+            color: backgroundItem.down ? theme.highlightColor : theme.secondaryColor
             anchors {
                 top: displayNameLabel.bottom
                 topMargin: theme.paddingSmall
