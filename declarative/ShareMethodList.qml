@@ -6,7 +6,9 @@ import Sailfish.TransferEngine 1.0
 SilicaListView {
     id: rootList
     signal shareMethodClicked(string displayName, string userName, string methodId, int accountId, bool accountRequired)
-    property alias listHeader: header.text    
+
+    property alias listHeader: header.text
+
     spacing: theme.paddingMedium
     model:  SailfishTransferMethodsModel {id: transferMethodsModel }
 

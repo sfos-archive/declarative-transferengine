@@ -16,7 +16,6 @@ Page {
     {        
         switch(status) {
         case SailfishTransferModel.NotStarted:
-            console.log("Waiting...")
             //% "Waiting"
             return qsTrId("transferui-la_transfer_waiting")
 
@@ -30,13 +29,11 @@ Page {
 
 
         case SailfishTransferModel.TransferInterrupted:
-            console.log("Failed")
             //% "Failed"
             return qsTrId("transferui-la_transfer_failed")
 
 
         case SailfishTransferModel.TransferCanceled:
-            console.log("Canceled...")
             //% "Canceled"
             return qsTrId("transferui-la-transfer_canceled");
 
@@ -108,7 +105,7 @@ Page {
         }
 
         var tb = gb / 1024.0
-        //% "GB"
+        //% "TB"
         return tb.toFixed(2) + qsTrId("transferui-la_terabyte")
     }
 
@@ -142,7 +139,6 @@ Page {
             return "image://theme/icon-m-sound"
         }
 
-        console.log("MIME TYPE: " + mimeType + ": " +type[1])
 
         // Next doc types
         // TODO: CHECK the rest of document types
