@@ -105,3 +105,13 @@ int DeclarativeTransferMethodsModel::rowCount(const QModelIndex & parent) const
     Q_D(const DeclarativeTransferMethodsModel);
     return d->m_data.count();
 }
+
+
+QStringList DeclarativeTransferMethodsModel::filters() const
+{
+
+}
+void DeclarativeTransferMethodsModel::setFilters(const QString &filters)
+{
+
+}
