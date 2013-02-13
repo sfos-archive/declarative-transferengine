@@ -5,6 +5,8 @@ import org.nemomobile.thumbnailer 1.0
 
 
 Page {
+    id: transfersPage
+    property Item _remorsePopup
 
     function fileName(url)
     {
@@ -280,7 +282,7 @@ Page {
 
             // Home made progress bar. Components could provide something like this.
             ProgressBar {
-                value: progress
+                value: visible ? progress : 0
                 visible: status === SailfishTransferModel.TransferStarted
                 color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
                 anchors {
@@ -376,7 +378,25 @@ Page {
             MenuItem {
                 //% "Clear all"
                 text: qsTrId("transferui-me_clear-all")
-                onClicked: transferModel.clearTransfers()
+                enabled: transferModel.count > 0
+                onClicked: {
+                    if (_remorsePopup === null) {
+                        _remorsePopup = remorsePopupComponent.createObject(transfersPage)
+                    }
+
+                    //: Clearing transfers in 5 seconds
+                    //% "Clearing transfers"
+                    _remorsePopup.execute(qsTrId("transferui-me-clear-transfers"),
+                                              function() {
+                                                  transferModel.clearTransfers()
+                                              }
+                                          )
+                }
+
+                Component {
+                    id: remorsePopupComponent
+                    RemorsePopup {}
+                }
             }
         }
 
