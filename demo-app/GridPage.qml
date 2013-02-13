@@ -18,7 +18,7 @@ Page {
         sortProperties: ["dateTaken"]
     }
 
-    SailfishGridView {
+    SilicaGridView {
         id: grid
         anchors.fill: parent
         cellWidth: width / 2
