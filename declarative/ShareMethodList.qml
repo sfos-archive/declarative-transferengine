@@ -45,7 +45,7 @@ SilicaListView {
     Label {
         id: header
         color: theme.highlightColor
-        height: theme.standardItemHeight
+        height: theme.itemSizeSmall
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: theme.fontSizeLarge
 
