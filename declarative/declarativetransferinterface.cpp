@@ -79,10 +79,24 @@ bool DeclarativeTransferInterface::notificationsEnabled() const
     return reply.value();
 }
 
-int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName, const QUrl &serviceIcon, const QUrl &url, const QString &mimeType, const QStringList &callback)
+int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName,
+                                                      const QUrl &applicationIcon,
+                                                      const QUrl &serviceIcon,
+                                                      const QUrl &url,
+                                                      const QString &mimeType,
+                                                      const QStringList &callback,
+                                                      const QString &cancelMethod,
+                                                      const QString &restartMethod)
 {
     Q_D(const DeclarativeTransferInterface);
-    QDBusPendingReply<int> reply = d->m_client->createDownload(displayName, serviceIcon.toString(), url.toString(), mimeType, callback);
+    QDBusPendingReply<int> reply = d->m_client->createDownload(displayName,
+                                                               applicationIcon.toString(),
+                                                               serviceIcon.toString(),
+                                                               url.toString(),
+                                                               mimeType,
+                                                               callback,
+                                                               cancelMethod,
+                                                               restartMethod);
     reply.waitForFinished();
 
     if (reply.isError()) {
@@ -93,10 +107,20 @@ int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName
     return reply.value();
 }
 
-int DeclarativeTransferInterface::createSyncEvent(const QString &displayName, const QUrl &serviceIcon, const QStringList &callback)
+int DeclarativeTransferInterface::createSyncEvent(const QString &displayName,
+                                                  const QUrl &applicationIcon,
+                                                  const QUrl &serviceIcon,
+                                                  const QStringList &callback,
+                                                  const QString &cancelMethod,
+                                                  const QString &restartMethod)
 {
     Q_D(const DeclarativeTransferInterface);
-    QDBusPendingReply<int> reply = d->m_client->createSync(displayName, serviceIcon.toString(), callback);
+    QDBusPendingReply<int> reply = d->m_client->createSync(displayName,
+                                                           applicationIcon.toString(),
+                                                           serviceIcon.toString(),
+                                                           callback,
+                                                           cancelMethod,
+                                                           restartMethod);
     reply.waitForFinished();
 
     if (reply.isError()) {

@@ -11,8 +11,9 @@ BuildRequires: pkgconfig(QtDBus)
 BuildRequires: pkgconfig(accounts-qt)
 BuildRequires: pkgconfig(nemotransferengine)
 
-Requires: nemo-transferengine 
+Requires: nemo-transferengine
 Requires: sailfishsilica
+Requires: jolla-ambient
 
 %description -n declarative-transferengine
 %{summary}.
@@ -26,7 +27,7 @@ Requires: sailfishsilica
 %package -n jolla-transferdemo
 Summary: Jolla Transfer Demo Application
 Group: Applications/Multimedia
-Requires: nemo-transferengine 
+Requires: nemo-transferengine
 Requires: declarative-transferengine
 
 %description -n jolla-transferdemo

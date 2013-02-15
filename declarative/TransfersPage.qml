@@ -15,7 +15,7 @@ Page {
     }
 
     function statusText(transferType, status)
-    {        
+    {
         switch(status) {
         case SailfishTransferModel.NotStarted:
             //% "Waiting"
@@ -25,7 +25,7 @@ Page {
             // Just break and handle started transfers after this block
             break
 
-        case SailfishTransferModel.TransferFinished:            
+        case SailfishTransferModel.TransferFinished:
             //% "Finished"
             return qsTrId("transferui-la_transfer_finished")
 
@@ -113,13 +113,14 @@ Page {
 
     function transferIcon(transferType)
     {
+        // TODO: How we figure out if upload/download is from device2device e.g. BT.
         switch (transferType) {
         case SailfishTransferModel.Upload:
-            return "image://theme/icon-m-upload"
+            return "image://theme/icon-s-cloud-upload"
         case SailfishTransferModel.Download:
-            return "image://theme/icon-m-download"
+            return "image://theme/icon-s-cloud-download"
         case SailfishTransferModel.Sync:
-            return "image://theme/icon-m-sync"
+            return "image://theme/icon-s-sync"
         default:
             console.log("TransfersPage::transferIcon: failed to get transfer type")
             return ""
@@ -128,17 +129,21 @@ Page {
 
     function mimeTypeIcon(mimeType)
     {
+        if (mimeType.length === 0)
+            return ""
+
         var type = mimeType.split("/");
+
 
         // Handle basic media types
         if (type[0] === "image") {
-            return "image://theme/icon-m-image"
+            return "image://theme/icon-l-image"
         }
         if (type[0] === "video") {
-            return "image://theme/icon-m-video"
+            return "image://theme/icon-l-video"
         }
         if (type[0] === "audio") {
-            return "image://theme/icon-m-sound"
+            return "image://theme/icon-l-sound"
         }
 
 
@@ -148,14 +153,14 @@ Page {
             type[1].indexOf("pdf")     ||
             type[1].indexOf("word")    ||
             type[1].indexOf("powerpoint")) {
-            return "image://theme/icon-m-document"
+            return "image://theme/icon-l-document"
         }
         // Handle contacts
         if (type[1].indexOf("vcard")) {
-            return "image://theme/icon-m-people"
+            return "image://theme/icon-l-people"
         }
 
-        return "image://theme/icon-m-others"
+        return "image://theme/icon-l-others"
     }
 
     Formatter {
@@ -175,31 +180,27 @@ Page {
         BackgroundItem {
             id: backgroundItem
             property bool menuOpen: transferList.contextMenu != null && transferList.contextMenu.parent === backgroundItem
-            property int transferStatus: status            
+            property int transferStatus: status
             property url thumbnailUrl: url
+            property url appIconUrl: applicationIcon
             property Item thumbnail
 
             height: menuOpen ? transferList.contextMenu.height + theme.itemSizeExtraLarge:
                                theme.itemSizeExtraLarge
 
-
-            onThumbnailUrlChanged: {
-                if (transferType === SailfishTransferModel.Upload) {
-                    thumbnail = localThumbnail.createObject(backgroundItem)
-                } else {
-                    thumbnail = syncThumbnail.createObject(backgroundItem)
-                }
-            }
+            // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
+            onThumbnailUrlChanged: thumbnail = shareThumbnail.createObject(backgroundItem)
+            onAppIconUrlChanged: thumbnail = appThumbnail.createObject(backgroundItem)
 
             // Close open context menu, if the status changes
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
 
+            // Component for local thumbnails. Only used by sharing entry.
             Component {
-                id: localThumbnail
+                id: shareThumbnail
                 Thumbnail {
-                    id: thumbnail
                     width: theme.itemSizeExtraLarge
-                    height: width
+                    height: theme.itemSizeExtraLarge
                     sourceSize.width: width
                     sourceSize.height: height
                     source: url
@@ -209,30 +210,37 @@ Page {
                               : Thumbnail.LowPriority
                 }
             }
-
+            // Component for application thumbnail. Only used by Sync or Download entry.
             Component {
-                id: syncThumbnail
-                Image {
-                    id: thumbnail
+                id: appThumbnail
+                Item {
                     width: theme.itemSizeExtraLarge
-                    height: width
-                    sourceSize.width: width
-                    sourceSize.height: height
-                    source: url
-                    opacity: 0.5
-                    asynchronous: true
+                    height: theme.itemSizeExtraLarge
+
+                    Rectangle {
+                        color: theme.primaryColor
+                        opacity: 0.1
+                        anchors.fill: parent
+                    }
+
+                    Image {
+                        source: applicationIcon
+                        opacity: 0.5
+                        asynchronous: true
+                        anchors.centerIn: parent
+                        sourceSize.width: theme.itemSizeSmall
+                        sourceSize.height: theme.itemSizeSmall
+                    }
                 }
             }
 
             Image {
                 id: mimeTypeIconIcon
                 source: mimeTypeIcon(mimeType)
-                width: theme.itemSizeExtraLarge * 0.7
-                height: theme.itemSizeExtraLarge * 0.7
                 fillMode: Image.PreserveAspectFit
                 anchors.centerIn: thumbnail
                 asynchronous: true
-                visible: transferType === SailfishTransferModel.Upload && thumbnail.status === Image.Ready
+                visible: mimeType.length > 0 && thumbnail.status === Image.Ready
             }
 
             Image {
@@ -347,12 +355,17 @@ Page {
                     return;
                 }
 
-                if (transferList.contextMenu === null)
-                    transferList.contextMenu = contextMenuComponent.createObject(transferList)
+                // There must be cancel or restart enabled in order to show context menu
+                if (cancelEnabled || restartEnabled) {
+                    if (transferList.contextMenu === null)
+                        transferList.contextMenu = contextMenuComponent.createObject(transferList)
 
-                transferList.contextMenu.transferId = transferId
-                transferList.contextMenu.status = status
-                transferList.contextMenu.show(backgroundItem)
+                    transferList.contextMenu.transferId     = transferId
+                    transferList.contextMenu.status         = status
+                    transferList.contextMenu.cancelEnabled  = cancelEnabled
+                    transferList.contextMenu.restartEnabled = restartEnabled
+                    transferList.contextMenu.show(backgroundItem)
+                }
             }
         }
     }
@@ -400,7 +413,7 @@ Page {
             }
         }
 
-        anchors.fill: parent        
+        anchors.fill: parent
         model: SailfishTransferModel {id: transferModel}
         delegate: transferDelegate
         cacheBuffer: transferList.height
@@ -413,6 +426,9 @@ Page {
         ContextMenu {
             property int transferId
             property int status
+            property bool cancelEnabled
+            property bool restartEnabled
+
             parent: null
             x: parent !== null ? -parent.x : 0.0
 

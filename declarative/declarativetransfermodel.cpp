@@ -184,17 +184,21 @@ void DeclarativeTransferModel::componentComplete()
     // Role names could come from the "server" if
     // they change too often e.g. during development.
     QHash<int, QByteArray> roleNames;
-    roleNames[TransferDBRecord::TransferID] = "transferId";
-    roleNames[TransferDBRecord::TransferType] = "transferType";
-    roleNames[TransferDBRecord::Progress]   = "progress";
-    roleNames[TransferDBRecord::URL]        = "url";
-    roleNames[TransferDBRecord::Status]     = "status";
-    roleNames[TransferDBRecord::PluginID]   = "pluginId";
-    roleNames[TransferDBRecord::Timestamp]  = "timestamp";
-    roleNames[TransferDBRecord::DisplayName]= "displayName";
-    roleNames[TransferDBRecord::MimeType]   = "mimeType";
-    roleNames[TransferDBRecord::FileSize]   = "fileSize";
-    roleNames[TransferDBRecord::ServiceIcon]= "serviceIcon";
+    roleNames[TransferDBRecord::TransferID]         = "transferId";
+    roleNames[TransferDBRecord::TransferType]       = "transferType";
+    roleNames[TransferDBRecord::Progress]           = "progress";
+    roleNames[TransferDBRecord::URL]                = "url";
+    roleNames[TransferDBRecord::Status]             = "status";
+    roleNames[TransferDBRecord::PluginID]           = "pluginId";
+    roleNames[TransferDBRecord::Timestamp]          = "timestamp";
+    roleNames[TransferDBRecord::DisplayName]        = "displayName";
+    roleNames[TransferDBRecord::MimeType]           = "mimeType";
+    roleNames[TransferDBRecord::FileSize]           = "fileSize";
+    roleNames[TransferDBRecord::ServiceIcon]        = "serviceIcon";
+    roleNames[TransferDBRecord::ApplicationIcon]    = "applicationIcon";
+    roleNames[TransferDBRecord::CancelSupported]    = "cancelEnabled";
+    roleNames[TransferDBRecord::RestartSupported]   = "restartEnabled";
+
     setRoleNames(roleNames);
 
     Q_D(DeclarativeTransferModel);

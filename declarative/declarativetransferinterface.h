@@ -37,10 +37,22 @@ public:
 
     // Create a new download event. Returns transfer id
     // callback - Dbus service, path, interface
-    Q_INVOKABLE int createDownloadEvent(const QString &displayName, const QUrl &serviceIcon, const QUrl &url, const QString &mimeType, const QStringList &callback);
+    Q_INVOKABLE int createDownloadEvent(const QString &displayName,
+                                        const QUrl &applicationIcon,
+                                        const QUrl &serviceIcon,
+                                        const QUrl &url,
+                                        const QString &mimeType,
+                                        const QStringList &callback,
+                                        const QString &cancelMethod,
+                                        const QString &restartMethod);
 
     // Create a new sync event. Returns transfer id
-    Q_INVOKABLE int createSyncEvent(const QString &displayName, const QUrl &serviceIcon, const QStringList &callback);
+    Q_INVOKABLE int createSyncEvent(const QString &displayName,
+                                    const QUrl &applicationIcon,
+                                    const QUrl &serviceIcon,
+                                    const QStringList &callback,
+                                    const QString &cancelMethod,
+                                    const QString &restartMethod);
 
     // Update the progress of the existing transfer
     Q_INVOKABLE void updateTransferProgress(int transferId, qreal progress);
@@ -53,7 +65,7 @@ public:
 
     // return true/false if notifications are enabled
     bool notificationsEnabled() const;
-    
+
 Q_SIGNALS:
     void notificationsChanged();
 
