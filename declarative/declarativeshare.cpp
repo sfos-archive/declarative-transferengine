@@ -254,7 +254,7 @@ void DeclarativeShare::start()
 void DeclarativeShare::cancel()
 {
     Q_D(DeclarativeShare);
-    if (d->m_status == TransferEngineData::TransferStarted &&
+    if (d->m_status == TransferStarted &&
         d->m_transferId != -1){
         d->m_client->cancelTransfer(d->m_transferId);
     }

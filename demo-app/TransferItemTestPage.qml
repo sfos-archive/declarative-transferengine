@@ -20,7 +20,7 @@ Page  {
 
         Switch {
             id: sw1
-            iconSource: "image://theme/icon-l-facebook"
+            iconSource: "image://theme/icon-s-service-facebook"
             onCheckedChanged: {
                 if (checked) {
                     sourceIcon = iconSource
@@ -34,7 +34,7 @@ Page  {
 
         Switch {
             id: sw2
-            iconSource: "image://theme/icon-l-exchange"
+            iconSource: "image://theme/icon-s-service-exchange"
             onCheckedChanged: {
                 if (checked) {
                     sourceIcon = iconSource
@@ -47,7 +47,7 @@ Page  {
 
         Switch {
             id: sw3
-            iconSource: "image://theme/icon-l-twitter"
+            iconSource: "image://theme/icon-s-service-twitter"
             onCheckedChanged: {
                 if (checked) {
                     sourceIcon = iconSource
@@ -166,15 +166,21 @@ Page  {
         if (downloadSelected) {
             console.log("Download selected")
             transferId = transferInterface.createDownloadEvent(sourceName,
+                                                               "image://theme/icon-launcher-browser",
                                                                sourceIcon,
                                                                filePath ,
                                                                mimeType,
-                                                               callback)
+                                                               callback,
+                                                               "cancelTransfer",
+                                                               "restartTransfer")
         } else {
             console.log("Sync selected")
             transferId = transferInterface.createSyncEvent(sourceName,
+                                                           "image://theme/icon-launcher-email",
                                                            sourceIcon,
-                                                           callback)
+                                                           callback,
+                                                           "cancelTransfer",
+                                                           "restartTransfer")
         }
 
         console.log("Created transfer with id: " + transferId)
