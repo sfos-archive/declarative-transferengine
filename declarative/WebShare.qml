@@ -175,11 +175,14 @@ Item {
         // Description
         TextField {
             id: descriptionTextField
-            x: theme.paddingLarge
-            width: optionList.width - (theme.paddingLarge*2)
+            width: optionList.width
             inputMethodHints: Qt.ImhNoPredictiveText
             //% "Add a description"
             placeholderText: qsTrId("webshareui-ph_description_placeholder")
+
+            //: Description label of the image
+            //% "Description"
+            label: qsTrId("webshareui-la_description")
             Keys.onReturnPressed:  sharePage.focus = true
         }
 
