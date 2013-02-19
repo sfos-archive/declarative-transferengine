@@ -14,6 +14,8 @@ BuildRequires: pkgconfig(nemotransferengine)
 Requires: nemo-transferengine
 Requires: sailfishsilica
 Requires: jolla-ambient
+Requires: ambient-icons-closed
+Requires: transferengine-plugins
 
 %description -n declarative-transferengine
 %{summary}.
