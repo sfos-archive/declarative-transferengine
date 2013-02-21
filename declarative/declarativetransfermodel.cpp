@@ -229,13 +229,22 @@ int DeclarativeTransferModel::rowCount ( const QModelIndex & parent ) const
     return d->m_data.count();
 }
 
-
 void DeclarativeTransferModel::clearTransfers()
 {
     Q_D(DeclarativeTransferModel);
     d->clearTransfers();
 }
 
+QVariantMap DeclarativeTransferModel::get(int index) const
+{
+    Q_D(const DeclarativeTransferModel);
+    QVariantMap map;
+    if (index < 0 || index >= rowCount())
+        return map;
 
-
-
+    QHash<int, QByteArray> roles = roleNames();
+    for (QHash<int, QByteArray>::iterator it = roles.begin(); it != roles.end(); ++it) {
+        map[it.value()] = d->value(index, it.key());
+    }
+    return map;
+}
