@@ -36,6 +36,7 @@ public:
     QList<TransferDBRecord> m_data;
     bool m_dataReady;
     QMutex m_mutex;
+    int m_transfersInProgress;
 };
 
 #endif // DECLARATIVETRANSFERMODEL_P_H

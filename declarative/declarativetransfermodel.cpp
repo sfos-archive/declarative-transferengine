@@ -8,7 +8,8 @@
 
 
 DeclarativeTransferModelPrivate::DeclarativeTransferModelPrivate(DeclarativeTransferModel *parent):
-    q_ptr(parent)
+    q_ptr(parent),
+    m_transfersInProgress(0)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                            "/org/nemo/transferengine",
@@ -82,14 +83,25 @@ void DeclarativeTransferModelPrivate::refreshStatus(int key, int status)
     (*i).status = status;
     Q_Q(DeclarativeTransferModel);
     emit q->dataChanged(q->createIndex(row, 0), q->createIndex(row, 0));
-}
 
+    switch (status) {
+    case DeclarativeTransferModel::TransferStarted:
+        m_transfersInProgress++;
+        emit q->transfersInProgressChanged();
+        break;
+    case DeclarativeTransferModel::TransferCanceled:
+    case DeclarativeTransferModel::TransferFinished:
+    case DeclarativeTransferModel::TransferInterrupted:
+        m_transfersInProgress--;
+        emit q->transfersInProgressChanged();
+        break;
+    }
+}
 
 QVariant DeclarativeTransferModelPrivate::value(int row, int role) const
 {
     return m_data.at(row).value(role);
 }
-
 
 void DeclarativeTransferModelPrivate::clearTransfers()
 {
@@ -247,4 +259,10 @@ QVariantMap DeclarativeTransferModel::get(int index) const
         map[it.value()] = d->value(index, it.key());
     }
     return map;
+}
+
+int DeclarativeTransferModel::transfersInProgress() const
+{
+    Q_D(const DeclarativeTransferModel);
+    return d->m_transfersInProgress;
 }
