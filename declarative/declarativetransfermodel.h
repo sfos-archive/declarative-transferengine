@@ -15,6 +15,7 @@ class DeclarativeTransferModel: public QAbstractListModel, public QDeclarativePa
     Q_ENUMS(TransferStatus)
     Q_ENUMS(TransferType)
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)
+    Q_PROPERTY(int transfersInProgress READ transfersInProgress NOTIFY transfersInProgressChanged)
 
 public:
 
@@ -38,6 +39,8 @@ public:
     void classBegin();
     void componentComplete();
 
+    int transfersInProgress() const;
+
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
 
@@ -46,6 +49,8 @@ public:
 
 Q_SIGNALS:
     void rowCountChanged();
+    void transferStatusChanged(int index, int status);
+    void transfersInProgressChanged();
 
 private:
     DeclarativeTransferModelPrivate *d_ptr;
