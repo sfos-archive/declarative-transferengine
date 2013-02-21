@@ -204,6 +204,7 @@ Page {
                     sourceSize.width: width
                     sourceSize.height: height
                     source: url
+                    z: 1
                     opacity: 0.5
                     priority: index >= transferList.firstVisible && index < transferList.firstVisible + 10
                               ? Thumbnail.NormalPriority
@@ -216,7 +217,7 @@ Page {
                 Item {
                     width: theme.itemSizeExtraLarge
                     height: theme.itemSizeExtraLarge
-
+                    z: 1
                     Rectangle {
                         color: theme.primaryColor
                         opacity: 0.1
@@ -241,6 +242,7 @@ Page {
                 anchors.centerIn: thumbnail
                 asynchronous: true
                 visible: mimeType.length > 0 && thumbnail.status === Image.Ready
+                z: 2
             }
 
             Image {
