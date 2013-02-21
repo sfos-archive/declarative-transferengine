@@ -42,6 +42,7 @@ public:
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
 
     Q_INVOKABLE void clearTransfers();
+    Q_INVOKABLE QVariantMap get(int index) const;
 
 Q_SIGNALS:
     void rowCountChanged();
