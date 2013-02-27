@@ -9,7 +9,6 @@ Dialog {
     property string shareUIPath
     property string methodId
     property int accountId
-    property bool accountRequired
     property variant docItemId
 
     // TODO: Add dynamic Share UI loading here, when we have more than one Share method
@@ -28,7 +27,6 @@ Dialog {
         sharePage.item.displayName = displayName
         sharePage.item.accountName = accountName
         sharePage.item.accountId = accountId
-        sharePage.item.accountRequired = accountRequired
         sharePage.item.methodId = methodId
     }
 

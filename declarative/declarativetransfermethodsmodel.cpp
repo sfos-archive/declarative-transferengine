@@ -105,7 +105,6 @@ void DeclarativeTransferMethodsModel::componentComplete()
     roleNames[TransferMethodInfo::MethodId]         = "methodId";
     roleNames[TransferMethodInfo::ShareUIPath]      = "shareUIPath";
     roleNames[TransferMethodInfo::AccountId]        = "accountId";
-    roleNames[TransferMethodInfo::AccountRequired]  = "accountRequired";
     setRoleNames(roleNames);
 
     Q_D(DeclarativeTransferMethodsModel);
