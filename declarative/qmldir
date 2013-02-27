@@ -1,7 +1,6 @@
 plugin silicatransferengine
 TransfersPage 1.0 TransfersPage.qml
 ShareMethodList 1.0 ShareMethodList.qml
-WebShare 1.0 WebShare.qml
 ShareDialog 1.0 ShareDialog.qml
 
 

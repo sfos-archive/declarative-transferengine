@@ -5,12 +5,13 @@ import Sailfish.TransferEngine 1.0
 
 SilicaListView {
     id: rootList
-    signal shareMethodClicked(string displayName, string userName, string methodId, int accountId, bool accountRequired)
+    signal shareMethodClicked(string displayName, string userName, string methodId, string shareUIPath, int accountId, bool accountRequired)
 
     property alias listHeader: header.text
+    property alias filter: transferMethodsModel.filter
 
     spacing: theme.paddingMedium
-    model:  SailfishTransferMethodsModel {id: transferMethodsModel }
+    model:  SailfishTransferMethodsModel { id: transferMethodsModel }
 
     delegate: BackgroundItem {
         id: backgroundItem
@@ -38,7 +39,7 @@ SilicaListView {
             }
         }
 
-        onClicked: rootList.shareMethodClicked(displayName, userName, methodId, accountId, accountRequired)
+        onClicked: rootList.shareMethodClicked(displayName, userName, methodId, shareUIPath, accountId, accountRequired)
     }
 
 

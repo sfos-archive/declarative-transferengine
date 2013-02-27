@@ -6,7 +6,12 @@
 
 DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent):
     QObject(parent),
-    q_ptr(parent)
+    q_ptr(parent),
+    m_client(0),
+    m_data(),
+    m_filter(),
+    m_filteredData(),
+    m_initialized(false)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                                "/org/nemo/transferengine",
@@ -31,24 +36,47 @@ void DeclarativeTransferMethodsModelPrivate::transferMethods()
         return;
     }
 
+    // Set new data to the model and filter it if filter has been set.
     Q_Q(DeclarativeTransferMethodsModel);
-    QList<TransferMethodInfo> newData = reply.value();
-    bool rowCountChanged = m_data.count() != newData.count();
-
-    // Not so nice, but we are dealing here relatively small amount of items,
-    // let's just reset the model on changes.
-    m_data = newData;
-    q->reset();
-    if (rowCountChanged) {
-        emit q->rowCountChanged();
-    }
+    q->beginResetModel();
+    m_data = reply.value();
+    filterModel();
+    q->endResetModel();
 }
 
 QVariant DeclarativeTransferMethodsModelPrivate::value(int row, int role) const
 {
-    return m_data.at(row).value(role);
+    return m_data.at(m_filteredData.at(row)).value(role);
 }
 
+
+// Filtering model is made by storing indeces of the items in m_data
+// which match the filtering criteria. Stored indeces in m_filteredData
+// are used for  accessing data from m_data.
+void DeclarativeTransferMethodsModelPrivate::filterModel()
+{
+    Q_Q(DeclarativeTransferMethodsModel);
+    m_filteredData.clear();
+
+
+    if (m_filter.isEmpty()) {
+        for (int i=0; i < m_data.count(); i++) {
+            m_filteredData.append(i);
+        }
+    } else {
+        int index = 0;
+        Q_FOREACH(TransferMethodInfo info, m_data) {
+            if (info.capabilitities.contains(m_filter)) {
+                m_filteredData.append(index);
+            }
+            ++index;
+        }
+    }
+    // Model is small so let's just reset it to instead of keeping
+    // track which model items have changed i.e. added or removed
+    // after filtering. Works fine for a relatively small amount of items.
+    q->reset();
+}
 
 DeclarativeTransferMethodsModel::DeclarativeTransferMethodsModel(QObject *parent):
     QAbstractListModel(parent),
@@ -75,6 +103,7 @@ void DeclarativeTransferMethodsModel::componentComplete()
     roleNames[TransferMethodInfo::DisplayName]      = "displayName";
     roleNames[TransferMethodInfo::UserName]         = "userName";
     roleNames[TransferMethodInfo::MethodId]         = "methodId";
+    roleNames[TransferMethodInfo::ShareUIPath]      = "shareUIPath";
     roleNames[TransferMethodInfo::AccountId]        = "accountId";
     roleNames[TransferMethodInfo::AccountRequired]  = "accountRequired";
     setRoleNames(roleNames);
@@ -91,7 +120,7 @@ QVariant DeclarativeTransferMethodsModel::data(const QModelIndex & index, int ro
     }
 
     Q_D(const DeclarativeTransferMethodsModel);
-    if (index.row() < 0 || index.row() > d->m_data.count()) {
+    if (index.row() < 0 || index.row() > d->m_filteredData.count()) {
         qWarning() << "DeclarativeTransferMethodsModel::data: Index out of range!";
         return QVariant();
     }
@@ -103,15 +132,22 @@ int DeclarativeTransferMethodsModel::rowCount(const QModelIndex & parent) const
 {
     Q_UNUSED(parent);
     Q_D(const DeclarativeTransferMethodsModel);
-    return d->m_data.count();
+    return d->m_filteredData.count();
 }
 
 
-QStringList DeclarativeTransferMethodsModel::filters() const
+QString DeclarativeTransferMethodsModel::filter() const
 {
-
+    Q_D(const DeclarativeTransferMethodsModel);
+    return d->m_filter;
 }
-void DeclarativeTransferMethodsModel::setFilters(const QString &filters)
-{
 
+void DeclarativeTransferMethodsModel::setFilter(const QString &filter)
+{
+    Q_D(DeclarativeTransferMethodsModel);
+    if (d->m_filter != filter) {
+        d->m_filter = filter;
+        d->filterModel();
+        emit filterChanged();
+    }
 }
