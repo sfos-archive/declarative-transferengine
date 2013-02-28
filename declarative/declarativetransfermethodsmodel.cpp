@@ -10,8 +10,7 @@ DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(D
     m_client(0),
     m_data(),
     m_filter(),
-    m_filteredData(),
-    m_initialized(false)
+    m_filteredData()
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                                "/org/nemo/transferengine",

@@ -28,7 +28,6 @@ public:
     QList<TransferMethodInfo> m_data;
     QString m_filter;
     QList<int> m_filteredData;
-    bool m_initialized;
 };
 
 #endif // DECLARATIVETRANSFERMETHODSMODEL_P_H
