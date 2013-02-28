@@ -11,9 +11,7 @@ Dialog {
     property int accountId
     property variant docItemId
 
-    // TODO: Add dynamic Share UI loading here, when we have more than one Share method
-    //WebShare {id: sharePage; anchors.fill: parent }
-
+    // Load custom Share UI from a plugin
     Loader {
         id: sharePage
         source: shareUIPath
