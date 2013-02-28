@@ -1,5 +1,5 @@
 Name: declarative-transferengine
-Version: 0.0.7
+Version: 0.0.12
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
