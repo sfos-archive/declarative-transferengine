@@ -38,10 +38,8 @@ void DeclarativeTransferMethodsModelPrivate::transferMethods()
 
     // Set new data to the model and filter it if filter has been set.
     Q_Q(DeclarativeTransferMethodsModel);
-    q->beginResetModel();
     m_data = reply.value();
     filterModel();
-    q->endResetModel();
 }
 
 QVariant DeclarativeTransferMethodsModelPrivate::value(int row, int role) const
@@ -56,19 +54,22 @@ QVariant DeclarativeTransferMethodsModelPrivate::value(int row, int role) const
 void DeclarativeTransferMethodsModelPrivate::filterModel()
 {
     Q_Q(DeclarativeTransferMethodsModel);
+    const int oldRowCount = m_filteredData.count();
     m_filteredData.clear();
 
-
-    if (m_filter.isEmpty()) {
+    // Accept everything if using wildcard or filter is empty
+    if (m_filter.isEmpty() || m_filter == QLatin1String("*")) {
         for (int i=0; i < m_data.count(); i++) {
             m_filteredData.append(i);
         }
     } else {
         int index = 0;
         Q_FOREACH(TransferMethodInfo info, m_data) {
-            if (info.capabilitities.contains(m_filter)) {
+            if (info.capabilitities.contains(m_filter) ||
+                info.capabilitities.contains(QLatin1String("*"))) {
                 m_filteredData.append(index);
             }
+
             ++index;
         }
     }
@@ -76,6 +77,11 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
     // track which model items have changed i.e. added or removed
     // after filtering. Works fine for a relatively small amount of items.
     q->reset();
+
+
+    if (oldRowCount != m_filteredData.count()) {
+        emit q->rowCountChanged();
+    }
 }
 
 DeclarativeTransferMethodsModel::DeclarativeTransferMethodsModel(QObject *parent):
