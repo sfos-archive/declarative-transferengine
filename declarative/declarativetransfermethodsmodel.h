@@ -9,6 +9,8 @@ class DeclarativeTransferMethodsModel: public QAbstractListModel, public QDeclar
 {
     Q_OBJECT
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)
+    Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
+
 public:
 
     explicit  DeclarativeTransferMethodsModel(QObject *parent = 0);
@@ -20,8 +22,12 @@ public:
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
 
+    QString filter() const;
+    void setFilter(const QString &filter);
+
 Q_SIGNALS:
     void rowCountChanged();
+    void filterChanged();
 
 private:
     DeclarativeTransferMethodsModelPrivate * d_ptr;

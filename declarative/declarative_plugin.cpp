@@ -28,10 +28,20 @@ void DeclarativePlugin::initializeEngine(QDeclarativeEngine *engine, const char 
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Sailfish.TransferEngine"));
 
     // Translations
-    AppTranslator *engineeringEnglish = new AppTranslator(engine);
+    AppTranslator *translatorEngEn = new AppTranslator(engine);
     AppTranslator *translator = new AppTranslator(engine);
-    engineeringEnglish->load("sailfish_transferengine_eng_en", "/usr/share/translations");
-    translator->load(QLocale(), "sailfish_transferengine", "-", "/usr/share/translations");
+
+    AppTranslator *sharePluginsTranslatorEngEn = new AppTranslator(engine);
+    AppTranslator *sharePluginsTranslator = new AppTranslator(engine);
+
+    const QString path("/usr/share/translations");
+
+    translatorEngEn->load("sailfish_transferengine_eng_en", path);
+    translator->load(QLocale(), "sailfish_transferengine", "-", path);
+
+    // This module is reponsible of loading translations for the UIs provided by share plugins
+    sharePluginsTranslatorEngEn->load("sailfish_transferengine_plugins_eng_en", path);
+    sharePluginsTranslator->load(QLocale(), "sailfish_transferengine_plugins", "-", path);
 }
 
 void DeclarativePlugin::registerTypes(const char *uri)

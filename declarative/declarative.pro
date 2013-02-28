@@ -10,7 +10,6 @@ uri = Sailfish.TransferEngine
 CONFIG += link_pkgconfig
 PKGCONFIG += nemotransferengine
 
-
 # Input
 SOURCES += \
     declarative_plugin.cpp \
@@ -35,8 +34,7 @@ OTHER_FILES = qmldir \
     ShareMethodList.qml \
     PrimaryLabel.qml \
     SecondaryLabel.qml \
-    ShareDialog.qml \
-    WebShare.qml
+    ShareDialog.qml
 
 
 TS_FILE = $$OUT_PWD/sailfish_transferengine.ts

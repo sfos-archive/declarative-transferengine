@@ -6,7 +6,6 @@
 #include <QObject>
 
 class TransferEngineInterface;
-//class DeclarativeTransferMethodsModel;
 class DeclarativeTransferMethodsModelPrivate: public QObject
 {
     Q_OBJECT
@@ -15,6 +14,7 @@ public:
     DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent);
     ~DeclarativeTransferMethodsModelPrivate();
     QVariant value(int row, int role) const;
+    void filterModel();
 
 public Q_SLOTS:
     void transferMethods();
@@ -26,6 +26,8 @@ public:
 
     TransferEngineInterface *m_client;
     QList<TransferMethodInfo> m_data;
+    QString m_filter;
+    QList<int> m_filteredData;
 };
 
 #endif // DECLARATIVETRANSFERMETHODSMODEL_P_H
