@@ -18,7 +18,6 @@ HEADERS += demoappadaptor.h \
 SOURCES += main.cpp demoappadaptor.cpp \
     callbackinterface.cpp
 OTHER_FILES += main.qml \
-    ShareUIPage.qml \
     GridPage.qml \
     AccountsSelectionPage.qml \
     transfer-demo.desktop \
