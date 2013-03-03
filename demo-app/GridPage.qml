@@ -67,12 +67,11 @@ Page {
             onShareMethodClicked: {
 
                 var item  = galleryModel.get(itemIndex)
-                pageStack.push(Qt.resolvedUrl("ShareUIPage.qml"), {
+                pageStack.push(shareUIPath, {
                                    methodId: methodId,
                                    accountId: accountId,
                                    displayName: displayName,
                                    accountName: userName,
-                                   accountRequired: accountRequired,
                                    docItemId: item.itemId,
                                    source: item.url,
                                    mimeType: item.mimeType
