@@ -8,14 +8,11 @@
 DeclarativeSharePrivate::DeclarativeSharePrivate(DeclarativeShare *parent):
     QObject(),
     m_source(),
-    m_title(),
-    m_description(),
     m_serviceId(),
     m_mimeType(),
     m_metadataStripped(false),
     m_notificationsEnabled(false),
     m_transferId(-1),
-    m_accountId(0),
     m_progress(0),
     m_status(DeclarativeShare::NotStarted),
     m_cachedStatus(DeclarativeShare::NotStarted),
@@ -111,36 +108,6 @@ QUrl DeclarativeShare::source() const
     return d->m_source;
 }
 
-void DeclarativeShare::setTitle(const QString &title)
-{
-    Q_D(DeclarativeShare);
-    if (d->m_title != title) {
-        d->m_title = title;
-        emit titleChanged();
-    }
-}
-
-QString DeclarativeShare::title() const
-{
-    Q_D(const DeclarativeShare);
-    return d->m_title;
-}
-
-void DeclarativeShare::setDescription(const QString &description)
-{
-    Q_D(DeclarativeShare);
-    if (d->m_description != description) {
-        d->m_description = description;
-        emit descriptionChanged();
-    }
-}
-
-QString DeclarativeShare::description() const
-{
-    Q_D(const DeclarativeShare);
-    return d->m_description;
-}
-
 void DeclarativeShare::setMetadataStripped(bool strip)
 {
     Q_D(DeclarativeShare);
@@ -171,22 +138,6 @@ QString DeclarativeShare::serviceId() const
     return d->m_serviceId;
 }
 
-void DeclarativeShare::setAccountId(quint32 id)
-{
-    Q_D(DeclarativeShare);
-    if (d->m_accountId != id) {
-        d->m_accountId = id;
-        emit accountIdChanged();
-    }
-}
-
-quint32 DeclarativeShare::accountId() const
-{
-    Q_D(const DeclarativeShare);
-    return d->m_accountId;
-}
-
-
 void DeclarativeShare::setMimeType(const QString &mimeType)
 {
     Q_D(DeclarativeShare);
@@ -201,6 +152,23 @@ QString DeclarativeShare::mimeType() const
     Q_D(const DeclarativeShare);
     return d->m_mimeType;
 }
+
+void DeclarativeShare::setUserData(const QVariantMap &userData)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_userData != userData) {
+        d->m_userData = userData;
+        emit userDataChanged();
+    }
+}
+
+QVariantMap DeclarativeShare::userData() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_userData;
+}
+
+
 
 
 void DeclarativeShare::setNotificationsEnabled(bool enable)
@@ -236,12 +204,10 @@ void DeclarativeShare::start()
 {
     Q_D(DeclarativeShare);
     QDBusPendingCall async = d->m_client->uploadMediaItem(d->m_source.toString(),
-                                                      d->m_title,
-                                                      d->m_description,
                                                       d->m_serviceId,
                                                       d->m_mimeType,
                                                       d->m_metadataStripped,
-                                                      d->m_accountId);
+                                                      d->m_userData);
 
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(async, this);
 
