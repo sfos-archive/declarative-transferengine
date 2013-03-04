@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QVariantMap>
 #include "declarativeshare.h"
 
 class QDBusPendingCallWatcher;
@@ -20,14 +21,12 @@ public Q_SLOTS:
 
 public:
     QUrl m_source;
-    QString m_title;
-    QString m_description;
     QString m_serviceId;
     QString m_mimeType;
+    QVariantMap m_userData;
     bool m_metadataStripped;
     bool m_notificationsEnabled;
     int m_transferId;
-    quint32 m_accountId;
     qreal m_progress;
     DeclarativeShare::Status m_status;
     DeclarativeShare::Status m_cachedStatus;
