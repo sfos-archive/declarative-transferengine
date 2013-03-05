@@ -1,14 +1,9 @@
 import QtQuick 1.1
 import QtMobility.gallery 1.1
-import org.nemomobile.thumbnailer 1.0
 import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
-import org.nemomobile.accounts 1.0
-import com.jolla.components.accounts 1.0
-
 
 Page {
-    property int itemIndex
 
     DocumentGalleryModel {
         id: galleryModel
@@ -36,8 +31,8 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        itemIndex = index
                         accountsList.showAccounts = true
+                        shareMethodList.source = url
                     }
                 }
             }
@@ -63,20 +58,8 @@ Page {
         }
 
         ShareMethodList {
+            id: shareMethodList
             anchors.fill: parent
-            onShareMethodClicked: {
-
-                var item  = galleryModel.get(itemIndex)
-                pageStack.push(shareUIPath, {
-                                   methodId: methodId,
-                                   accountId: accountId,
-                                   displayName: displayName,
-                                   accountName: userName,
-                                   docItemId: item.itemId,
-                                   source: item.url,
-                                   mimeType: item.mimeType
-                                    } )
-            }
         }
     }
 }

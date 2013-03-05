@@ -5,7 +5,8 @@ import Sailfish.TransferEngine 1.0
 
 SilicaListView {
     id: rootList
-    signal shareMethodClicked(string displayName, string userName, string methodId, string shareUIPath, int accountId)
+
+    property url source
 
     property alias listHeader: header.text
     property alias filter: transferMethodsModel.filter
@@ -39,7 +40,15 @@ SilicaListView {
             }
         }
 
-        onClicked: rootList.shareMethodClicked(displayName, userName, methodId, shareUIPath, accountId)
+        onClicked: {
+            pageStack.push(shareUIPath, {
+                               source: rootList.source,
+                               methodId: methodId,
+                               displayName: displayName,
+                               accountId: accountId,
+                               accountName: userName
+                           })
+        }
     }
 
 
