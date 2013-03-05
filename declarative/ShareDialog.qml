@@ -1,0 +1,10 @@
+import QtQuick 1.1
+import Sailfish.Silica 1.0
+
+Dialog {
+    property url source
+    property string methodId
+    property string displayName
+    property int accountId
+    property string accountName
+}
