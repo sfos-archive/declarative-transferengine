@@ -30,7 +30,6 @@ HEADERS += \
 
 OTHER_FILES = qmldir \
               *.qml \
-    ProgressBar.qml \
     ShareMethodList.qml \
     PrimaryLabel.qml \
     SecondaryLabel.qml \

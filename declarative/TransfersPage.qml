@@ -290,17 +290,15 @@ Page {
                 }
             }
 
-            // Home made progress bar. Components could provide something like this.
             ProgressBar {
                 value: visible ? progress : 0
                 visible: status === SailfishTransferModel.TransferStarted
-                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                indeterminate: progress < 0 || 1 < progress
                 anchors {
                     left: thumbnail.right
-                    leftMargin: theme.paddingLarge
                     right: parent.right
                     rightMargin: theme.paddingLarge * 2
-                    bottom: fileNameLabel.top
+                    bottom: fileNameLabel.bottom
                 }
             }
 
