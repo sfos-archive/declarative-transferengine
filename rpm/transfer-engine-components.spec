@@ -1,5 +1,5 @@
 Name: declarative-transferengine
-Version: 0.0.12
+Version: 0.0.16
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
@@ -12,7 +12,7 @@ BuildRequires: pkgconfig(accounts-qt)
 BuildRequires: pkgconfig(nemotransferengine)
 
 Requires: nemo-transferengine >= 0.0.4
-Requires: sailfishsilica
+Requires: sailfishsilica >= 0.8.4
 Requires: jolla-ambient
 Requires: ambient-icons-closed
 Requires: transferengine-plugins
