@@ -189,8 +189,8 @@ Page {
                                theme.itemSizeExtraLarge
 
             // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
-            onThumbnailUrlChanged: thumbnail = shareThumbnail.createObject(backgroundItem)
-            onAppIconUrlChanged: thumbnail = appThumbnail.createObject(backgroundItem)
+            onThumbnailUrlChanged: thumbnail = shareThumbnail.createObject(backgroundItem.contentItem)
+            onAppIconUrlChanged: thumbnail = appThumbnail.createObject(backgroundItem.contentItem)
 
             // Close open context menu, if the status changes
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
