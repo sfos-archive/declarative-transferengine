@@ -25,6 +25,9 @@ public:
     QString filter() const;
     void setFilter(const QString &filter);
 
+    Q_INVOKABLE QVariantMap get(int index) const;
+    Q_INVOKABLE int findMethod(const QString &methodId) const;
+
 Q_SIGNALS:
     void rowCountChanged();
     void filterChanged();
