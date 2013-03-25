@@ -33,12 +33,12 @@ QList<TransferDBRecord>::iterator DeclarativeTransferModelPrivate::record(int ke
 {
     ok = false;
     row = -1;
-    QList<TransferDBRecord>::iterator i;
-    for (i = m_data.begin(); i != m_data.end(); ++i) {
-        ++row;
+        QList<TransferDBRecord>::iterator i;
+        for (i = m_data.begin(); i != m_data.end(); ++i) {
+            ++row;
 
-        if ((*i).transfer_id == key) {
-            ok = true;
+            if ((*i).transfer_id == key) {
+                ok = true;
             return i;
         }
     }
@@ -80,22 +80,37 @@ void DeclarativeTransferModelPrivate::refreshStatus(int key, int status)
         return;
     }
 
+    int oldStatus = (*i).status;
+    if (oldStatus == status) {
+        qWarning() << Q_FUNC_INFO << "Old and the new status are the same" << key;
+        return;
+    }
+
     (*i).status = status;
     Q_Q(DeclarativeTransferModel);
     emit q->dataChanged(q->createIndex(row, 0), q->createIndex(row, 0));
 
+    int oldTransfersInProgress = m_transfersInProgress;
+
     switch (status) {
     case DeclarativeTransferModel::TransferStarted:
-        m_transfersInProgress++;
-        emit q->transfersInProgressChanged();
+        ++m_transfersInProgress;
         break;
     case DeclarativeTransferModel::TransferCanceled:
     case DeclarativeTransferModel::TransferFinished:
     case DeclarativeTransferModel::TransferInterrupted:
-        m_transfersInProgress--;
-        emit q->transfersInProgressChanged();
-        break;
+    {
+        if(m_transfersInProgress > 0) {
+            --m_transfersInProgress;
+        }
+    } break;
     }
+
+    if (oldTransfersInProgress != m_transfersInProgress) {
+        emit q->transfersInProgressChanged();
+    }
+
+    emit q->transferStatusChanged(row, status);
 }
 
 QVariant DeclarativeTransferModelPrivate::value(int row, int role) const
@@ -137,8 +152,9 @@ void DeclarativeTransferModelPrivate::dataReceived(QDBusPendingCallWatcher *call
     QList<TransferDBRecord> newData = reply.value();
     const int oldRowCount = m_data.count();
     const int newRowCount = newData.count();
+    const int oldTransferInProgress = m_transfersInProgress;
 
-    // Handle all the rows which are removed (We can't have only one row removed)
+    // Handle full clear of the model
     if (newData.isEmpty() && !m_data.isEmpty()) {
         q->beginRemoveRows(QModelIndex(), 0, oldRowCount);
         m_data.clear();
@@ -147,9 +163,9 @@ void DeclarativeTransferModelPrivate::dataReceived(QDBusPendingCallWatcher *call
     else
     // There are still rows left (active transfers)
     if (newRowCount > 0 && newRowCount < oldRowCount ) {
-        q->beginRemoveRows(QModelIndex(),newRowCount, oldRowCount - 1);
+        q->beginResetModel();
         m_data = newData;
-        q->endRemoveRows();
+        q->endResetModel();
     }
     else
     // Handle row added i.e. a new transfer. We can "trust" that new items are always the first
@@ -160,12 +176,26 @@ void DeclarativeTransferModelPrivate::dataReceived(QDBusPendingCallWatcher *call
         q->endInsertRows();
     }
 
+    m_transfersInProgress = 0;
+
+    // Update items in progress property
+    QList<TransferDBRecord>::iterator i;
+    for (i = m_data.begin(); i != m_data.end(); ++i) {
+        if ((*i).status == DeclarativeTransferModel::TransferStarted) {
+            ++m_transfersInProgress;
+        }
+    }
+
+
     if (newRowCount != oldRowCount) {
         emit q->rowCountChanged();
     }
 
+    if (oldTransferInProgress != m_transfersInProgress) {
+        emit q->transfersInProgressChanged();
+    }
+
     call->deleteLater();
-    qDebug() << "DeclarativeTransferModelPrivate::dataReceived: new row count: " << newRowCount;
 }
 
 

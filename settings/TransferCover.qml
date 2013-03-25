@@ -32,7 +32,8 @@ Item {
     }
 
     CoverActionList {
-        enabled: root.displayedTransferId >= 0
+        id: multipleActionsList
+        enabled: root.displayedTransferId >= 0 && transferModel.transfersInProgress == 1
 
         CoverAction {
             iconSource: "image://theme/icon-cover-transfers"
@@ -44,7 +45,18 @@ Item {
         CoverAction {
             iconSource: "image://theme/icon-cover-cancel"
             onTriggered: {
-                transferInterface.finishTransfer(root.displayedTransferId, SailfishTransferModel.TransferFinished, "")
+                transferInterface.cbCancelTransfer(root.displayedTransferId)
+            }
+        }
+    }
+
+    CoverActionList {
+        enabled: transferModel.transfersInProgress > 1
+
+        CoverAction {
+            iconSource: "image://theme/icon-cover-transfers"
+            onTriggered: {
+                window.showSettingsPage("transferui/mainpage.qml")
             }
         }
     }
@@ -124,10 +136,11 @@ Item {
 
                     Label {
                         width: parent.width
-                        truncationMode: TruncationMode.Elide
-                        text: root.getFileName(model.url)
+                        truncationMode: TruncationMode.Fade
+                        text: transferModel.transfersInProgress == 1 ? root.getFileName(model.url) : transferModel.transfersInProgress
                         font.pixelSize: theme.fontSizeMedium
                         color: theme.highlightColor
+                        horizontalAlignment: transferModel.transfersInProgress == 1 ? Text.AlignLeft : Text.AlignHCenter
                     }
                 }
             }
