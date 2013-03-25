@@ -14,6 +14,9 @@ SilicaListView {
     spacing: theme.paddingMedium
     model:  SailfishTransferMethodsModel { id: transferMethodsModel }
 
+    width: parent.width
+    height: theme.itemSizeLarge * transferMethodsModel.count
+
     delegate: BackgroundItem {
         id: backgroundItem
         width: rootList.width
