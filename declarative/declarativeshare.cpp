@@ -64,7 +64,7 @@ void DeclarativeSharePrivate::transferIdReceived(QDBusPendingCallWatcher *call)
 {
     QDBusPendingReply<int> reply = *call;
     if (reply.isError()) {
-        qWarning() << "DeclarativeSharePrivate::transferIdReceived: failed to get transferId";
+        qWarning() << "DeclarativeSharePrivate::transferIdReceived: failed to get transferId" << reply.error();
         return;
     }
 
@@ -91,6 +91,21 @@ DeclarativeShare::~DeclarativeShare()
 {
     delete d_ptr;
     d_ptr = 0;
+}
+
+void DeclarativeShare::setContent(const QVariantMap &content)
+{
+    Q_D(DeclarativeShare);
+    if (d->m_content != content) {
+        d->m_content = content;
+        emit contentChanged();
+    }
+}
+
+QVariantMap DeclarativeShare::DeclarativeShare::content() const
+{
+    Q_D(const DeclarativeShare);
+    return d->m_content;
 }
 
 void DeclarativeShare::setSource(const QUrl source)
@@ -203,11 +218,15 @@ DeclarativeShare::Status DeclarativeShare::status() const
 void DeclarativeShare::start()
 {
     Q_D(DeclarativeShare);
-    QDBusPendingCall async = d->m_client->uploadMediaItem(d->m_source.toString(),
-                                                      d->m_serviceId,
-                                                      d->m_mimeType,
-                                                      d->m_metadataStripped,
-                                                      d->m_userData);
+    QDBusPendingCall async = d->m_content.isEmpty()
+            ? d->m_client->uploadMediaItem(d->m_source.toString(),
+                                           d->m_serviceId,
+                                           d->m_mimeType,
+                                           d->m_metadataStripped,
+                                           d->m_userData)
+            : d->m_client->uploadMediaItemContent(d->m_content,
+                                                  d->m_serviceId,
+                                                  d->m_userData);
 
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(async, this);
 

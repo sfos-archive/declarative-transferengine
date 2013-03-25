@@ -181,16 +181,17 @@ Page {
             id: backgroundItem
             property bool menuOpen: transferList.contextMenu != null && transferList.contextMenu.parent === backgroundItem
             property int transferStatus: status
-            property url thumbnailUrl: url
+            property url fileUrl: url
+            property url thumbnailUrl: thumbnailIcon
             property url appIconUrl: applicationIcon
-            property Item thumbnail
 
             height: menuOpen ? transferList.contextMenu.height + theme.itemSizeExtraLarge:
                                theme.itemSizeExtraLarge
 
             // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
-            onThumbnailUrlChanged: thumbnail = shareThumbnail.createObject(backgroundItem.contentItem)
-            onAppIconUrlChanged: thumbnail = appThumbnail.createObject(backgroundItem.contentItem)
+            onFileUrlChanged: shareThumbnail.createObject(thumbnail)
+            onThumbnailUrlChanged: shareThumbnail.createObject(thumbnail)
+            onAppIconUrlChanged: appThumbnail.createObject(thumbnail)
 
             // Close open context menu, if the status changes
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
@@ -203,7 +204,7 @@ Page {
                     height: theme.itemSizeExtraLarge
                     sourceSize.width: width
                     sourceSize.height: height
-                    source: url
+                    source: thumbnailUrl != "" ? thumbnailUrl : url
                     z: 1
                     opacity: 0.5
                     priority: index >= transferList.firstVisible && index < transferList.firstVisible + 10
@@ -233,6 +234,12 @@ Page {
                         sourceSize.height: theme.itemSizeSmall
                     }
                 }
+            }
+
+            Item {
+                id: thumbnail
+                width: theme.itemSizeExtraLarge
+                height: theme.itemSizeExtraLarge
             }
 
             Image {
@@ -319,7 +326,7 @@ Page {
 
             Label {
                 id: fileNameLabel
-                text: fileName(url)
+                text: url == "" ? resourceName : fileName(url)
                 truncationMode: TruncationMode.Fade
                 width: parent.width - thumbnail.width - 2 * theme.paddingLarge
                 font.pixelSize: theme.fontSizeExtraSmall

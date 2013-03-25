@@ -21,6 +21,7 @@ public Q_SLOTS:
 
 public:
     QUrl m_source;
+    QVariantMap m_content;
     QString m_serviceId;
     QString m_mimeType;
     QVariantMap m_userData;
