@@ -46,6 +46,31 @@ QVariant DeclarativeTransferMethodsModelPrivate::value(int row, int role) const
     return m_data.at(m_filteredData.at(row)).value(role);
 }
 
+QVariantMap DeclarativeTransferMethodsModelPrivate::get(int index) const
+{
+    Q_Q(const DeclarativeTransferMethodsModel);
+    if (index < 0 || index >= m_filteredData.count()) {
+        return QVariantMap();
+    }
+    const TransferMethodInfo &method = m_data.at(m_filteredData.at(index));
+    QHash<int, QByteArray> roles = q->roleNames();
+    QVariantMap map;
+    for (QHash<int, QByteArray>::iterator it = roles.begin(); it != roles.end(); ++it) {
+        map[it.value()] = method.value(it.key());
+    }
+    return map;
+}
+
+int DeclarativeTransferMethodsModelPrivate::findMethod(const QString &methodId) const
+{
+    for (int i=0; i<m_filteredData.count(); i++) {
+        const TransferMethodInfo &method = m_data.at(m_filteredData.at(i));
+        if (method.methodId == methodId) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 // Filtering model is made by storing indeces of the items in m_data
 // which match the filtering criteria. Stored indeces in m_filteredData
@@ -154,4 +179,16 @@ void DeclarativeTransferMethodsModel::setFilter(const QString &filter)
         d->filterModel();
         emit filterChanged();
     }
+}
+
+QVariantMap DeclarativeTransferMethodsModel::get(int index) const
+{
+    Q_D(const DeclarativeTransferMethodsModel);
+    return d->get(index);
+}
+
+int DeclarativeTransferMethodsModel::findMethod(const QString &methodId) const
+{
+    Q_D(const DeclarativeTransferMethodsModel);
+    return d->findMethod(methodId);
 }

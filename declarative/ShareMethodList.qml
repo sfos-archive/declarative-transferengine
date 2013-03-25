@@ -7,12 +7,16 @@ SilicaListView {
     id: rootList
 
     property url source
+    property variant content: ({})
 
     property alias listHeader: header.text
     property alias filter: transferMethodsModel.filter
 
     spacing: theme.paddingMedium
     model:  SailfishTransferMethodsModel { id: transferMethodsModel }
+
+    width: parent.width
+    height: theme.itemSizeLarge * transferMethodsModel.count
 
     delegate: BackgroundItem {
         id: backgroundItem
@@ -43,6 +47,7 @@ SilicaListView {
         onClicked: {
             pageStack.push(shareUIPath, {
                                source: rootList.source,
+                               content: rootList.content,
                                methodId: methodId,
                                displayName: displayName,
                                accountId: accountId,

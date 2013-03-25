@@ -204,10 +204,12 @@ void DeclarativeTransferModel::componentComplete()
     roleNames[TransferDBRecord::PluginID]           = "pluginId";
     roleNames[TransferDBRecord::Timestamp]          = "timestamp";
     roleNames[TransferDBRecord::DisplayName]        = "displayName";
+    roleNames[TransferDBRecord::ResourceName]       = "resourceName";
     roleNames[TransferDBRecord::MimeType]           = "mimeType";
     roleNames[TransferDBRecord::FileSize]           = "fileSize";
     roleNames[TransferDBRecord::ServiceIcon]        = "serviceIcon";
     roleNames[TransferDBRecord::ApplicationIcon]    = "applicationIcon";
+    roleNames[TransferDBRecord::ThumbnailIcon]      = "thumbnailIcon";
     roleNames[TransferDBRecord::CancelSupported]    = "cancelEnabled";
     roleNames[TransferDBRecord::RestartSupported]   = "restartEnabled";
 

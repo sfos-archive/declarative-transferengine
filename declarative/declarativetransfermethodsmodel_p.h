@@ -13,7 +13,11 @@ public:
 
     DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent);
     ~DeclarativeTransferMethodsModelPrivate();
+
     QVariant value(int row, int role) const;
+    QVariantMap get(int row) const;
+    int findMethod(const QString &methodId) const;
+
     void filterModel();
 
 public Q_SLOTS:

@@ -11,7 +11,7 @@
  *
  * import Sailfish.TransferEngine 1.0
  *
- * Share {
+ * SailfishShare {
  *      source: url
  *      mimeType: "image/jpeg"
  *      serviceId: "Facebook" // This must be retrieved from ShareMethodList
@@ -21,7 +21,16 @@
  *
  *  ...
  *  // Start sharing
- *  onClicked: shareItem.share()
+ *  onClicked: shareItem.start()
+ *
+ * Alternatively, if the required plugin supports non-file sharing, you may specify the content to
+ * be shared instead of the file url. This is done by specifying a "content" object map with a
+ * "data" value, and optionally, a "name" value:
+ *
+ * SailfishShare {
+ *      content: {"data": "BEGIN:VCARD\nVERSION:4.0\nN:Smith;John;;;\nEND:VCARD", "name": "JohnSmith.vcf"}
+ * }
+ *
  *
  *  The following userData keys are handled by the Transfer Engine:
  *  "accountId" - The id of the account to be used for sharing
@@ -40,6 +49,7 @@ class DeclarativeShare : public QDeclarativeItem
     Q_ENUMS(Status)
 
     Q_PROPERTY(QUrl source WRITE setSource READ source NOTIFY sourceChanged)
+    Q_PROPERTY(QVariantMap content WRITE setContent READ content NOTIFY contentChanged)
     Q_PROPERTY(QString serviceId WRITE setServiceId READ serviceId NOTIFY serviceIdChanged)
     Q_PROPERTY(QString mimeType WRITE setMimeType READ mimeType NOTIFY mimeTypeChanged)
     Q_PROPERTY(QVariantMap userData WRITE setUserData READ userData NOTIFY userDataChanged)
@@ -61,6 +71,9 @@ public:
 
     DeclarativeShare(QDeclarativeItem *parent = 0);
     ~DeclarativeShare();
+
+    void setContent(const QVariantMap &content);
+    QVariantMap content() const;
 
     void setSource(const QUrl source);
     QUrl source() const;
@@ -89,6 +102,7 @@ public:
 
 Q_SIGNALS:
     void sourceChanged();
+    void contentChanged();
     void serviceIdChanged();
     void mimeTypeChanged();
     void userDataChanged();
