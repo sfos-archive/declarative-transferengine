@@ -33,12 +33,12 @@ QList<TransferDBRecord>::iterator DeclarativeTransferModelPrivate::record(int ke
 {
     ok = false;
     row = -1;
-        QList<TransferDBRecord>::iterator i;
-        for (i = m_data.begin(); i != m_data.end(); ++i) {
-            ++row;
+    QList<TransferDBRecord>::iterator i;
+    for (i = m_data.begin(); i != m_data.end(); ++i) {
+        ++row;
 
-            if ((*i).transfer_id == key) {
-                ok = true;
+        if ((*i).transfer_id == key) {
+            ok = true;
             return i;
         }
     }
@@ -103,7 +103,8 @@ void DeclarativeTransferModelPrivate::refreshStatus(int key, int status)
         if(m_transfersInProgress > 0) {
             --m_transfersInProgress;
         }
-    } break;
+    }
+        break;
     }
 
     if (oldTransfersInProgress != m_transfersInProgress) {
