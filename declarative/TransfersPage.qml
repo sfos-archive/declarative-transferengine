@@ -184,14 +184,15 @@ Page {
             property url fileUrl: url
             property url thumbnailUrl: thumbnailIcon
             property url appIconUrl: applicationIcon
+            property Item thumbnailItem
 
             height: menuOpen ? transferList.contextMenu.height + theme.itemSizeExtraLarge:
                                theme.itemSizeExtraLarge
 
             // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
-            onFileUrlChanged: shareThumbnail.createObject(thumbnail)
-            onThumbnailUrlChanged: shareThumbnail.createObject(thumbnail)
-            onAppIconUrlChanged: appThumbnail.createObject(thumbnail)
+            onFileUrlChanged: if (thumbnailItem == null) thumbnailItem = shareThumbnail.createObject(thumbnail)
+            onThumbnailUrlChanged: if (thumbnailItem == null) thumbnailItem = shareThumbnail.createObject(thumbnail)
+            onAppIconUrlChanged: if (thumbnailItem == null) thumbnailItem = appThumbnail.createObject(thumbnail)
 
             // Close open context menu, if the status changes
             onTransferStatusChanged: if (menuOpen) transferList.contextMenu.hide()
@@ -204,7 +205,9 @@ Page {
                     height: theme.itemSizeExtraLarge
                     sourceSize.width: width
                     sourceSize.height: height
-                    source: thumbnailUrl != "" ? thumbnailUrl : url
+                    source: (transferStatus === SailfishTransferModel.Upload || transferStatus === SailfishTransferModel.TransferFinished)
+                            ? (thumbnailUrl != "" ? thumbnailUrl : fileUrl)
+                            : ""
                     z: 1
                     opacity: 0.5
                     priority: index >= transferList.firstVisible && index < transferList.firstVisible + 10
@@ -248,7 +251,7 @@ Page {
                 fillMode: Image.PreserveAspectFit
                 anchors.centerIn: thumbnail
                 asynchronous: true
-                visible: mimeType.length > 0 && thumbnail.status === Image.Ready
+                visible: mimeType.length > 0
                 z: 2
             }
 

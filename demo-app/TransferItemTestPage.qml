@@ -170,6 +170,7 @@ Page  {
                                                                sourceIcon,
                                                                filePath ,
                                                                mimeType,
+                                                               Math.floor(Math.random() * 3000000),
                                                                callback,
                                                                "cancelTransfer",
                                                                "restartTransfer")

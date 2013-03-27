@@ -42,6 +42,7 @@ public:
                                         const QUrl &serviceIcon,
                                         const QUrl &url,
                                         const QString &mimeType,
+                                        quint64 expectedFileSize,
                                         const QStringList &callback,
                                         const QString &cancelMethod,
                                         const QString &restartMethod);
