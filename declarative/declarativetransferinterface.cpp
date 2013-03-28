@@ -84,6 +84,7 @@ int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName
                                                       const QUrl &serviceIcon,
                                                       const QUrl &url,
                                                       const QString &mimeType,
+                                                      quint64 expectedFileSize,
                                                       const QStringList &callback,
                                                       const QString &cancelMethod,
                                                       const QString &restartMethod)
@@ -94,13 +95,14 @@ int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName
                                                                serviceIcon.toString(),
                                                                url.toString(),
                                                                mimeType,
+                                                               expectedFileSize,
                                                                callback,
                                                                cancelMethod,
                                                                restartMethod);
     reply.waitForFinished();
 
     if (reply.isError()) {
-        qWarning() << "DeclarativeTransferInterface::createDownloadEvent: failed to get transfer ID!";
+        qWarning() << "DeclarativeTransferInterface::createDownloadEvent: failed to get transfer ID!" << reply.error();
         return false;
     }
 

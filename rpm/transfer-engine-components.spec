@@ -11,7 +11,7 @@ BuildRequires: pkgconfig(QtDBus)
 BuildRequires: pkgconfig(accounts-qt)
 BuildRequires: pkgconfig(nemotransferengine)
 
-Requires: nemo-transferengine >= 0.0.9
+Requires: nemo-transferengine >= 0.0.11
 Requires: sailfishsilica >= 0.8.4
 Requires: jolla-ambient
 Requires: ambient-icons-closed
