@@ -28,7 +28,6 @@ Requires: transferengine-plugins
 %{_libdir}/qt4/imports/Sailfish/TransferEngine/*
 %{_datadir}/translations/sailfish_transferengine_eng_en.qm
 
-
 %package -n jolla-transferdemo
 Summary: Jolla Transfer Demo Application
 Group: Applications/Multimedia
@@ -73,15 +72,12 @@ Translation source for Sailfish TransferEngine
 %defattr(-,root,root,-)
 %{_datadir}/translations/source/sailfish_transferengine.ts
 
-
-
-
 %prep
 %setup -q -n %{name}-%{version}
 
 %build
 
-%qmake
+%qmake "USERNAME=%{def_user}"
 
 make %{?jobs:-j%jobs}
 
