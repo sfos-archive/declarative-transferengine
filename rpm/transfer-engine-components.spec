@@ -17,6 +17,9 @@ Requires: jolla-ambient
 Requires: ambient-icons-closed
 Requires: transferengine-plugins
 
+%define def_uid %(grep "^UID_MIN" /etc/login.defs |  tr -s " " | cut -d " " -f2)
+%define def_user %(getent passwd %def_uid | sed 's/:.*//')
+
 %description -n declarative-transferengine
 %{summary}.
 
@@ -24,7 +27,6 @@ Requires: transferengine-plugins
 %defattr(-,root,root,-)
 %{_libdir}/qt4/imports/Sailfish/TransferEngine/*
 %{_datadir}/translations/sailfish_transferengine_eng_en.qm
-
 
 %package -n jolla-transferdemo
 Summary: Jolla Transfer Demo Application
@@ -56,7 +58,7 @@ Requires: jolla-settings
 %{_datadir}/jolla-settings/entries/transferui.json
 %{_datadir}/jolla-settings/pages/transferui/TransferCover.qml
 %{_datadir}/jolla-settings/pages/transferui/mainpage.qml
-
+/home/%{def_user}/.config/nemomobile/*.conf
 
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine
@@ -70,15 +72,12 @@ Translation source for Sailfish TransferEngine
 %defattr(-,root,root,-)
 %{_datadir}/translations/source/sailfish_transferengine.ts
 
-
-
-
 %prep
 %setup -q -n %{name}-%{version}
 
 %build
 
-%qmake
+%qmake "USERNAME=%{def_user}"
 
 make %{?jobs:-j%jobs}
 
@@ -86,3 +85,8 @@ make %{?jobs:-j%jobs}
 rm -rf %{buildroot}
 %qmake_install
 
+
+%post -n jolla-settings-transferui
+chown %{def_user}:%{def_user} -R /home/%{def_user}/.config/nemomobile
+chmod u+rw -R /home/%{def_user}/.config/nemomobile
+exit 0

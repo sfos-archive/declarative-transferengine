@@ -33,11 +33,13 @@
  *
  *
  *  The following userData keys are handled by the Transfer Engine:
+ *
  *  "accountId" - The id of the account to be used for sharing
  *  "description" - The description, which is stored by transfer engine. Depending
  *                  on the service, this might be used.
  *  "title" - The title for the media, which is stored by transfer engine. Depending
  *            on the service, this might be used.
+ *  "scalePercent" - The scale as in value between 0-1, e.g. 0.5 indicates 50% downscale.
  *
  *  All the other keys are not stored by transfer engine, but the user data is passed
  *  to the C++ share plugin and it's in plugin reponsible to use user data.
