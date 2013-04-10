@@ -87,6 +87,6 @@ rm -rf %{buildroot}
 
 
 %post -n jolla-settings-transferui
-chown nemo:nemo -R /home/%{def_user}/.config/nemomobile
+chown %{def_user}:%{def_user} -R /home/%{def_user}/.config/nemomobile
 chmod u+rw -R /home/%{def_user}/.config/nemomobile
 exit 0
