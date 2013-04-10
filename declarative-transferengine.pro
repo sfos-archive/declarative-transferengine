@@ -9,5 +9,8 @@ settings_entry.path = /usr/share/jolla-settings/entries/
 settings_page.files = settings/mainpage.qml settings/TransferCover.qml
 settings_page.path = /usr/share/jolla-settings/pages/transferui/
 
-INSTALLS += settings_entry settings_page
+te_config.files = settings/nemo-transfer-engine.conf
+te_config.path = /home/nemo/.config/nemomobile
+
+INSTALLS += settings_entry settings_page te_config
 
