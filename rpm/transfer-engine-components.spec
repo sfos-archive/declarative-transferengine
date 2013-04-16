@@ -58,7 +58,7 @@ Requires: jolla-settings
 %{_datadir}/jolla-settings/entries/transferui.json
 %{_datadir}/jolla-settings/pages/transferui/TransferCover.qml
 %{_datadir}/jolla-settings/pages/transferui/mainpage.qml
-/home/%{def_user}/.config/nemomobile/*.conf
+/home/nemo/.config/nemomobile/*.conf
 
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine
