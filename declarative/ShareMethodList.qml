@@ -2,7 +2,6 @@ import QtQuick 1.1
 import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 
-
 SilicaListView {
     id: rootList
 
@@ -13,34 +12,35 @@ SilicaListView {
     property alias filter: transferMethodsModel.filter
 
     spacing: theme.paddingMedium
-    model:  SailfishTransferMethodsModel { id: transferMethodsModel }
+    model: SailfishTransferMethodsModel { id: transferMethodsModel }
 
     width: parent.width
-    height: theme.itemSizeLarge * transferMethodsModel.count
+    height: theme.itemSizeMedium * transferMethodsModel.count
 
     delegate: BackgroundItem {
         id: backgroundItem
+
         width: rootList.width
-        height: theme.itemSizeLarge
+        height: theme.itemSizeMedium
 
-        Label {
-            id: displayNameLabel
-            text: displayName
-            x:  theme.paddingLarge
-            color: backgroundItem.down ? theme.highlightColor : theme.primaryColor
-            anchors {
-                verticalCenter: userName === "" ? parent.verticalCenter : undefined
-                bottom: userName !== "" ? parent.verticalCenter: undefined
+        Column {
+            width: parent.width
+            anchors.centerIn: parent
+            Label {
+                id: displayNameLabel
+                text: displayName
+                x: theme.paddingLarge
+                color: backgroundItem.highlighted ? theme.highlightColor : theme.primaryColor
+                width: parent.width
+                truncationMode: TruncationMode.Elide
             }
-        }
-
-        SecondaryLabel {
-            text: userName
-            x:  theme.paddingLarge
-            color: backgroundItem.down ? theme.highlightColor : theme.secondaryColor
-            anchors {
-                top: displayNameLabel.bottom
-                topMargin: theme.paddingSmall
+            SecondaryLabel {
+                text: userName
+                x: theme.paddingLarge
+                color: backgroundItem.highlighted ? theme.highlightColor : theme.secondaryColor
+                truncationMode: TruncationMode.Elide
+                width: parent.width
+                visible: text.length > 0
             }
         }
 
@@ -54,19 +54,19 @@ SilicaListView {
                                accountName: userName
                            })
         }
+        Component.onCompleted: {
+            if (model.index === 0) {
+                header.parent = backgroundItem
+            }
+        }
     }
-
-
     Label {
         id: header
-        color: theme.highlightColor
-        height: theme.itemSizeSmall
-        verticalAlignment: Text.AlignVCenter
-        font.pixelSize: theme.fontSizeLarge
 
+        color: theme.highlightColor
+        height: theme.itemSizeMedium
+        verticalAlignment: Text.AlignVCenter
         anchors {
-            top: parent.top
-            topMargin: theme.itemSizeLarge - rootList.contentY
             right: parent.right
             rightMargin: theme.paddingLarge
         }
