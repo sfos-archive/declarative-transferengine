@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = silicatransferengine
-QT += declarative dbus sql
+QT += qml quick dbus sql
 CONFIG += qt plugin
 
 TARGET = $$qtLibraryTarget($$TARGET)
@@ -8,7 +8,9 @@ uri = Sailfish.TransferEngine
 
 
 CONFIG += link_pkgconfig
-PKGCONFIG += nemotransferengine
+PKGCONFIG += nemotransferengine-qt5
+
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x000000
 
 # Input
 SOURCES += \
@@ -77,11 +79,7 @@ qmldir.files = qmldir *.qml
 symbian {
     TARGET.EPOCALLOWDLLDATA = 1
 } else:unix {
-    maemo5 | !isEmpty(MEEGO_VERSION_MAJOR) {
-        installPath = /usr/lib/qt4/imports/$$replace(uri, \\., /)
-    } else {
-        installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
-    }
+    installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
     qmldir.path = $$installPath
     target.path = $$installPath
     INSTALLS += target qmldir translations_install engineering_english_install

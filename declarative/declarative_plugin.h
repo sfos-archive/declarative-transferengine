@@ -1,7 +1,7 @@
 #ifndef DECLARATIVE_PLUGIN_H
 #define DECLARATIVE_PLUGIN_H
 
-#include <QDeclarativeExtensionPlugin>
+#include <QQmlExtensionPlugin>
 #include <QTranslator>
 
 class AppTranslator: public QTranslator
@@ -13,12 +13,13 @@ public:
 };
 
 
-class DeclarativePlugin : public QDeclarativeExtensionPlugin
+class DeclarativePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
-    
+    Q_PLUGIN_METADATA(IID "com.jolla.transferengine-ui")
+
 public:
-    void initializeEngine(QDeclarativeEngine *engine, const char *uri);
+    void initializeEngine(QQmlEngine *engine, const char *uri);
     void registerTypes(const char *uri);
 };
 

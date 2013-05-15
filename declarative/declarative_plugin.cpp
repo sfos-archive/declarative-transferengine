@@ -6,9 +6,8 @@
 #include "transferdbrecord.h"
 #include "transfermethodinfo.h"
 
-#include <QDeclarativeEngine>
-#include <qdeclarative.h>
-#include <QApplication>
+#include <QQmlEngine>
+#include <QCoreApplication>
 
 AppTranslator::AppTranslator(QObject *parent)
    : QTranslator(parent)
@@ -22,7 +21,7 @@ AppTranslator::~AppTranslator()
 }
 
 
-void DeclarativePlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(uri)
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Sailfish.TransferEngine"));
@@ -55,6 +54,3 @@ void DeclarativePlugin::registerTypes(const char *uri)
     qmlRegisterType<DeclarativeTransferInterface>(uri, 1, 0, "SailfishTransferInterface");
     qmlRegisterType<DeclarativeTransferMethodsModel>(uri, 1, 0, "SailfishTransferMethodsModel");
 }
-
-Q_EXPORT_PLUGIN2(Jollashare, DeclarativePlugin)
-

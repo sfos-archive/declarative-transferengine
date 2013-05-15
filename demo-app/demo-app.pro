@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = transfer-demo
 DEPENDPATH += .
 INCLUDEPATH += .
-QT += declarative dbus
+QT += qml quick dbus
 
 # generate adaptor code
 system(qdbusxml2cpp -c DemoAppAdaptor -a demoappadaptor.h:demoappadaptor.cpp com.jolla.transferdemoapp.xml)

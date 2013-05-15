@@ -2,16 +2,16 @@
 #define TRANSFERMODEL_H
 
 #include <QAbstractListModel>
-#include <QDeclarativeParserStatus>
+#include <QQmlParserStatus>
 
 #include "transfertypes.h"
 
 
 class DeclarativeTransferModelPrivate;
-class DeclarativeTransferModel: public QAbstractListModel, public QDeclarativeParserStatus
+class DeclarativeTransferModel: public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_INTERFACES(QDeclarativeParserStatus)
+    Q_INTERFACES(QQmlParserStatus)
     Q_ENUMS(TransferStatus)
     Q_ENUMS(TransferType)
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)

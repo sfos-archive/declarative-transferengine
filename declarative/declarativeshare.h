@@ -1,8 +1,7 @@
 #ifndef DECLARATIVESHARE_H
 #define DECLARATIVESHARE_H
 
-
-#include <QDeclarativeItem>
+#include <QQuickItem>
 #include "transfertypes.h"
 
 /**
@@ -45,7 +44,7 @@
  *  to the C++ share plugin and it's in plugin reponsible to use user data.
  */
 class DeclarativeSharePrivate;
-class DeclarativeShare : public QDeclarativeItem
+class DeclarativeShare : public QQuickItem
 {
     Q_OBJECT
     Q_ENUMS(Status)
@@ -71,7 +70,7 @@ public:
         TransferInterrupted = TransferEngineData::TransferInterrupted
     };
 
-    DeclarativeShare(QDeclarativeItem *parent = 0);
+    DeclarativeShare(QQuickItem *parent = 0);
     ~DeclarativeShare();
 
     void setContent(const QVariantMap &content);

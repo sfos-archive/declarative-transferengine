@@ -1,7 +1,6 @@
 #include "declarativeshare.h"
 #include "declarativeshare_p.h"
 #include "transferengineinterface.h"
-#include <qdeclarative.h>
 #include <QtDBus>
 #include <QDBusPendingCallWatcher>
 
@@ -80,8 +79,8 @@ void DeclarativeSharePrivate::transferIdReceived(QDBusPendingCallWatcher *call)
     }
 }
 
-DeclarativeShare::DeclarativeShare(QDeclarativeItem *parent):
-    QDeclarativeItem(parent),
+DeclarativeShare::DeclarativeShare(QQuickItem *parent):
+    QQuickItem(parent),
     d_ptr(new DeclarativeSharePrivate(this))
 {
 

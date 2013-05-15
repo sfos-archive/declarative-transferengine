@@ -7,8 +7,8 @@ public:
     TransferEngineInterface *m_client;
 };
 
-DeclarativeTransferInterface::DeclarativeTransferInterface(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent),
+DeclarativeTransferInterface::DeclarativeTransferInterface(QQuickItem *parent) :
+    QQuickItem(parent),
     d_ptr(new DeclarativeTransferInterfacePrivate)
 {
     Q_D(DeclarativeTransferInterface);

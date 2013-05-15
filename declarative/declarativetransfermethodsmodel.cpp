@@ -110,7 +110,7 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
 
 DeclarativeTransferMethodsModel::DeclarativeTransferMethodsModel(QObject *parent):
     QAbstractListModel(parent),
-    QDeclarativeParserStatus(),
+    QQmlParserStatus(),
     d_ptr(new DeclarativeTransferMethodsModelPrivate(this))
 {
 
