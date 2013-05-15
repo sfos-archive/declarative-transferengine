@@ -1,0 +1,10 @@
+Makefile
+*.o
+moc_*
+*.pro.user
+*.so
+*.ts
+*.qm
+demo-app/qrc_share-demo.cpp
+demo-app/transfer-demo
+demo-app/demoappadaptor.*
