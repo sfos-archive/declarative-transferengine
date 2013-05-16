@@ -10,6 +10,7 @@ BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(Qt5Quick)
 BuildRequires: pkgconfig(Qt5DBus)
 BuildRequires: pkgconfig(nemotransferengine-qt5)
+BuildRequires: qt5-qttools-linguist
 
 %description -n declarative-transferengine-qt5
 %{summary}.
