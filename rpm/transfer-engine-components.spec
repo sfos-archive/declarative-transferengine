@@ -31,5 +31,5 @@ make %{?jobs:-j%jobs}
 
 %install
 rm -rf %{buildroot}
-%qmake_install
+%qmake5_install
 
