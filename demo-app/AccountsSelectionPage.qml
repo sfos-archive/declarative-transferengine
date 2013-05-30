@@ -1,5 +1,5 @@
-import QtQuick 1.1
-import com.jolla.components.accounts 1.0
+import QtQuick 2.0
+import Sailfish.Accounts 1.0
 
 AccountsPage {
 

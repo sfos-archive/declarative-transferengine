@@ -1,5 +1,6 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.Silica.theme 1.0
 import Sailfish.TransferEngine 1.0
 
 Item {
@@ -111,9 +112,9 @@ Item {
 
                 Item {
                     id: icon
-                    y: theme.paddingLarge
+                    y: Theme.paddingLarge
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: theme.itemSizeLarge; height: theme.itemSizeLarge
+                    width: Theme.itemSizeLarge; height: Theme.itemSizeLarge
 
                     ProgressCircle {
                         anchors.fill: parent
@@ -129,17 +130,17 @@ Item {
                 Column {
                     anchors {
                         top: icon.bottom
-                        topMargin: theme.paddingLarge
+                        topMargin: Theme.paddingLarge
                         horizontalCenter: parent.horizontalCenter
                     }
-                    width: parent.width - theme.paddingLarge*2
+                    width: parent.width - Theme.paddingLarge*2
 
                     Label {
                         width: parent.width
                         truncationMode: TruncationMode.Fade
                         text: transferModel.transfersInProgress == 1 ? root.getFileName(model.url) : transferModel.transfersInProgress
-                        font.pixelSize: theme.fontSizeMedium
-                        color: theme.highlightColor
+                        font.pixelSize: Theme.fontSizeMedium
+                        color: Theme.highlightColor
                         horizontalAlignment: transferModel.transfersInProgress == 1 ? Text.AlignLeft : Text.AlignHCenter
                     }
                 }
