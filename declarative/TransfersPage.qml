@@ -1,5 +1,6 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
+import Sailfish.Silica.theme 1.0
 import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 
@@ -186,8 +187,8 @@ Page {
             property url appIconUrl: applicationIcon
             property Item thumbnailItem
 
-            height: menuOpen ? transferList.contextMenu.height + theme.itemSizeExtraLarge:
-                               theme.itemSizeExtraLarge
+            height: menuOpen ? transferList.contextMenu.height + Theme.itemSizeExtraLarge:
+                               Theme.itemSizeExtraLarge
 
             // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
             onFileUrlChanged: if (thumbnailItem == null) thumbnailItem = shareThumbnail.createObject(thumbnail)
@@ -201,8 +202,8 @@ Page {
             Component {
                 id: shareThumbnail
                 Thumbnail {
-                    width: theme.itemSizeExtraLarge
-                    height: theme.itemSizeExtraLarge
+                    width: Theme.itemSizeExtraLarge
+                    height: Theme.itemSizeExtraLarge
                     sourceSize.width: width
                     sourceSize.height: height
                     source: (transferStatus === SailfishTransferModel.Upload || transferStatus === SailfishTransferModel.TransferFinished)
@@ -219,11 +220,11 @@ Page {
             Component {
                 id: appThumbnail
                 Item {
-                    width: theme.itemSizeExtraLarge
-                    height: theme.itemSizeExtraLarge
+                    width: Theme.itemSizeExtraLarge
+                    height: Theme.itemSizeExtraLarge
                     z: 1
                     Rectangle {
-                        color: theme.primaryColor
+                        color: Theme.primaryColor
                         opacity: 0.1
                         anchors.fill: parent
                     }
@@ -233,16 +234,16 @@ Page {
                         opacity: 0.5
                         asynchronous: true
                         anchors.centerIn: parent
-                        sourceSize.width: theme.itemSizeSmall
-                        sourceSize.height: theme.itemSizeSmall
+                        sourceSize.width: Theme.itemSizeSmall
+                        sourceSize.height: Theme.itemSizeSmall
                     }
                 }
             }
 
             Item {
                 id: thumbnail
-                width: theme.itemSizeExtraLarge
-                height: theme.itemSizeExtraLarge
+                width: Theme.itemSizeExtraLarge
+                height: Theme.itemSizeExtraLarge
             }
 
             Image {
@@ -258,15 +259,15 @@ Page {
             Image {
                 id: transferTypeIcon
                 source: transferIcon(transferType)
-                width: theme.itemSizeSmall / 2
-                height: theme.itemSizeSmall / 2
+                width: Theme.itemSizeSmall / 2
+                height: Theme.itemSizeSmall / 2
                 asynchronous: true
                 smooth: !transferList.moving
                 anchors {
                     top: thumbnail.top
-                    topMargin: theme.paddingMedium
+                    topMargin: Theme.paddingMedium
                     left: thumbnail.right
-                    leftMargin: theme.paddingLarge
+                    leftMargin: Theme.paddingLarge
                 }
             }
 
@@ -274,12 +275,12 @@ Page {
                 id: sizeLabel
                 text: formatFileSize(fileSize)
                 visible: transferType !== SailfishTransferModel.Sync && status == SailfishTransferModel.TransferFinished
-                font.pixelSize: theme.fontSizeMedium
-                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                font.pixelSize: Theme.fontSizeMedium
+                color: backgroundItem.down || menuOpen ? Theme.highlightColor : Theme.primaryColor
                 anchors {
                     bottom: transferTypeIcon.bottom
                     left: transferTypeIcon.right
-                    leftMargin: theme.paddingMedium
+                    leftMargin: Theme.paddingMedium
                 }
             }
 
@@ -291,12 +292,12 @@ Page {
                          status === SailfishTransferModel.TransferInterrupted ||
                          status === SailfishTransferModel.TransferCanceled
                 // Failed color comes from Jaakko.
-                color: status == SailfishTransferModel.TransferInterrupted ? "#ff4c4c" : backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
-                font.pixelSize: theme.fontSizeMedium
+                color: status == SailfishTransferModel.TransferInterrupted ? "#ff4c4c" : backgroundItem.down || menuOpen ? Theme.highlightColor : Theme.primaryColor
+                font.pixelSize: Theme.fontSizeMedium
                 anchors {
                     bottom: transferTypeIcon.bottom
                     left: transferTypeIcon.right
-                    leftMargin: theme.paddingMedium
+                    leftMargin: Theme.paddingMedium
                 }
             }
 
@@ -307,7 +308,7 @@ Page {
                 anchors {
                     left: thumbnail.right
                     right: parent.right
-                    rightMargin: theme.paddingLarge * 2
+                    rightMargin: Theme.paddingLarge * 2
                     bottom: fileNameLabel.bottom
                 }
             }
@@ -315,15 +316,15 @@ Page {
             Label {
                 id: timeLabel
                 text:  formattedTimestamp(dateFromISO8601(timestamp))
-                font.pixelSize: theme.fontSizeExtraSmall
+                font.pixelSize: Theme.fontSizeExtraSmall
                 opacity: 0.5
                 visible: status !== SailfishTransferModel.TransferStarted
-                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                color: backgroundItem.down || menuOpen ? Theme.highlightColor : Theme.primaryColor
                 anchors {
                     top: transferTypeIcon.bottom
-                    topMargin: theme.paddingSmall
+                    topMargin: Theme.paddingSmall
                     left: thumbnail.right
-                    leftMargin: theme.paddingLarge
+                    leftMargin: Theme.paddingLarge
                 }
             }
 
@@ -331,15 +332,15 @@ Page {
                 id: fileNameLabel
                 text: url == "" ? resourceName : fileName(url)
                 truncationMode: TruncationMode.Fade
-                width: parent.width - thumbnail.width - 2 * theme.paddingLarge
-                font.pixelSize: theme.fontSizeExtraSmall
+                width: parent.width - thumbnail.width - 2 * Theme.paddingLarge
+                font.pixelSize: Theme.fontSizeExtraSmall
                 opacity: 0.5
-                color: backgroundItem.down || menuOpen ? theme.highlightColor : theme.primaryColor
+                color: backgroundItem.down || menuOpen ? Theme.highlightColor : Theme.primaryColor
                 anchors {
                     left: thumbnail.right
-                    leftMargin: theme.paddingLarge
+                    leftMargin: Theme.paddingLarge
                     right: parent.right
-                    rightMargin: theme.paddingLarge
+                    rightMargin: Theme.paddingLarge
                     bottom: thumbnail.bottom
                 }
             }
@@ -348,14 +349,14 @@ Page {
             // Placeholder for a service icon
             Image {
                 source: serviceIcon
-                width: theme.itemSizeSmall / 2
-                height: theme.itemSizeSmall / 2
+                width: Theme.itemSizeSmall / 2
+                height: Theme.itemSizeSmall / 2
 
                 anchors {
                     right: parent.right
-                    rightMargin: theme.paddingLarge
+                    rightMargin: Theme.paddingLarge
                     top: parent.top
-                    topMargin: theme.paddingMedium
+                    topMargin: Theme.paddingMedium
                 }
             }
 
