@@ -1,5 +1,5 @@
 Name: declarative-transferengine-qt5
-Version: 0.0.16
+Version: 0.0.24
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
@@ -34,7 +34,8 @@ Summary: Jolla Transfer Demo Application
 Group: Applications/Multimedia
 Requires: nemo-transferengine-qt5
 Requires: declarative-transferengine-qt5
-Obsoletes: jolla-transferdemo
+Obsoletes: jolla-transferdemo <= 0.0.23
+Provides: jolla-transferdemo > 0.0.23
 
 %description -n jolla-transferdemo-qt5
 %{summary}.
@@ -51,7 +52,8 @@ Summary: Jolla Transfer UI extension for the Settings FW
 Group: Applications/Multimedia
 Requires: declarative-transferengine-qt5
 Requires: jolla-settings
-Obsoletes: jolla-settings-transferui
+Obsoletes: jolla-settings-transferui <= 0.0.23
+Provides: jolla-settings-transferui > 0.0.23
 
 %description -n jolla-settings-transferui-qt5
 %{summary}.
