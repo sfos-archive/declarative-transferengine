@@ -36,8 +36,8 @@ OTHER_FILES = qmldir \
     ShareDialog.qml
 
 
-TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
-EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
+TS_FILE = $$OUT_PWD/sailfish_transferengine-qt4.ts
+EE_QM = $$OUT_PWD/sailfish_transferengine-qt4_eng_en.qm
 
 translations.commands += lupdate $$PWD $$PWD/../settings -ts $$TS_FILE
 translations.depends = $$PWD/*.qml $$PWD/../settings/*.qml
