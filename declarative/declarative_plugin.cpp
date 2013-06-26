@@ -36,8 +36,8 @@ void DeclarativePlugin::initializeEngine(QDeclarativeEngine *engine, const char 
 
     const QString path("/usr/share/translations");
 
-    translatorEngEn->load("sailfish_transferengine_eng_en", path);
-    translator->load(QLocale(), "sailfish_transferengine", "-", path);
+    translatorEngEn->load("sailfish_transferengine-qt4_eng_en", path);
+    translator->load(QLocale(), "sailfish_transferengine-qt4", "-", path);
 
     // This module is reponsible of loading translations for the UIs provided by share plugins
     sharePluginsTranslatorEngEn->load("sailfish_transferengine_plugins_eng_en", path);
