@@ -1,10 +1,10 @@
 #include "declarativetransferinterface.h"
-#include "transferengineinterface.h"
+#include "transferengineclient.h"
 
 class DeclarativeTransferInterfacePrivate
 {
 public:
-    TransferEngineInterface *m_client;
+    TransferEngineClient *m_client;
 };
 
 DeclarativeTransferInterface::DeclarativeTransferInterface(QDeclarativeItem *parent) :
@@ -12,10 +12,7 @@ DeclarativeTransferInterface::DeclarativeTransferInterface(QDeclarativeItem *par
     d_ptr(new DeclarativeTransferInterfacePrivate)
 {
     Q_D(DeclarativeTransferInterface);
-    d->m_client = new TransferEngineInterface("org.nemo.transferengine",
-                                              "/org/nemo/transferengine",
-                                              QDBusConnection::sessionBus(),
-                                              this);
+    d->m_client = new TransferEngineClient(this);
 }
 
 
@@ -28,17 +25,16 @@ DeclarativeTransferInterface::~DeclarativeTransferInterface()
     d_ptr = 0;
 }
 
-
 void DeclarativeTransferInterface::cbCancelTransfer(int transferId)
 {
     Q_D(DeclarativeTransferInterface);
-    d->m_client->cancelTransfer(transferId);
+    d->m_client->cbCancelTransfer(transferId);
 }
 
 void DeclarativeTransferInterface::cbRestartTransfer(int transferId)
 {
     Q_D(const DeclarativeTransferInterface);
-    d->m_client->restartTransfer(transferId);
+    d->m_client->cbRestartTransfer(transferId);
 }
 
 
@@ -68,15 +64,7 @@ void DeclarativeTransferInterface::setNotifications(bool enable)
 bool DeclarativeTransferInterface::notificationsEnabled() const
 {
     Q_D(const DeclarativeTransferInterface);
-    QDBusPendingReply<bool> reply = d->m_client->notificationsEnabled();
-    reply.waitForFinished();
-
-    if (reply.isError()) {
-        qWarning() << "DeclarativeTransferInterface::notifications: failed to get notifications!";
-        return false;
-    }
-
-    return reply.value();
+    return d->m_client->notificationsEnabled();
 }
 
 int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName,
@@ -89,24 +77,22 @@ int DeclarativeTransferInterface::createDownloadEvent(const QString &displayName
                                                       const QString &cancelMethod,
                                                       const QString &restartMethod)
 {
-    Q_D(const DeclarativeTransferInterface);
-    QDBusPendingReply<int> reply = d->m_client->createDownload(displayName,
-                                                               applicationIcon.toString(),
-                                                               serviceIcon.toString(),
-                                                               url.toString(),
-                                                               mimeType,
-                                                               expectedFileSize,
-                                                               callback,
-                                                               cancelMethod,
-                                                               restartMethod);
-    reply.waitForFinished();
-
-    if (reply.isError()) {
-        qWarning() << "DeclarativeTransferInterface::createDownloadEvent: failed to get transfer ID!" << reply.error();
-        return false;
+    Q_D(DeclarativeTransferInterface);
+    CallbackInterface cbIf;
+    if (callback.size() == 3) {
+        cbIf = CallbackInterface(callback.at(0),
+                                 callback.at(1),
+                                 callback.at(2),
+                                 cancelMethod,
+                                 restartMethod);
     }
-
-    return reply.value();
+    return d->m_client->createDownloadEvent(displayName,
+                                            applicationIcon,
+                                            serviceIcon,
+                                            url,
+                                            mimeType,
+                                            expectedFileSize,
+                                            cbIf);
 }
 
 int DeclarativeTransferInterface::createSyncEvent(const QString &displayName,
@@ -116,21 +102,19 @@ int DeclarativeTransferInterface::createSyncEvent(const QString &displayName,
                                                   const QString &cancelMethod,
                                                   const QString &restartMethod)
 {
-    Q_D(const DeclarativeTransferInterface);
-    QDBusPendingReply<int> reply = d->m_client->createSync(displayName,
-                                                           applicationIcon.toString(),
-                                                           serviceIcon.toString(),
-                                                           callback,
-                                                           cancelMethod,
-                                                           restartMethod);
-    reply.waitForFinished();
-
-    if (reply.isError()) {
-        qWarning() << "DeclarativeTransferInterface::createSyncEvent: failed to get transfer ID!";
-        return false;
+    Q_D(DeclarativeTransferInterface);
+    CallbackInterface cbIf;
+    if (callback.size() == 3) {
+        cbIf = CallbackInterface(callback.at(0),
+                                 callback.at(1),
+                                 callback.at(2),
+                                 cancelMethod,
+                                 restartMethod);
     }
-
-    return reply.value();
+    return d->m_client->createSyncEvent(displayName,
+                                        applicationIcon,
+                                        serviceIcon,
+                                        cbIf);
 }
 
 void DeclarativeTransferInterface::updateTransferProgress(int transferId, qreal progress)
@@ -142,5 +126,5 @@ void DeclarativeTransferInterface::updateTransferProgress(int transferId, qreal 
 void DeclarativeTransferInterface::finishTransfer(int transferId, Status status, const QString &reason)
 {
     Q_D(const DeclarativeTransferInterface);
-    d->m_client->finishTransfer(transferId, static_cast<int>(status), reason);
+    d->m_client->finishTransfer(transferId, static_cast<TransferEngineClient::Status>(status), reason);
 }
