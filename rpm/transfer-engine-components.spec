@@ -10,6 +10,8 @@ BuildRequires: pkgconfig(QtDeclarative)
 BuildRequires: pkgconfig(QtDBus)
 BuildRequires: pkgconfig(nemotransferengine)
 
+Requires: libnemotransferengine >= 0.0.23
+
 %description -n declarative-transferengine
 %{summary}.
 
