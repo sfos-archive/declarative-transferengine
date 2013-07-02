@@ -15,7 +15,7 @@ BuildRequires: pkgconfig(nemotransferengine-qt5)
 BuildRequires: qt5-qttools
 BuildRequires: qt5-qttools-linguist
 
-Requires: nemo-transferengine-qt5
+Requires: nemo-transferengine-qt5 >= 0.0.23
 Requires: sailfishsilica-qt5
 Requires: jolla-ambient
 Requires: ambient-icons-closed
