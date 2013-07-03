@@ -1,5 +1,5 @@
 Name: declarative-transferengine-qt5
-Version: 0.0.25
+Version: 0.0.26
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
@@ -19,7 +19,6 @@ Requires: nemo-transferengine-qt5 >= 0.0.23
 Requires: sailfishsilica-qt5
 Requires: jolla-ambient
 Requires: ambient-icons-closed
-Requires: transferengine-plugins
 
 %description -n declarative-transferengine-qt5
 %{summary}.
