@@ -17,8 +17,6 @@ BuildRequires: qt5-qttools-linguist
 
 Requires: nemo-transferengine-qt5 >= 0.0.23
 Requires: sailfishsilica-qt5
-Requires: jolla-ambient
-Requires: ambient-icons-closed
 
 %description -n declarative-transferengine-qt5
 %{summary}.
@@ -53,6 +51,8 @@ Requires: declarative-transferengine-qt5
 Requires: jolla-settings
 Obsoletes: jolla-settings-transferui <= 0.0.23
 Provides: jolla-settings-transferui > 0.0.23
+Requires: jolla-ambient
+Requires: ambient-icons-closed
 
 %description -n jolla-settings-transferui-qt5
 %{summary}.
