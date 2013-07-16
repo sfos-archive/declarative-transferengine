@@ -41,8 +41,8 @@ OTHER_FILES = qmldir \
 TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
 EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
 
-translations.commands += lupdate $$PWD -ts $$TS_FILE
-translations.depends = $$PWD/*.qml
+translations.commands += lupdate $$PWD $$PWD/../settings -ts $$TS_FILE
+translations.depends = $$PWD/*.qml $$PWD/../settings/*.qml
 translations.CONFIG += no_check_exist no_link
 translations.output = $$TS_FILE
 translations.input = .
