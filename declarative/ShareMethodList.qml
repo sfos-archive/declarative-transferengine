@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 import Sailfish.TransferEngine 1.0
 
 SilicaListView {
@@ -33,8 +32,8 @@ SilicaListView {
                 // This module already loads plugin translations so let's make sure that also
                 // display name is translated if it contains the id..
                 text: qsTrId(displayName)
-                x: theme.paddingLarge
-                color: backgroundItem.highlighted ? theme.highlightColor : theme.primaryColor
+                x: Theme.paddingLarge
+                color: backgroundItem.highlighted ? Theme.highlightColor : Theme.primaryColor
                 width: parent.width
                 truncationMode: TruncationMode.Elide
             }
