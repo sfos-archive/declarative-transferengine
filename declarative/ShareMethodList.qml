@@ -29,9 +29,12 @@ SilicaListView {
             anchors.centerIn: parent
             Label {
                 id: displayNameLabel
-                text: displayName
-                x: Theme.paddingLarge
-                color: backgroundItem.highlighted ? Theme.highlightColor : Theme.primaryColor
+                // Plugins may provide translation id and the translation for the display name
+                // This module already loads plugin translations so let's make sure that also
+                // display name is translated if it contains the id..
+                text: qsTrId(displayName)
+                x: theme.paddingLarge
+                color: backgroundItem.highlighted ? theme.highlightColor : theme.primaryColor
                 width: parent.width
                 truncationMode: TruncationMode.Elide
             }
