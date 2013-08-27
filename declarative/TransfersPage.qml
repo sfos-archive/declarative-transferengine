@@ -73,10 +73,10 @@ Page {
         if (dateTime.getFullYear() === today.getFullYear() &&
             dateTime.getMonth() === today.getMonth() &&
             dateTime.getDay() === today.getDay()) {
-            return formatter.formatDate(dateTime, Formatter.TimepointRelative)
+            return Format.formatDate(dateTime, Formatter.TimepointRelative)
         }
 
-        return formatter.formatDate(dateTime, Formatter.DurationElapsed)
+        return Format.formatDate(dateTime, Formatter.DurationElapsed)
     }
 
 
@@ -162,10 +162,6 @@ Page {
         }
 
         return "image://theme/icon-l-others"
-    }
-
-    Formatter {
-        id: formatter
     }
 
     Label {
