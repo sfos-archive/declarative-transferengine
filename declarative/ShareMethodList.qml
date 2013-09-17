@@ -40,7 +40,7 @@ SilicaListView {
             SecondaryLabel {
                 text: userName
                 x: Theme.paddingLarge
-                color: backgroundItem.highlighted ? Theme.highlightColor : Theme.secondaryColor
+                color: backgroundItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
                 truncationMode: TruncationMode.Elide
                 width: parent.width
                 visible: text.length > 0
