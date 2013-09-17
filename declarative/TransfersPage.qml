@@ -357,8 +357,17 @@ Page {
             }
 
             onClicked: {
-                // No actions for properly finished transfers
+                // Properly finished transfers with local filename should open that file
                 if (status === SailfishTransferModel.TransferFinished) {
+                    var path = url;
+                    if (path.length > 0 && path[0] == '/') {
+                        path = 'file://' + path;
+                    }
+
+                    // Only open the URL externally if it's not a http(s) URL
+                    if (path.substr(0, 7) != 'http://' && path.substr(0, 8) != 'https://') {
+                        Qt.openUrlExternally(path);
+                    }
                     return;
                 }
 
