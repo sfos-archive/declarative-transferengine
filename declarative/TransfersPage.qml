@@ -164,13 +164,6 @@ Page {
         return "image://theme/icon-l-others"
     }
 
-    Label {
-        anchors.centerIn: parent
-        //% "No Transfers"
-        text: transferModel.count === 0 ? qsTrId("transferui-la-no_transfers") : ""
-    }
-
-
     // Delegate for a transfer entry in a list
     Component {
         id: transferDelegate
@@ -433,6 +426,12 @@ Page {
         model: SailfishTransferModel {id: transferModel}
         delegate: transferDelegate
         cacheBuffer: transferList.height
+    }
+
+    ViewPlaceholder {
+        enabled: transferModel.count === 0
+        //% "No Transfers"
+        text: qsTrId("transferui-la-no_transfers")
     }
 
     // Context menu for actions such as cancel and restart

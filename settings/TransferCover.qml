@@ -1,14 +1,11 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 import Sailfish.TransferEngine 1.0
 
-Item {
+CoverBackground {
     id: root
 
     property int displayedTransferId: -1
-
-    anchors.fill: parent
 
     function getTransferIcon(transferType)
     {

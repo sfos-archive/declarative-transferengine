@@ -5,5 +5,5 @@ import Sailfish.Silica.theme 1.0
 Label {
     property bool interactive
     font.pixelSize: Theme.fontSizeMedium
-    color: interactive ? Theme.highlightColor : Theme.secondaryColor
+    color: interactive ? Theme.secondaryHighlightColor : Theme.secondaryColor
 }
