@@ -33,6 +33,7 @@ HEADERS += \
 OTHER_FILES = qmldir \
               *.qml \
     ShareMethodList.qml \
+    ShareMenu.qml \
     PrimaryLabel.qml \
     SecondaryLabel.qml \
     ShareDialog.qml
