@@ -88,8 +88,11 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
         }
     } else {
         int index = 0;
+        int slashIndex = m_filter.indexOf('/');
+        QString subTypeWildcard = slashIndex >= 0 ? m_filter.mid(0, slashIndex) + "/*" : "";
         Q_FOREACH(TransferMethodInfo info, m_data) {
             if (info.capabilitities.contains(m_filter) ||
+                info.capabilitities.contains(subTypeWildcard) ||
                 info.capabilitities.contains(QLatin1String("*"))) {
                 m_filteredData.append(index);
             }
