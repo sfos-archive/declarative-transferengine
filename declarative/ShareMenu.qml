@@ -61,6 +61,8 @@ Item {
         contentWidth: parent.width
         contentHeight: shareList.height > shareLabel.height ? shareList.height : shareLabel.height
 
+        VerticalScrollDecorator {}
+
         Label {
             id: shareLabel
             anchors.margins: Theme.paddingLarge
