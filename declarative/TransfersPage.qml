@@ -395,6 +395,8 @@ Page {
             title: qsTrId("transferui-he_transfers")
         }
 
+        VerticalScrollDecorator {}
+
         PullDownMenu {
             bottomMargin: 0
             MenuItem {
