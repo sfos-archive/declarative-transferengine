@@ -5,6 +5,10 @@
 #include "declarativetransfermethodsmodel.h"
 #include <QObject>
 
+namespace Accounts {
+class Manager;
+}
+
 class TransferEngineInterface;
 class DeclarativeTransferMethodsModelPrivate: public QObject
 {
@@ -21,7 +25,7 @@ public:
     void filterModel();
 
 public Q_SLOTS:
-    void transferMethods();
+    void updateModel();
 
 public:
 // Member vars
@@ -32,6 +36,7 @@ public:
     QList<TransferMethodInfo> m_data;
     QString m_filter;
     QList<int> m_filteredData;
+    Accounts::Manager *m_accountManager;
 };
 
 #endif // DECLARATIVETRANSFERMETHODSMODEL_P_H
