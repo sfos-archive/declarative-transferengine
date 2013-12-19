@@ -12,6 +12,7 @@ BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(Qt5Quick)
 BuildRequires: pkgconfig(accounts-qt5)
 BuildRequires: pkgconfig(nemotransferengine-qt5)
+BuildRequires: pkgconfig(nemonotifications-qt5)
 BuildRequires: qt5-qttools
 BuildRequires: qt5-qttools-linguist
 
@@ -63,6 +64,7 @@ Requires: ambient-icons-closed
 %{_datadir}/jolla-settings/pages/transferui/TransferCover.qml
 %{_datadir}/jolla-settings/pages/transferui/mainpage.qml
 %{_datadir}/nemo-transferengine/*.conf
+%{_datadir}/lipstick/notificationcategories/*.conf
 
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine

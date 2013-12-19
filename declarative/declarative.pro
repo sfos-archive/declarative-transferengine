@@ -38,6 +38,9 @@ OTHER_FILES = qmldir \
     SecondaryLabel.qml \
     ShareDialog.qml
 
+OTHER_FILES += \
+    ../notifications/*
+
 
 TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
 EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
@@ -64,6 +67,9 @@ engineering_english_install.path = /usr/share/translations
 engineering_english_install.files = $$EE_QM
 engineering_english_install.CONFIG += no_check_exist
 
+notification.files = ../notifications/x-jolla.transferui.conf
+notification.path = /usr/share/lipstick/notificationcategories
+
 QMAKE_EXTRA_TARGETS += translations engineering_english
 PRE_TARGETDEPS += translations engineering_english
 
@@ -83,6 +89,6 @@ symbian {
     installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
     qmldir.path = $$installPath
     target.path = $$installPath
-    INSTALLS += target qmldir translations_install engineering_english_install
+    INSTALLS += target qmldir translations_install engineering_english_install notification
 }
 
