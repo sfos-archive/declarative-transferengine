@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
 import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
-
+import org.nemomobile.notifications 1.0
 
 Page {
     id: transfersPage
@@ -359,7 +359,9 @@ Page {
 
                     // Only open the URL externally if it's not a http(s) URL
                     if (path.substr(0, 7) != 'http://' && path.substr(0, 8) != 'https://') {
-                        Qt.openUrlExternally(path);
+                        if (!ContentAction.trigger(path)) {
+                            errorNotification.show(path)
+                        }
                     }
                     return;
                 }
@@ -428,6 +430,26 @@ Page {
         model: SailfishTransferModel {id: transferModel}
         delegate: transferDelegate
         cacheBuffer: transferList.height
+    }
+
+    Notification {
+        id: errorNotification
+
+        category: "x-jolla.transferui.error"
+
+        function show(path)
+        {
+            var startIndex = path.lastIndexOf("/")
+            var fileName = path
+            if (startIndex >= 0 &&  startIndex + 1 < path.length - 1 )
+                fileName = path.substr(startIndex + 1, path.length - 1)
+
+            //: Notification text shown when some error occured.
+            //% "Oops, file type not supported"
+            previewSummary = qsTrId("jolla-transferui-no-error")
+            previewBody = fileName
+            publish()
+        }
     }
 
     ViewPlaceholder {

@@ -9,6 +9,8 @@
 #include <QQmlEngine>
 #include <QCoreApplication>
 
+#include <contentaction.h>
+
 AppTranslator::AppTranslator(QObject *parent)
    : QTranslator(parent)
 {
@@ -20,6 +22,26 @@ AppTranslator::~AppTranslator()
    qApp->removeTranslator(this);
 }
 
+DeclarativeContentAction::DeclarativeContentAction(QObject *parent)
+    : QObject(parent)
+{
+}
+
+bool DeclarativeContentAction::trigger(const QUrl &url)
+{
+    if (!url.isValid()) {
+        qWarning() << Q_FUNC_INFO << "Invalid URL!";
+        return false;
+    }
+
+    ContentAction::Action action = ContentAction::Action::defaultActionForFile(url);
+    const bool ok = action.isValid();
+    if (ok) {
+        action.trigger();
+    }
+
+    return ok;
+}
 
 void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
@@ -53,4 +75,6 @@ void DeclarativePlugin::registerTypes(const char *uri)
     qmlRegisterType<DeclarativeTransferModel>(uri, 1, 0, "SailfishTransferModel");
     qmlRegisterType<DeclarativeTransferInterface>(uri, 1, 0, "SailfishTransferInterface");
     qmlRegisterType<DeclarativeTransferMethodsModel>(uri, 1, 0, "SailfishTransferMethodsModel");
+    qmlRegisterSingletonType<DeclarativeContentAction>(uri, 1, 0, "ContentAction", content_action);
+
 }
