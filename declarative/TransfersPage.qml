@@ -359,7 +359,7 @@ Page {
 
                     // Only open the URL externally if it's not a http(s) URL
                     if (path.substr(0, 7) != 'http://' && path.substr(0, 8) != 'https://') {
-                        if (!Qt.openUrlExternally(path)) {
+                        if (!ContentAction.trigger(path)) {
                             errorNotification.show(path)
                         }
                     }
@@ -439,10 +439,10 @@ Page {
 
         function show(path)
         {
-            var startIndex = path.lastIndexOf("/") + 1
-            var fileName = ""
-            if (startIndex + 1 < path.length - 1)
-                fileName = path.substr(startIndex, path.length - 1)
+            var startIndex = path.lastIndexOf("/")
+            var fileName = path
+            if (startIndex >= 0 &&  startIndex + 1 < path.length - 1 )
+                fileName = path.substr(startIndex + 1, path.length - 1)
 
             //: Notification text shown when some error occured.
             //% "Oops, file type not supported"

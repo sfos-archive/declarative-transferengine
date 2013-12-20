@@ -13,6 +13,7 @@ BuildRequires: pkgconfig(Qt5Quick)
 BuildRequires: pkgconfig(accounts-qt5)
 BuildRequires: pkgconfig(nemotransferengine-qt5)
 BuildRequires: pkgconfig(nemonotifications-qt5)
+BuildRequires: pkgconfig(contentaction5)
 BuildRequires: qt5-qttools
 BuildRequires: qt5-qttools-linguist
 
