@@ -1,5 +1,5 @@
 Name: declarative-transferengine-qt5
-Version: 0.0.39
+Version: 0.0.40
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
