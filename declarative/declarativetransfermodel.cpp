@@ -203,7 +203,7 @@ void DeclarativeTransferModelPrivate::dataReceived(QDBusPendingCallWatcher *call
 
 DeclarativeTransferModel::DeclarativeTransferModel(QObject *parent):
     QAbstractListModel(parent),
-    QDeclarativeParserStatus(),
+    QQmlParserStatus(),
     d_ptr(new DeclarativeTransferModelPrivate(this))
 {
 

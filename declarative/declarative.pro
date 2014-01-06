@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = silicatransferengine
-QT += declarative dbus sql
+QT += qml quick dbus sql
 CONFIG += qt plugin
 
 TARGET = $$qtLibraryTarget($$TARGET)
@@ -8,7 +8,9 @@ uri = Sailfish.TransferEngine
 
 
 CONFIG += link_pkgconfig
-PKGCONFIG += nemotransferengine
+PKGCONFIG += nemotransferengine-qt5 accounts-qt5 contentaction5
+
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x000000
 
 # Input
 SOURCES += \
@@ -31,13 +33,17 @@ HEADERS += \
 OTHER_FILES = qmldir \
               *.qml \
     ShareMethodList.qml \
+    ShareMenu.qml \
     PrimaryLabel.qml \
     SecondaryLabel.qml \
     ShareDialog.qml
 
+OTHER_FILES += \
+    ../notifications/*
 
-TS_FILE = $$OUT_PWD/sailfish_transferengine-qt4.ts
-EE_QM = $$OUT_PWD/sailfish_transferengine-qt4_eng_en.qm
+
+TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
+EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
 
 translations.commands += lupdate $$PWD $$PWD/../settings -ts $$TS_FILE
 translations.depends = $$PWD/*.qml $$PWD/../settings/*.qml
@@ -61,6 +67,9 @@ engineering_english_install.path = /usr/share/translations
 engineering_english_install.files = $$EE_QM
 engineering_english_install.CONFIG += no_check_exist
 
+notification.files = ../notifications/x-jolla.transferui.conf
+notification.path = /usr/share/lipstick/notificationcategories
+
 QMAKE_EXTRA_TARGETS += translations engineering_english
 PRE_TARGETDEPS += translations engineering_english
 
@@ -77,13 +86,9 @@ qmldir.files = qmldir *.qml
 symbian {
     TARGET.EPOCALLOWDLLDATA = 1
 } else:unix {
-    maemo5 | !isEmpty(MEEGO_VERSION_MAJOR) {
-        installPath = /usr/lib/qt4/imports/$$replace(uri, \\., /)
-    } else {
-        installPath = $$[QT_INSTALL_IMPORTS]/$$replace(uri, \\., /)
-    }
+    installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
     qmldir.path = $$installPath
     target.path = $$installPath
-    INSTALLS += target qmldir translations_install engineering_english_install
+    INSTALLS += target qmldir translations_install engineering_english_install notification
 }
 

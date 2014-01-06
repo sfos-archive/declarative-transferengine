@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 
@@ -11,17 +11,17 @@ SilicaListView {
     property alias listHeader: header.text
     property alias filter: transferMethodsModel.filter
 
-    spacing: theme.paddingMedium
+    spacing: Theme.paddingMedium
     model: SailfishTransferMethodsModel { id: transferMethodsModel }
 
     width: parent.width
-    height: theme.itemSizeMedium * transferMethodsModel.count
+    height: Theme.itemSizeMedium * transferMethodsModel.count
 
     delegate: BackgroundItem {
         id: backgroundItem
 
         width: rootList.width
-        height: theme.itemSizeMedium
+        height: Theme.itemSizeMedium
 
         Column {
             width: parent.width
@@ -32,15 +32,15 @@ SilicaListView {
                 // This module already loads plugin translations so let's make sure that also
                 // display name is translated if it contains the id..
                 text: qsTrId(displayName)
-                x: theme.paddingLarge
-                color: backgroundItem.highlighted ? theme.highlightColor : theme.primaryColor
+                x: Theme.paddingLarge
+                color: backgroundItem.highlighted ? Theme.highlightColor : Theme.primaryColor
                 width: parent.width
                 truncationMode: TruncationMode.Elide
             }
             SecondaryLabel {
                 text: userName
-                x: theme.paddingLarge
-                color: backgroundItem.highlighted ? theme.highlightColor : theme.secondaryColor
+                x: Theme.paddingLarge
+                color: backgroundItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
                 truncationMode: TruncationMode.Elide
                 width: parent.width
                 visible: text.length > 0
@@ -66,12 +66,12 @@ SilicaListView {
     Label {
         id: header
 
-        color: theme.highlightColor
-        height: theme.itemSizeMedium
+        color: Theme.highlightColor
+        height: Theme.itemSizeMedium
         verticalAlignment: Text.AlignVCenter
         anchors {
             right: parent.right
-            rightMargin: theme.paddingLarge
+            rightMargin: Theme.paddingLarge
         }
     }
 }

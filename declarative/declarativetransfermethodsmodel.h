@@ -2,10 +2,10 @@
 #define DECLARATIVETRANSFERMETHODMODEL_H
 
 #include <QAbstractListModel>
-#include <QDeclarativeParserStatus>
+#include <QQmlParserStatus>
 
 class DeclarativeTransferMethodsModelPrivate;
-class DeclarativeTransferMethodsModel: public QAbstractListModel, public QDeclarativeParserStatus
+class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)

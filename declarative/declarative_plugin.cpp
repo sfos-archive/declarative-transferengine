@@ -6,9 +6,10 @@
 #include "transferdbrecord.h"
 #include "transfermethodinfo.h"
 
-#include <QDeclarativeEngine>
-#include <qdeclarative.h>
-#include <QApplication>
+#include <QQmlEngine>
+#include <QCoreApplication>
+
+#include <contentaction.h>
 
 AppTranslator::AppTranslator(QObject *parent)
    : QTranslator(parent)
@@ -21,8 +22,28 @@ AppTranslator::~AppTranslator()
    qApp->removeTranslator(this);
 }
 
+DeclarativeContentAction::DeclarativeContentAction(QObject *parent)
+    : QObject(parent)
+{
+}
 
-void DeclarativePlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+bool DeclarativeContentAction::trigger(const QUrl &url)
+{
+    if (!url.isValid()) {
+        qWarning() << Q_FUNC_INFO << "Invalid URL!";
+        return false;
+    }
+
+    ContentAction::Action action = ContentAction::Action::defaultActionForFile(url);
+    const bool ok = action.isValid();
+    if (ok) {
+        action.trigger();
+    }
+
+    return ok;
+}
+
+void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(uri)
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Sailfish.TransferEngine"));
@@ -36,8 +57,8 @@ void DeclarativePlugin::initializeEngine(QDeclarativeEngine *engine, const char 
 
     const QString path("/usr/share/translations");
 
-    translatorEngEn->load("sailfish_transferengine-qt4_eng_en", path);
-    translator->load(QLocale(), "sailfish_transferengine-qt4", "-", path);
+    translatorEngEn->load("sailfish_transferengine_eng_en", path);
+    translator->load(QLocale(), "sailfish_transferengine", "-", path);
 
     // This module is reponsible of loading translations for the UIs provided by share plugins
     sharePluginsTranslatorEngEn->load("sailfish_transferengine_plugins_eng_en", path);
@@ -54,7 +75,6 @@ void DeclarativePlugin::registerTypes(const char *uri)
     qmlRegisterType<DeclarativeTransferModel>(uri, 1, 0, "SailfishTransferModel");
     qmlRegisterType<DeclarativeTransferInterface>(uri, 1, 0, "SailfishTransferInterface");
     qmlRegisterType<DeclarativeTransferMethodsModel>(uri, 1, 0, "SailfishTransferMethodsModel");
+    qmlRegisterSingletonType<DeclarativeContentAction>(uri, 1, 0, "ContentAction", content_action);
+
 }
-
-Q_EXPORT_PLUGIN2(Jollashare, DeclarativePlugin)
-

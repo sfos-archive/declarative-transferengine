@@ -1,12 +1,17 @@
-#include <QApplication>
-#include <QtDeclarative>
+#include <QGuiApplication>
+#include <QtQuick>
 #include "callbackinterface.h"
 #include <QtDBus>
 
 int main(int argc, char *argv[])
 {
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     QApplication app(argc, argv);
     QDeclarativeView view;
+#else
+    QGuiApplication app(argc, argv);
+    QQuickView view;
+#endif
 
     CallbackInterface callbackIf;
 

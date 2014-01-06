@@ -1,11 +1,11 @@
 #ifndef DECLARATIVETRANSFERINTERFACE_H
 #define DECLARATIVETRANSFERINTERFACE_H
 
-#include <QDeclarativeItem>
+#include <QQuickItem>
 #include "transfertypes.h"
 
 class DeclarativeTransferInterfacePrivate;
-class DeclarativeTransferInterface : public QDeclarativeItem
+class DeclarativeTransferInterface : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool enableNotifications READ notificationsEnabled WRITE setNotifications NOTIFY notificationsChanged)
@@ -18,7 +18,7 @@ public:
         TransferInterrupted = TransferEngineData::TransferInterrupted
     };
 
-    explicit DeclarativeTransferInterface(QDeclarativeItem *parent = 0);
+    explicit DeclarativeTransferInterface(QQuickItem *parent = 0);
     ~DeclarativeTransferInterface();
 
     // TODO: MOVE cbCance/RestartMethods to private API

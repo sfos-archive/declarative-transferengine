@@ -3,6 +3,7 @@
 #include "transferengineinterface.h"
 #include "transfermethodinfo.h"
 
+#include <Accounts/Manager>
 
 DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent):
     QObject(parent),
@@ -16,16 +17,23 @@ DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(D
                                                "/org/nemo/transferengine",
                                                QDBusConnection::sessionBus(),
                                                this);
-    connect(m_client, SIGNAL(transferMethodListChanged()), this, SLOT(transferMethods()));
+    connect(m_client, SIGNAL(transferMethodListChanged()), this, SLOT(updateModel()));
+
+    // Wake up the engine if accounts have changed and ask the new list via updateModel
+    m_accountManager = new Accounts::Manager("sharing", this);
+    connect(m_accountManager, SIGNAL(accountCreated(Accounts::AccountId)), this, SLOT(updateModel()));
+    connect(m_accountManager, SIGNAL(accountRemoved(Accounts::AccountId)), this, SLOT(updateModel()));
+    connect(m_accountManager, SIGNAL(accountUpdated(Accounts::AccountId)), this, SLOT(updateModel()));
 }
 
 DeclarativeTransferMethodsModelPrivate::~DeclarativeTransferMethodsModelPrivate()
 {
     delete m_client;
+    delete m_accountManager;
 }
 
 
-void DeclarativeTransferMethodsModelPrivate::transferMethods()
+void DeclarativeTransferMethodsModelPrivate::updateModel()
 {
     QDBusPendingReply<QList<TransferMethodInfo> > reply = m_client->transferMethods();
     reply.waitForFinished();
@@ -88,8 +96,11 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
         }
     } else {
         int index = 0;
+        int slashIndex = m_filter.indexOf('/');
+        QString subTypeWildcard = slashIndex >= 0 ? m_filter.mid(0, slashIndex) + "/*" : "";
         Q_FOREACH(TransferMethodInfo info, m_data) {
             if (info.capabilitities.contains(m_filter) ||
+                info.capabilitities.contains(subTypeWildcard) ||
                 info.capabilitities.contains(QLatin1String("*"))) {
                 m_filteredData.append(index);
             }
@@ -110,7 +121,7 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
 
 DeclarativeTransferMethodsModel::DeclarativeTransferMethodsModel(QObject *parent):
     QAbstractListModel(parent),
-    QDeclarativeParserStatus(),
+    QQmlParserStatus(),
     d_ptr(new DeclarativeTransferMethodsModelPrivate(this))
 {
 
@@ -138,7 +149,7 @@ void DeclarativeTransferMethodsModel::componentComplete()
     setRoleNames(roleNames);
 
     Q_D(DeclarativeTransferMethodsModel);
-    d->transferMethods();
+    d->updateModel();
 }
 
 QVariant DeclarativeTransferMethodsModel::data(const QModelIndex & index, int role) const
