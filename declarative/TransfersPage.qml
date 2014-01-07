@@ -401,10 +401,10 @@ Page {
 
         PullDownMenu {
             bottomMargin: 0
+            visible: transferModel.count > 0
             MenuItem {
                 //% "Clear all"
                 text: qsTrId("transferui-me_clear-all")
-                enabled: transferModel.count > 0
                 onClicked: {
                     if (_remorsePopup === null) {
                         _remorsePopup = remorsePopupComponent.createObject(transfersPage)
