@@ -336,6 +336,12 @@ Page {
             }
         }
 
+        ViewPlaceholder {
+            enabled: transferModel.count === 0
+            //% "No Transfers"
+            text: qsTrId("transferui-la-no_transfers")
+        }
+
         anchors.fill: parent
         model: SailfishTransferModel {id: transferModel}
         delegate: transferDelegate
@@ -360,12 +366,6 @@ Page {
             previewBody = fileName
             publish()
         }
-    }
-
-    ViewPlaceholder {
-        enabled: transferModel.count === 0
-        //% "No Transfers"
-        text: qsTrId("transferui-la-no_transfers")
     }
 
     // Context menu for actions such as cancel and restart
