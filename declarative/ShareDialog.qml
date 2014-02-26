@@ -8,4 +8,6 @@ Dialog {
     property string displayName
     property int accountId
     property string accountName
+
+    allowedOrientations: Orientation.All
 }
