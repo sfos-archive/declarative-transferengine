@@ -22,6 +22,8 @@ DeclarativeTransferModelPrivate::DeclarativeTransferModelPrivate(DeclarativeTran
             this,       SLOT(refreshData()));
     connect(m_client,   SIGNAL(statusChanged(int,int)),
             this,       SLOT(refreshStatus(int,int)));
+
+    qWarning() << "SailfishTransferModel is deprecated and will be removed soon!";
 }
 
 DeclarativeTransferModelPrivate::~DeclarativeTransferModelPrivate()

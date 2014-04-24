@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 import org.nemomobile.notifications 1.0
+import org.nemomobile.transferengine 1.0
 
 Page {
     id: transfersPage
@@ -12,20 +13,20 @@ Page {
 
     function statusText(transferType, status, fileSize, transferDate) {
         switch(status) {
-        case SailfishTransferModel.NotStarted:
+        case TransferModel.NotStarted:
             //% "Waiting"
             return qsTrId("transferui-la_transfer_waiting")
-        case SailfishTransferModel.TransferStarted:
+        case TransferModel.TransferStarted:
             return transferTypeText(transferType)
-        case SailfishTransferModel.TransferFinished:
-        case SailfishTransferModel.TransferInterrupted:
-        case SailfishTransferModel.TransferCanceled:
+        case TransferModel.TransferFinished:
+        case TransferModel.TransferInterrupted:
+        case TransferModel.TransferCanceled:
             // return size and date, separated by a pullet point
             var s = fileSize > 0 ? Format.formatFileSize(fileSize) + " \u2022 " : ""
-            if (status === SailfishTransferModel.TransferInterrupted) {
+            if (status === TransferModel.TransferInterrupted) {
                 //% "Failed"
                 s += qsTrId("transferui-la_transfer_failed")
-            } else if (status === SailfishTransferModel.TransferCanceled) {
+            } else if (status === TransferModel.TransferCanceled) {
                 //% "Stopped"
                 s += qsTrId("transferui-la-transfer_stopped")
             } else {
@@ -39,13 +40,13 @@ Page {
 
     function transferTypeText(transferType) {
         switch (transferType) {
-        case SailfishTransferModel.Sync:
+        case TransferModel.Sync:
             //% "Syncing"
             return qsTrId("transferui-la_transfer_syncing")
-        case SailfishTransferModel.Download:
+        case TransferModel.Download:
             //% "Downloading"
             return qsTrId("transferui-la_transfer_downloading")
-        case SailfishTransferModel.Upload:
+        case TransferModel.Upload:
             //% "Uploading"
             return qsTrId("transferui-la_transfer_uploading")
         }
@@ -62,11 +63,11 @@ Page {
     function transferIcon(transferType) {
         // TODO: How we figure out if upload/download is from device2device e.g. BT.
         switch (transferType) {
-        case SailfishTransferModel.Upload:
+        case TransferModel.Upload:
             return "image://theme/icon-s-cloud-upload"
-        case SailfishTransferModel.Download:
+        case TransferModel.Download:
             return "image://theme/icon-s-cloud-download"
-        case SailfishTransferModel.Sync:
+        case TransferModel.Sync:
             return "image://theme/icon-s-sync"
         default:
             console.log("TransfersPage::transferIcon: failed to get transfer type")
@@ -140,9 +141,7 @@ Page {
                     sourceSize.width: width
                     sourceSize.height: height
                     opacity: mimeTypeImage.source == "" ? 1.0 : 0.8
-                    source: (transferStatus === SailfishTransferModel.Upload || transferStatus === SailfishTransferModel.TransferFinished)
-                            ? (thumbnailUrl != "" ? thumbnailUrl : fileUrl)
-                            : ""
+                    source: thumbnailUrl != "" ? thumbnailUrl : fileUrl
                     priority: (status == Thumbnail.Ready || status == Thumbnail.Error)
                               ? priority
                               : ((transferEntry.y >= transferList.contentY && transferEntry.y < transferList.contentY + transferList.height)
@@ -205,7 +204,7 @@ Page {
             Label {
                 text: statusText(transferType, status, fileSize, dateFromISO8601(timestamp))
                 font.pixelSize: Theme.fontSizeSmall
-                color: status == SailfishTransferModel.TransferInterrupted
+                color: status == TransferModel.TransferInterrupted
                        ? Theme.highlightColor
                        : (transferEntry.highlighted || menuOpen ? Theme.highlightColor : Theme.primaryColor)
                 anchors {
@@ -228,7 +227,7 @@ Page {
                 rightMargin: Theme.paddingLarge
                 height: visible ? Theme.itemSizeSmall : Theme.paddingMedium
                 value: visible ? progress : 0
-                visible: status === SailfishTransferModel.TransferStarted
+                visible: status === TransferModel.TransferStarted
                 indeterminate: progress < 0 || 1 < progress
                 clip: true
 
@@ -266,7 +265,7 @@ Page {
 
             onClicked: {
                 // Properly finished transfers with local filename should open that file
-                if (status === SailfishTransferModel.TransferFinished) {
+                if (status === TransferModel.TransferFinished) {
                     var path = url;
                     if (path.length > 0 && path[0] == '/') {
                         path = 'file://' + path;
@@ -343,7 +342,7 @@ Page {
         }
 
         anchors.fill: parent
-        model: SailfishTransferModel {id: transferModel}
+        model: TransferModel {id: transferModel}
         delegate: transferDelegate
         cacheBuffer: transferList.height
     }
@@ -381,14 +380,14 @@ Page {
             function setText()
             {
                 switch (status) {
-                case SailfishTransferModel.TransferStarted:
+                case TransferModel.TransferStarted:
                     //% "Stop"
                     return qsTrId("transferui-la_stop-transfer")
-                case SailfishTransferModel.TransferCanceled:
-                case SailfishTransferModel.TransferInterrupted:
+                case TransferModel.TransferCanceled:
+                case TransferModel.TransferInterrupted:
                     //% "Restart"
                     return qsTrId("transferui-la_restart-transfer")
-                case SailfishTransferModel.TransferFinished:
+                case TransferModel.TransferFinished:
                 default:
                     return ""
                 }
@@ -398,14 +397,14 @@ Page {
             function menuAction()
             {
                 switch (status) {
-                case SailfishTransferModel.TransferStarted:
+                case TransferModel.TransferStarted:
                     transferInterface.cbCancelTransfer(transferId)
                     break;
-                case SailfishTransferModel.TransferCanceled:
-                case SailfishTransferModel.TransferInterrupted:
+                case TransferModel.TransferCanceled:
+                case TransferModel.TransferInterrupted:
                     transferInterface.cbRestartTransfer(transferId)
                     break;
-                case SailfishTransferModel.TransferFinished:
+                case TransferModel.TransferFinished:
                     console.log("Not implemented")
                     break
                 }

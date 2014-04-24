@@ -1,21 +1,40 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.TransferEngine 1.0
+import org.nemomobile.transferengine 1.0
 
 CoverBackground {
     id: root
 
     property int displayedTransferId: -1
+    property int transfersCount: transferModel.count
+
+    onTransfersCountChanged: reloadDisplayedItem()
+
+    function reloadDisplayedItem() {
+        if (transfersCount == 0) {
+            root.displayedTransferId = -1
+            return
+        }
+        for (var i=0; i<transfersCount; i++) {
+            var transfer = transferModel.get(i)
+            if (transfer.status === TransferModel.NotStarted || transfer.status === TransferModel.TransferStarted) {
+                root.displayedTransferId = transfer.transferId
+                return
+            }
+        }
+        root.displayedTransferId = -1
+    }
 
     function getTransferIcon(transferType)
     {
         // TODO: How we figure out if upload/download is from device2device e.g. BT.
         switch (transferType) {
-        case SailfishTransferModel.Upload:
+        case TransferModel.Upload:
             return "image://theme/icon-s-cloud-upload"
-        case SailfishTransferModel.Download:
+        case TransferModel.Download:
             return "image://theme/icon-s-cloud-download"
-        case SailfishTransferModel.Sync:
+        case TransferModel.Sync:
             return "image://theme/icon-s-sync"
         default:
             console.log("TransfersPage::transferIcon: failed to get transfer type")
@@ -63,27 +82,6 @@ CoverBackground {
         id: transferInterface
     }
 
-    SailfishTransferModel {
-        id: transferModel
-
-        function _reloadDisplayedItem() {
-            if (count == 0) {
-                root.displayedTransferId = -1
-                return
-            }
-            for (var i=0; i<count; i++) {
-                var transfer = get(i)
-                if (transfer.status === SailfishTransferModel.NotStarted || transfer.status === SailfishTransferModel.TransferStarted) {
-                    root.displayedTransferId = transfer.transferId
-                    return
-                }
-            }
-            root.displayedTransferId = -1
-        }
-
-        onCountChanged: _reloadDisplayedItem()
-    }
-
     // This is a big hack at the moment. We need to add a way to specifically fetch the data for
     // the newest running/starting transfer to avoid having to load the whole model just to get
     // this data. E.g. maybe modify DeclarativeShare to allow its transferId to be set, and then
@@ -102,8 +100,8 @@ CoverBackground {
 
                 onStatusChanged: {
                     if (model.transferId === root.displayedTransferId
-                            && (status !== SailfishTransferModel.NotStarted || status !== SailfishTransferModel.TransferStarted)) {
-                        transferModel._reloadDisplayedItem()
+                            && (status !== TransferModel.NotStarted || status !== TransferModel.TransferStarted)) {
+                            root.reloadDisplayedItem()
                     }
                 }
 
