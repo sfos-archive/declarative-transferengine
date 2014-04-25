@@ -342,7 +342,7 @@ Page {
         }
 
         anchors.fill: parent
-        model: TransferModel {id: transferModel}
+        model: transferModel
         delegate: transferDelegate
         cacheBuffer: transferList.height
     }
