@@ -26,6 +26,8 @@ Page {
             if (status === TransferModel.TransferInterrupted) {
                 //% "Failed"
                 s += qsTrId("transferui-la_transfer_failed")
+                s += " \u2022 "
+                s += Format.formatDate(transferDate, Formatter.TimepointRelativeCurrentDay)
             } else if (status === TransferModel.TransferCanceled) {
                 //% "Stopped"
                 s += qsTrId("transferui-la-transfer_stopped")
