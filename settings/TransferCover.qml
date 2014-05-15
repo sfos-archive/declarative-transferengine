@@ -8,6 +8,9 @@ CoverBackground {
 
     property int displayedTransferId: -1
     property int transfersCount: transferModel.count
+    property variant transferObject: transferModel.transfersInProgress > 0
+                                     ? transferModel.get(0)
+                                     : undefined
 
     onTransfersCountChanged: reloadDisplayedItem()
 
@@ -82,63 +85,52 @@ CoverBackground {
         id: transferInterface
     }
 
-    // This is a big hack at the moment. We need to add a way to specifically fetch the data for
-    // the newest running/starting transfer to avoid having to load the whole model just to get
-    // this data. E.g. maybe modify DeclarativeShare to allow its transferId to be set, and then
-    // it could be used as an object for receiving all the data and progress updates for that transfer?
-    Column {
-        width: parent.width
 
-        Repeater {
-            model: transferModel
+    Item {
+        property int status: transferObject ? transferObject.status : -1
 
-            Item {
-                property int status: model.status
+        width: root.width; height: root.height
+        visible: transferObject.transferId === root.displayedTransferId
 
-                width: root.width; height: root.height
-                visible: model.transferId === root.displayedTransferId
+        onStatusChanged: {
+            if (transferObject && transferObject.transferId === root.displayedTransferId
+                    && (status !== TransferModel.NotStarted || status !== TransferModel.TransferStarted)) {
+                    root.reloadDisplayedItem()
+            }
+        }
 
-                onStatusChanged: {
-                    if (model.transferId === root.displayedTransferId
-                            && (status !== TransferModel.NotStarted || status !== TransferModel.TransferStarted)) {
-                            root.reloadDisplayedItem()
-                    }
-                }
+        Item {
+            id: icon
+            y: Theme.paddingLarge
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: Theme.itemSizeLarge; height: Theme.itemSizeLarge
 
-                Item {
-                    id: icon
-                    y: Theme.paddingLarge
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: Theme.itemSizeLarge; height: Theme.itemSizeLarge
+            ProgressCircle {
+                anchors.fill: parent
+                value: transferObject.progress
+            }
 
-                    ProgressCircle {
-                        anchors.fill: parent
-                        value: model.progress
-                    }
+            Image {
+                anchors.centerIn: parent
+                source: root.getTransferIcon(transferObject.transferType)
+            }
+        }
 
-                    Image {
-                        anchors.centerIn: parent
-                        source: root.getTransferIcon(model.transferType)
-                    }
-                }
+        Column {
+            anchors {
+                top: icon.bottom
+                topMargin: Theme.paddingLarge
+                horizontalCenter: parent.horizontalCenter
+            }
+            width: parent.width - Theme.paddingLarge*2
 
-                Column {
-                    anchors {
-                        top: icon.bottom
-                        topMargin: Theme.paddingLarge
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    width: parent.width - Theme.paddingLarge*2
-
-                    Label {
-                        width: parent.width
-                        truncationMode: TruncationMode.Fade
-                        text: transferModel.transfersInProgress == 1 ? root.getFileName(model.url) : transferModel.transfersInProgress
-                        font.pixelSize: Theme.fontSizeMedium
-                        color: Theme.highlightColor
-                        horizontalAlignment: transferModel.transfersInProgress == 1 ? Text.AlignLeft : Text.AlignHCenter
-                    }
-                }
+            Label {
+                width: parent.width
+                truncationMode: TruncationMode.Fade
+                text: transferModel.transfersInProgress == 1 ? root.getFileName(transferObject.url) : transferModel.transfersInProgress
+                font.pixelSize: Theme.fontSizeMedium
+                color: Theme.highlightColor
+                horizontalAlignment: transferModel.transfersInProgress == 1 ? Text.AlignLeft : Text.AlignHCenter
             }
         }
     }
