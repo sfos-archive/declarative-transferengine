@@ -275,8 +275,27 @@ Page {
 
                     // Only open the URL externally if it's not a http(s) URL
                     if (path.substr(0, 7) != 'http://' && path.substr(0, 8) != 'https://') {
-                        if (!ContentAction.trigger(path)) {
-                            errorNotification.show(path)
+                        var ok = ContentAction.trigger(path)
+                        if (!ok) {
+                            switch (ContentAction.error) {
+                            case ContentAction.FileTypeNotSupported:
+                                //: Notification text shown when file not supported error occured.
+                                //% "Oops, file type not supported"
+                                errorNotification.show(path,  qsTrId("jolla-transferui-no-error-file-not-supported"))
+                                break
+                            case ContentAction.FileDoesNotExist:
+                                //: Notification text shown when file doesn't exist error occured.
+                                //% "Oops, file doesn't exist"
+                                errorNotification.show(path,  qsTrId("jolla-transferui-no-error-file-does-not-exist"))
+                                break
+                            case ContentAction.InvalidUrl:
+                                //: Notification text shown when file invalid url error occured.
+                                //% "Oops, invalid file url"
+                                errorNotification.show(path,  qsTrId("jolla-transferui-no-error-invalid-url"))
+                                break
+                            default:
+                                console.log("Unknown content action error!")
+                            }
                         }
                     }
                     return;
@@ -354,16 +373,14 @@ Page {
 
         category: "x-jolla.transferui.error"
 
-        function show(path)
+        function show(path, summary)
         {
             var startIndex = path.lastIndexOf("/")
             var fileName = path
             if (startIndex >= 0 &&  startIndex + 1 < path.length - 1 )
                 fileName = path.substr(startIndex + 1, path.length - 1)
 
-            //: Notification text shown when some error occured.
-            //% "Oops, file type not supported"
-            previewSummary = qsTrId("jolla-transferui-no-error")
+            previewSummary = summary
             previewBody = fileName
             publish()
         }
