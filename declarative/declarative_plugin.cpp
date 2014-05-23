@@ -24,13 +24,30 @@ AppTranslator::~AppTranslator()
 
 DeclarativeContentAction::DeclarativeContentAction(QObject *parent)
     : QObject(parent)
+    , m_error(NoError)
 {
+}
+
+DeclarativeContentAction::Error DeclarativeContentAction::error() const
+{
+    return m_error;
 }
 
 bool DeclarativeContentAction::trigger(const QUrl &url)
 {
+    m_error = NoError;
+
     if (!url.isValid()) {
         qWarning() << Q_FUNC_INFO << "Invalid URL!";
+        m_error = InvalidUrl;
+        emit errorChanged();
+        return false;
+    }
+
+    if (!QFile::exists(url.toLocalFile())) {
+        qWarning() << Q_FUNC_INFO << "File doesn't exist!";
+        m_error = FileDoesNotExist;
+        emit errorChanged();
         return false;
     }
 
@@ -38,6 +55,9 @@ bool DeclarativeContentAction::trigger(const QUrl &url)
     const bool ok = action.isValid();
     if (ok) {
         action.trigger();
+    } else {
+        m_error = FileTypeNotSupported;
+        emit errorChanged();
     }
 
     return ok;
