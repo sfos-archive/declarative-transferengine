@@ -8,6 +8,7 @@
 
 #include <QQmlEngine>
 #include <QCoreApplication>
+#include <QDir>
 
 #include <contentaction.h>
 
@@ -83,6 +84,21 @@ void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
     // This module is reponsible of loading translations for the UIs provided by share plugins
     sharePluginsTranslatorEngEn->load("sailfish_transferengine_plugins_eng_en", path);
     sharePluginsTranslator->load(QLocale(), "sailfish_transferengine_plugins", "-", path);
+
+    // Load 3rd party share plugin translation files
+    const QDir pluginDir("/usr/share/translations/nemotransferengine");
+    if (pluginDir.exists()) {
+        QStringList qmFiles =  pluginDir.entryList(QStringList() << "*.qm", QDir::Files);
+        foreach(const QString &qmFile, qmFiles) {
+            if (qmFile.contains("_eng_en")) {
+                AppTranslator *sharePlugin3rdPartyTranslatorEngEn = new AppTranslator(engine);
+                sharePlugin3rdPartyTranslatorEngEn->load(qmFile, pluginDir.absolutePath());
+            } else {
+                AppTranslator *sharePlugin3rdPartyTranslator = new AppTranslator(engine);
+                sharePlugin3rdPartyTranslator->load(QLocale(), qmFile, "-", pluginDir.absolutePath());
+            }
+        }
+    }
 }
 
 void DeclarativePlugin::registerTypes(const char *uri)
