@@ -11,12 +11,14 @@ DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(D
     m_client(0),
     m_data(),
     m_filter(),
-    m_filteredData()
+    m_filteredData(),
+    m_accountManager(0)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                                "/org/nemo/transferengine",
                                                QDBusConnection::sessionBus(),
                                                this);
+
     connect(m_client, SIGNAL(transferMethodListChanged()), this, SLOT(updateModel()));
 
     // Wake up the engine if accounts have changed and ask the new list via updateModel
@@ -35,18 +37,23 @@ DeclarativeTransferMethodsModelPrivate::~DeclarativeTransferMethodsModelPrivate(
 
 void DeclarativeTransferMethodsModelPrivate::updateModel()
 {
-    QDBusPendingReply<QList<TransferMethodInfo> > reply = m_client->transferMethods();
-    reply.waitForFinished();
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(m_client->transferMethods(), this);
+
+    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            this, SLOT(modelDataReceived(QDBusPendingCallWatcher*)));
+}
+
+void DeclarativeTransferMethodsModelPrivate::modelDataReceived(QDBusPendingCallWatcher *call)
+{
+    QDBusPendingReply<QList<TransferMethodInfo> > reply = *call;
 
     if (reply.isError()) {
-        qWarning() << "DeclarativeTransferMethodsModelPrivate::transferMethods: " << reply.error().message();
-        return;
+        qWarning() << Q_FUNC_INFO << reply.error().message();
+    } else {
+        m_data = reply.value();
+        filterModel();
     }
-
-    // Set new data to the model and filter it if filter has been set.
-    Q_Q(DeclarativeTransferMethodsModel);
-    m_data = reply.value();
-    filterModel();
+    call->deleteLater();
 }
 
 QVariant DeclarativeTransferMethodsModelPrivate::value(int row, int role) const
@@ -155,13 +162,13 @@ void DeclarativeTransferMethodsModel::componentComplete()
 QVariant DeclarativeTransferMethodsModel::data(const QModelIndex & index, int role) const
 {
     if (!index.isValid()) {
-        qWarning() << "DeclarativeTransferMethodsModel::data: invalid index!";
+        qWarning() << Q_FUNC_INFO << "invalid index!";
         return QVariant();
     }
 
     Q_D(const DeclarativeTransferMethodsModel);
     if (index.row() < 0 || index.row() > d->m_filteredData.count()) {
-        qWarning() << "DeclarativeTransferMethodsModel::data: Index out of range!";
+        qWarning() << Q_FUNC_INFO << "Index out of range!";
         return QVariant();
     }
 

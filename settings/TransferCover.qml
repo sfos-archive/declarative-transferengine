@@ -8,7 +8,7 @@ CoverBackground {
 
     property int displayedTransferId: -1
     property int transfersCount: transferModel.count
-    property variant transferObject: transferModel.transfersInProgress > 0
+    property var transferObject: transferModel.transfersInProgress > 0
                                      ? transferModel.get(0)
                                      : undefined
 
@@ -51,6 +51,14 @@ CoverBackground {
         return splitString[splitString.length - 1]
     }
 
+    Timer {
+        id: updateTimer
+        running: transferModel.transfersInProgress >= 1
+        interval: 200
+        repeat: true
+        onTriggered: if (transferModel.count > 0) transferObject = transferModel.get(0)
+    }
+
     CoverActionList {
         id: multipleActionsList
         enabled: root.displayedTransferId >= 0 && transferModel.transfersInProgress == 1
@@ -85,12 +93,11 @@ CoverBackground {
         id: transferInterface
     }
 
-
     Item {
+        id: progressIndicator
         property int status: transferObject ? transferObject.status : -1
 
         width: root.width; height: root.height
-        visible: transferObject.transferId === root.displayedTransferId
 
         onStatusChanged: {
             if (transferObject && transferObject.transferId === root.displayedTransferId
@@ -108,6 +115,7 @@ CoverBackground {
             ProgressCircle {
                 anchors.fill: parent
                 value: transferObject.progress
+                Behavior on value { NumberAnimation { duration: 300 } }
             }
 
             Image {

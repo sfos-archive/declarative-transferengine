@@ -145,7 +145,7 @@ Page {
                     opacity: mimeTypeImage.source == "" ? 1.0 : 0.8
                     source: thumbnailUrl != "" ? thumbnailUrl : fileUrl
                     priority: (status == Thumbnail.Ready || status == Thumbnail.Error)
-                              ? priority
+                              ? Thumbnail.NormalPriority
                               : ((transferEntry.y >= transferList.contentY && transferEntry.y < transferList.contentY + transferList.height)
                                  ? Thumbnail.NormalPriority
                                  : Thumbnail.LowPriority)

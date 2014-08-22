@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <QQmlParserStatus>
 
+class QDBusPendingCallWatcher;
 class DeclarativeTransferMethodsModelPrivate;
 class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlParserStatus
 {

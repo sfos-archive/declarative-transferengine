@@ -26,6 +26,7 @@ public:
 
 public Q_SLOTS:
     void updateModel();
+    void modelDataReceived(QDBusPendingCallWatcher *call);
 
 public:
 // Member vars
