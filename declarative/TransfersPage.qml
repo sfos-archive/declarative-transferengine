@@ -226,7 +226,7 @@ Page {
                     top: transferTypeIcon.bottom
                 }
                 leftMargin: 0
-                rightMargin: Theme.paddingLarge
+                rightMargin: Theme.horizontalPageMargin
                 height: visible ? Theme.itemSizeSmall : Theme.paddingMedium
                 value: visible ? progress : 0
                 visible: status === TransferModel.TransferStarted
@@ -247,7 +247,7 @@ Page {
                     left: thumbnail.right
                     leftMargin: Theme.paddingLarge
                     right: parent.right
-                    rightMargin: Theme.paddingLarge
+                    rightMargin: Theme.horizontalPageMargin
                     top: transferProgressBar.bottom
                 }
             }
@@ -259,7 +259,7 @@ Page {
                 height: width
                 anchors {
                     right: parent.right
-                    rightMargin: Theme.paddingLarge
+                    rightMargin: Theme.horizontalPageMargin
                     verticalCenter: transferTypeIcon.verticalCenter
                 }
             }
