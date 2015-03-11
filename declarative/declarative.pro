@@ -8,7 +8,7 @@ uri = Sailfish.TransferEngine
 
 
 CONFIG += link_pkgconfig
-PKGCONFIG += nemotransferengine-qt5 accounts-qt5 contentaction5
+PKGCONFIG += nemotransferengine-qt5 accounts-qt5
 
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x000000
 

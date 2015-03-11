@@ -10,8 +10,6 @@
 #include <QCoreApplication>
 #include <QDir>
 
-#include <contentaction.h>
-
 AppTranslator::AppTranslator(QObject *parent)
    : QTranslator(parent)
 {
@@ -21,47 +19,6 @@ AppTranslator::AppTranslator(QObject *parent)
 AppTranslator::~AppTranslator()
 {
    qApp->removeTranslator(this);
-}
-
-DeclarativeContentAction::DeclarativeContentAction(QObject *parent)
-    : QObject(parent)
-    , m_error(NoError)
-{
-}
-
-DeclarativeContentAction::Error DeclarativeContentAction::error() const
-{
-    return m_error;
-}
-
-bool DeclarativeContentAction::trigger(const QUrl &url)
-{
-    m_error = NoError;
-
-    if (!url.isValid()) {
-        qWarning() << Q_FUNC_INFO << "Invalid URL!";
-        m_error = InvalidUrl;
-        emit errorChanged();
-        return false;
-    }
-
-    if (!QFile::exists(url.toLocalFile())) {
-        qWarning() << Q_FUNC_INFO << "File doesn't exist!";
-        m_error = FileDoesNotExist;
-        emit errorChanged();
-        return false;
-    }
-
-    ContentAction::Action action = ContentAction::Action::defaultActionForFile(url);
-    const bool ok = action.isValid();
-    if (ok) {
-        action.trigger();
-    } else {
-        m_error = FileTypeNotSupported;
-        emit errorChanged();
-    }
-
-    return ok;
 }
 
 void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -111,6 +68,4 @@ void DeclarativePlugin::registerTypes(const char *uri)
     qmlRegisterType<DeclarativeTransferModel>(uri, 1, 0, "SailfishTransferModel");
     qmlRegisterType<DeclarativeTransferInterface>(uri, 1, 0, "SailfishTransferInterface");
     qmlRegisterType<DeclarativeTransferMethodsModel>(uri, 1, 0, "SailfishTransferMethodsModel");
-    qmlRegisterSingletonType<DeclarativeContentAction>(uri, 1, 0, "ContentAction", content_action);
-
 }

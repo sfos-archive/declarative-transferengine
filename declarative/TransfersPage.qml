@@ -4,6 +4,7 @@ import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 import org.nemomobile.notifications 1.0
 import org.nemomobile.transferengine 1.0
+import org.nemomobile.contentaction 1.0
 
 Page {
     id: transfersPage
@@ -287,6 +288,11 @@ Page {
                                 //: Notification text shown when file doesn't exist error occured.
                                 //% "Oops, file doesn't exist"
                                 errorNotification.show(path,  qsTrId("jolla-transferui-no-error-file-does-not-exist"))
+                                break
+                            case ContentAction.UrlSchemeNotSupported:
+                                //: Notification text shown when an unsupported url scheme error occured.
+                                //% "Oops, url scheme not supported"
+                                errorNotification.show(path, qsTrId("jolla-transferui-no-error-url-scheme-not-supported"))
                                 break
                             case ContentAction.InvalidUrl:
                                 //: Notification text shown when file invalid url error occured.

@@ -13,12 +13,12 @@ BuildRequires: pkgconfig(Qt5Quick)
 BuildRequires: pkgconfig(accounts-qt5)
 BuildRequires: pkgconfig(nemotransferengine-qt5)
 BuildRequires: pkgconfig(nemonotifications-qt5)
-BuildRequires: pkgconfig(contentaction5)
 BuildRequires: qt5-qttools
 BuildRequires: qt5-qttools-linguist
 
 Requires: nemo-transferengine-qt5 >= 0.0.23
 Requires: sailfishsilica-qt5
+Requires: nemo-qml-plugin-contentaction >= 0.2.6
 
 %description -n declarative-transferengine-qt5
 %{summary}.
