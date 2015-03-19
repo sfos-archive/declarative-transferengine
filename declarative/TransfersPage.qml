@@ -377,6 +377,8 @@ Page {
     Notification {
         id: errorNotification
 
+        //% "Transfers"
+        appName: qsTrId("transferui-ap-name")
         category: "x-jolla.transferui.error"
 
         function show(path, summary)
