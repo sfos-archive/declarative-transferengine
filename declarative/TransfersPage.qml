@@ -63,47 +63,58 @@ Page {
         return new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
     }
 
-    function transferIcon(transferType) {
+    function transferIcon(transferType, highlight) {
         // TODO: How we figure out if upload/download is from device2device e.g. BT.
+        var imgSource = ""
         switch (transferType) {
         case TransferModel.Upload:
-            return "image://theme/icon-s-cloud-upload"
+            imgSource = "image://theme/icon-s-cloud-upload"
+            break;
         case TransferModel.Download:
-            return "image://theme/icon-s-cloud-download"
+            imgSource = "image://theme/icon-s-cloud-download"
+            break;
         case TransferModel.Sync:
-            return "image://theme/icon-s-sync"
+            imgSource = "image://theme/icon-s-sync"
+            break;
         default:
             console.log("TransfersPage::transferIcon: failed to get transfer type")
             return ""
         }
+        if (highlight) {
+            imgSource += "?" + Theme.highlightColor
+        }
+        return imgSource
     }
 
-    function mimeTypeIcon(mimeType) {
+    function mimeTypeIcon(mimeType, highlight) {
         if (mimeType.length === 0)
             return ""
         var type = mimeType.split("/");
+        var imgSource = ""
 
         // Handle basic media types
         if (type[0] === "image") {
             return ""   // no mime type icon for images
         } else if (type[0] === "video") {
-            return "image://theme/icon-m-video"
+            imgSource = "image://theme/icon-m-video"
         } else if (type[0] === "audio") {
-            return "image://theme/icon-m-sound"
+            imgSource = "image://theme/icon-m-sound"
+        } else if (type[1].indexOf("excel")
+                   || type[1].indexOf("pdf")
+                   || type[1].indexOf("word")
+                   || type[1].indexOf("powerpoint")) {
+            // TODO: CHECK the rest of document types
+            imgSource = "image://theme/icon-m-document"
+        } else if (type[1].indexOf("vcard")) {
+            // handle contacts
+            imgSource = "image://theme/icon-m-people"
+        } else {
+            imgSource = "image://theme/icon-m-other"
         }
-        // Next doc types
-        // TODO: CHECK the rest of document types
-        if (type[1].indexOf("excel")   ||
-            type[1].indexOf("pdf")     ||
-            type[1].indexOf("word")    ||
-            type[1].indexOf("powerpoint")) {
-            return "image://theme/icon-m-document"
+        if (highlight) {
+            imgSource += "?" + Theme.highlightColor
         }
-        // Handle contacts
-        if (type[1].indexOf("vcard")) {
-            return "image://theme/icon-m-people"
-        }
-        return "image://theme/icon-m-other"
+        return imgSource
     }
 
     // Delegate for a transfer entry in a list
@@ -186,7 +197,7 @@ Page {
                 Image {
                     id: mimeTypeImage
                     anchors.centerIn: parent
-                    source: mimeTypeIcon(mimeType)
+                    source: mimeTypeIcon(mimeType, transferEntry.highlighted)
                     asynchronous: true
                     z: 1    // place above the image thumbnail
                 }
@@ -194,7 +205,7 @@ Page {
 
             Image {
                 id: transferTypeIcon
-                source: transferIcon(transferType)
+                source: transferIcon(transferType, transferEntry.highlighted)
                 asynchronous: true
                 anchors {
                     top: thumbnail.top
@@ -209,7 +220,7 @@ Page {
                 font.pixelSize: Theme.fontSizeSmall
                 color: status == TransferModel.TransferInterrupted
                        ? Theme.highlightColor
-                       : (transferEntry.highlighted || menuOpen ? Theme.highlightColor : Theme.primaryColor)
+                       : (transferEntry.highlighted ? Theme.highlightColor : Theme.primaryColor)
                 anchors {
                     verticalCenter: transferTypeIcon.verticalCenter
                     left: transferTypeIcon.right
@@ -255,7 +266,7 @@ Page {
 
             Image {
                 id: serviceTypeImage
-                source: serviceIcon
+                source: serviceIcon + (transferEntry.highlighted ? "?" + Theme.highlightColor : "")
                 width: Theme.itemSizeSmall / 2
                 height: width
                 anchors {
