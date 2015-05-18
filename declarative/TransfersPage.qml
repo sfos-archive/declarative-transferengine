@@ -9,7 +9,6 @@ import org.nemomobile.contentaction 1.0
 Page {
     id: transfersPage
 
-    property Item _remorsePopup
     property date _today: new Date()
 
     function statusText(transferType, status, fileSize, transferDate) {
@@ -353,22 +352,7 @@ Page {
                 //% "Clear all"
                 text: qsTrId("transferui-me_clear-all")
                 onClicked: {
-                    if (_remorsePopup === null) {
-                        _remorsePopup = remorsePopupComponent.createObject(transfersPage)
-                    }
-
-                    //: Clearing transfers in 5 seconds
-                    //% "Clearing transfers"
-                    _remorsePopup.execute(qsTrId("transferui-me-clear-transfers"),
-                                              function() {
-                                                  transferModel.clearTransfers()
-                                              }
-                                          )
-                }
-
-                Component {
-                    id: remorsePopupComponent
-                    RemorsePopup {}
+                    transferModel.clearTransfers()
                 }
             }
         }
