@@ -293,22 +293,22 @@ Page {
                             case ContentAction.FileTypeNotSupported:
                                 //: Notification text shown when file not supported error occured.
                                 //% "Oops, file type not supported"
-                                errorNotification.show(path,  qsTrId("jolla-transferui-no-error-file-not-supported"))
+                                errorNotification.show(qsTrId("jolla-transferui-no-error-file-not-supported"))
                                 break
                             case ContentAction.FileDoesNotExist:
                                 //: Notification text shown when file doesn't exist error occured.
                                 //% "Oops, file doesn't exist"
-                                errorNotification.show(path,  qsTrId("jolla-transferui-no-error-file-does-not-exist"))
+                                errorNotification.show(qsTrId("jolla-transferui-no-error-file-does-not-exist"))
                                 break
                             case ContentAction.UrlSchemeNotSupported:
                                 //: Notification text shown when an unsupported url scheme error occured.
                                 //% "Oops, url scheme not supported"
-                                errorNotification.show(path, qsTrId("jolla-transferui-no-error-url-scheme-not-supported"))
+                                errorNotification.show(qsTrId("jolla-transferui-no-error-url-scheme-not-supported"))
                                 break
                             case ContentAction.InvalidUrl:
                                 //: Notification text shown when file invalid url error occured.
                                 //% "Oops, invalid file url"
-                                errorNotification.show(path,  qsTrId("jolla-transferui-no-error-invalid-url"))
+                                errorNotification.show(qsTrId("jolla-transferui-no-error-invalid-url"))
                                 break
                             default:
                                 console.log("Unknown content action error!")
@@ -392,15 +392,9 @@ Page {
         appName: qsTrId("transferui-ap-name")
         category: "x-jolla.transferui.error"
 
-        function show(path, summary)
+        function show(summary)
         {
-            var startIndex = path.lastIndexOf("/")
-            var fileName = path
-            if (startIndex >= 0 &&  startIndex + 1 < path.length - 1 )
-                fileName = path.substr(startIndex + 1, path.length - 1)
-
             previewSummary = summary
-            previewBody = fileName
             publish()
         }
     }
