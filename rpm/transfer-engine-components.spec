@@ -53,7 +53,7 @@ Requires: declarative-transferengine-qt5
 Requires: jolla-settings
 Obsoletes: jolla-settings-transferui <= 0.0.23
 Provides: jolla-settings-transferui > 0.0.23
-Requires: jolla-ambient
+Requires: jolla-ambient >= 0.7.12
 Requires: ambient-icons-closed
 
 %description -n jolla-settings-transferui-qt5
