@@ -97,7 +97,7 @@ Page {
         } else if (type[0] === "video") {
             imgSource = "image://theme/icon-m-video"
         } else if (type[0] === "audio") {
-            imgSource = "image://theme/icon-m-sound"
+            imgSource = "image://theme/icon-m-music"
         } else if (type[1].indexOf("excel")
                    || type[1].indexOf("pdf")
                    || type[1].indexOf("word")
