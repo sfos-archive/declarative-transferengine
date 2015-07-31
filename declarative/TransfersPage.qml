@@ -220,6 +220,7 @@ Page {
                 color: status == TransferModel.TransferInterrupted
                        ? Theme.highlightColor
                        : (transferEntry.highlighted ? Theme.highlightColor : Theme.primaryColor)
+                truncationMode: TruncationMode.Fade
                 anchors {
                     verticalCenter: transferTypeIcon.verticalCenter
                     left: transferTypeIcon.right
@@ -265,8 +266,8 @@ Page {
 
             Image {
                 id: serviceTypeImage
-                source: serviceIcon + (transferEntry.highlighted ? "?" + Theme.highlightColor : "")
-                width: Theme.itemSizeSmall / 2
+                source: serviceIcon
+                width: Theme.iconSizeSmall
                 height: width
                 anchors {
                     right: parent.right
