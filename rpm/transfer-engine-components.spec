@@ -3,7 +3,7 @@ Version: 0.1.1
 Release: 0
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
-License: TBD
+License: Proprietary
 URL: TBD
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: pkgconfig(Qt5Qml)
@@ -69,7 +69,6 @@ Requires: ambient-icons-closed
 
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine
-License:   TBD
 Group:     System/Libraries
 
 %description ts-devel
