@@ -29,6 +29,9 @@ public:
     // Restart failed or canceled transfer
     Q_INVOKABLE void cbRestartTransfer(int transferId);
 
+    // Clear a finished, failed or canceled transfer
+    Q_INVOKABLE void clearTransfer(int transferId);
+
     // Clear all finished, failed or canceled transfers
     Q_INVOKABLE void clearTransfers();
 
