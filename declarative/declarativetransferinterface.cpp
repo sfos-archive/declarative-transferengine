@@ -15,7 +15,6 @@ DeclarativeTransferInterface::DeclarativeTransferInterface(QQuickItem *parent) :
     d->m_client = new TransferEngineClient(this);
 }
 
-
 DeclarativeTransferInterface::~DeclarativeTransferInterface()
 {
     Q_D(DeclarativeTransferInterface);
@@ -37,6 +36,11 @@ void DeclarativeTransferInterface::cbRestartTransfer(int transferId)
     d->m_client->cbRestartTransfer(transferId);
 }
 
+void DeclarativeTransferInterface::clearTransfer(int transferId)
+{
+    Q_D(DeclarativeTransferInterface);
+    d->m_client->clearTransfer(transferId);
+}
 
 void DeclarativeTransferInterface::clearTransfers()
 {
@@ -49,8 +53,6 @@ void DeclarativeTransferInterface::startTransfer(int transferId)
     Q_D(const DeclarativeTransferInterface);
     d->m_client->startTransfer(transferId);
 }
-
-
 
 void DeclarativeTransferInterface::setNotifications(bool enable)
 {
