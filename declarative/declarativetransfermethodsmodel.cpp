@@ -12,7 +12,8 @@ DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(D
     m_data(),
     m_filter(),
     m_filteredData(),
-    m_accountManager(0)
+    m_accountManager(0),
+    m_ready(false)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                                "/org/nemo/transferengine",
@@ -45,6 +46,7 @@ void DeclarativeTransferMethodsModelPrivate::updateModel()
 
 void DeclarativeTransferMethodsModelPrivate::modelDataReceived(QDBusPendingCallWatcher *call)
 {
+    Q_Q(DeclarativeTransferMethodsModel);
     QDBusPendingReply<QList<TransferMethodInfo> > reply = *call;
 
     if (reply.isError()) {
@@ -52,6 +54,11 @@ void DeclarativeTransferMethodsModelPrivate::modelDataReceived(QDBusPendingCallW
     } else {
         m_data = reply.value();
         filterModel();
+        // Mark model as ready model data is received for the first time.
+        if (!m_ready) {
+            m_ready = true;
+            emit q->readyChanged();
+        }
     }
     call->deleteLater();
 }
@@ -182,6 +189,11 @@ int DeclarativeTransferMethodsModel::rowCount(const QModelIndex & parent) const
     return d->m_filteredData.count();
 }
 
+bool DeclarativeTransferMethodsModel::ready() const
+{
+    Q_D(const DeclarativeTransferMethodsModel);
+    return d->m_ready;
+}
 
 QString DeclarativeTransferMethodsModel::filter() const
 {
