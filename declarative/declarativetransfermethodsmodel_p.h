@@ -38,6 +38,7 @@ public:
     QString m_filter;
     QList<int> m_filteredData;
     Accounts::Manager *m_accountManager;
+    bool m_ready;
 };
 
 #endif // DECLARATIVETRANSFERMETHODSMODEL_P_H
