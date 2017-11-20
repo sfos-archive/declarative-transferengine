@@ -62,7 +62,6 @@ Requires: ambient-icons-closed
 %files -n jolla-settings-transferui-qt5
 %defattr(-,root,root,-)
 %{_datadir}/jolla-settings/entries/transferui.json
-%{_datadir}/jolla-settings/pages/transferui/TransferCover.qml
 %{_datadir}/jolla-settings/pages/transferui/mainpage.qml
 %{_datadir}/nemo-transferengine/*.conf
 %{_datadir}/lipstick/notificationcategories/*.conf

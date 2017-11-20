@@ -344,6 +344,10 @@ Page {
         id: transferInterface
     }
 
+    TransferModel {
+        id: transferModel
+    }
+
     // Actual list which displays transfers
     SilicaListView {
         id: transferList
