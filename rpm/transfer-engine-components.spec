@@ -64,7 +64,6 @@ Requires: ambient-icons-closed
 %{_datadir}/jolla-settings/entries/transferui.json
 %{_datadir}/jolla-settings/pages/transferui/mainpage.qml
 %{_datadir}/nemo-transferengine/*.conf
-%{_datadir}/lipstick/notificationcategories/*.conf
 
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine
