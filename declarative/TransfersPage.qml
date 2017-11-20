@@ -351,7 +351,6 @@ Page {
     // Actual list which displays transfers
     SilicaListView {
         id: transferList
-        property Item contextMenu
 
         header: PageHeader {
             //% "Transfers"
