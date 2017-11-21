@@ -344,10 +344,13 @@ Page {
         id: transferInterface
     }
 
+    TransferModel {
+        id: transferModel
+    }
+
     // Actual list which displays transfers
     SilicaListView {
         id: transferList
-        property Item contextMenu
 
         header: PageHeader {
             //% "Transfers"
@@ -385,10 +388,11 @@ Page {
 
         //% "Transfers"
         appName: qsTrId("transferui-ap-name")
-        category: "x-jolla.transferui.error"
+        appIcon: "icon-lock-warning"
+        icon: "icon-lock-warning"
+        isTransient: true
 
-        function show(summary)
-        {
+        function show(summary) {
             previewSummary = summary
             publish()
         }
