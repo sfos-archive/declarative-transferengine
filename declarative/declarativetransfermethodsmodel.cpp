@@ -38,7 +38,7 @@ DeclarativeTransferMethodsModelPrivate::~DeclarativeTransferMethodsModelPrivate(
 
 void DeclarativeTransferMethodsModelPrivate::updateModel()
 {
-    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(m_client->transferMethods(), this);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(m_client->transferMethods2(), this);
 
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
             this, SLOT(modelDataReceived(QDBusPendingCallWatcher*)));
@@ -167,6 +167,7 @@ QHash<int, QByteArray> DeclarativeTransferMethodsModel::roleNames() const
     roleNames[TransferMethodInfo::MethodId]         = "methodId";
     roleNames[TransferMethodInfo::ShareUIPath]      = "shareUIPath";
     roleNames[TransferMethodInfo::AccountId]        = "accountId";
+    roleNames[TransferMethodInfo::AccountIcon]      = "accountIcon";
 
     return roleNames;
 }
