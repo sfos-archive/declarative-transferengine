@@ -12,7 +12,7 @@ class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlPar
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)
     Q_PROPERTY(bool ready READ ready NOTIFY readyChanged)
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
-
+    Q_INTERFACES(QQmlParserStatus)
 public:
 
     explicit  DeclarativeTransferMethodsModel(QObject *parent = 0);
