@@ -100,6 +100,12 @@ int DeclarativeTransferMethodsModelPrivate::findMethod(const QString &methodId) 
 void DeclarativeTransferMethodsModelPrivate::filterModel()
 {
     Q_Q(DeclarativeTransferMethodsModel);
+
+    // Model is small so let's just reset it to instead of keeping
+    // track which model items have changed i.e. added or removed
+    // after filtering. Works fine for a relatively small amount of items.
+    q->beginResetModel();
+
     const int oldRowCount = m_filteredData.count();
     m_filteredData.clear();
 
@@ -122,11 +128,8 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
             ++index;
         }
     }
-    // Model is small so let's just reset it to instead of keeping
-    // track which model items have changed i.e. added or removed
-    // after filtering. Works fine for a relatively small amount of items.
-    q->reset();
 
+    q->endResetModel();
 
     if (oldRowCount != m_filteredData.count()) {
         emit q->rowCountChanged();
@@ -138,7 +141,6 @@ DeclarativeTransferMethodsModel::DeclarativeTransferMethodsModel(QObject *parent
     QQmlParserStatus(),
     d_ptr(new DeclarativeTransferMethodsModelPrivate(this))
 {
-
 }
 
 DeclarativeTransferMethodsModel::~DeclarativeTransferMethodsModel()
@@ -149,10 +151,15 @@ DeclarativeTransferMethodsModel::~DeclarativeTransferMethodsModel()
 
 void DeclarativeTransferMethodsModel::classBegin()
 {
-
 }
 
 void DeclarativeTransferMethodsModel::componentComplete()
+{
+    Q_D(DeclarativeTransferMethodsModel);
+    d->updateModel();
+}
+
+QHash<int, QByteArray> DeclarativeTransferMethodsModel::roleNames() const
 {
     QHash<int, QByteArray> roleNames;
     roleNames[TransferMethodInfo::DisplayName]      = "displayName";
@@ -160,10 +167,8 @@ void DeclarativeTransferMethodsModel::componentComplete()
     roleNames[TransferMethodInfo::MethodId]         = "methodId";
     roleNames[TransferMethodInfo::ShareUIPath]      = "shareUIPath";
     roleNames[TransferMethodInfo::AccountId]        = "accountId";
-    setRoleNames(roleNames);
 
-    Q_D(DeclarativeTransferMethodsModel);
-    d->updateModel();
+    return roleNames;
 }
 
 QVariant DeclarativeTransferMethodsModel::data(const QModelIndex & index, int role) const

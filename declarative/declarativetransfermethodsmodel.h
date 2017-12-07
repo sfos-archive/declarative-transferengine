@@ -21,6 +21,7 @@ public:
     void classBegin();
     void componentComplete();
 
+    QHash<int, QByteArray> roleNames() const;
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
 
