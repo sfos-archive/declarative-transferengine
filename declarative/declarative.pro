@@ -16,15 +16,12 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x000000
 SOURCES += \
     declarative_plugin.cpp \
     declarativeshare.cpp \
-    declarativetransfermodel.cpp \
     declarativetransferinterface.cpp \
     declarativetransfermethodsmodel.cpp
 
 HEADERS += \
     declarative_plugin.h \
-    declarativetransfermodel.h \
     declarativeshare.h \
-    declarativetransfermodel_p.h \
     declarativetransferinterface.h \
     declarativeshare_p.h \
     declarativetransfermethodsmodel.h \

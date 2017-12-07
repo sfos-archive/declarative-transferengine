@@ -16,9 +16,9 @@ DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(D
     m_ready(false)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
-                                               "/org/nemo/transferengine",
-                                               QDBusConnection::sessionBus(),
-                                               this);
+                                           "/org/nemo/transferengine",
+                                           QDBusConnection::sessionBus(),
+                                           this);
 
     connect(m_client, SIGNAL(transferMethodListChanged()), this, SLOT(updateModel()));
 
