@@ -1,6 +1,5 @@
 #include "declarative_plugin.h"
 #include "declarativeshare.h"
-#include "declarativetransfermodel.h"
 #include "declarativetransferinterface.h"
 #include "declarativetransfermethodsmodel.h"
 #include "transferdbrecord.h"
@@ -65,7 +64,6 @@ void DeclarativePlugin::registerTypes(const char *uri)
 
     // @uri Sailfish.TransferEngine
     qmlRegisterType<DeclarativeShare>(uri, 1, 0, "SailfishShare");
-    qmlRegisterType<DeclarativeTransferModel>(uri, 1, 0, "SailfishTransferModel");
     qmlRegisterType<DeclarativeTransferInterface>(uri, 1, 0, "SailfishTransferInterface");
     qmlRegisterType<DeclarativeTransferMethodsModel>(uri, 1, 0, "SailfishTransferMethodsModel");
 }

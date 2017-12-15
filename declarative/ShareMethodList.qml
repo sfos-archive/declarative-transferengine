@@ -8,7 +8,6 @@ SilicaListView {
     property url source
     property variant content: ({})
 
-    property string listHeader // deprecated
     property alias filter: transferMethodsModel.filter
 
     model: SailfishTransferMethodsModel { id: transferMethodsModel }
@@ -16,7 +15,6 @@ SilicaListView {
     width: parent.width
     height: Theme.itemSizeSmall * transferMethodsModel.count
 
-    onListHeaderChanged: console.log("ShareMethodList.listHeader deprecated")
     delegate: BackgroundItem {
         id: backgroundItem
 
