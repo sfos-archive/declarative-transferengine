@@ -122,12 +122,7 @@ Page {
 
             menu: contextMenuComponent
             showMenuOnPressAndHold: false
-
-            // Adjust height if file name is very long
-            contentHeight: Math.max(thumbnail.height,
-                                    transferTypeIcon.height
-                                    + transferProgressBar.height + fileNameLabel.height
-                                    + Theme.paddingMedium*2)    // padding above and below status+progress+filename details
+            contentHeight: Math.max(thumbnail.height, fileNameLabel.y + fileNameLabel.height + Theme.paddingMedium)
 
             // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
             onFileUrlChanged: if (thumbnailItem == null) thumbnailItem = shareThumbnail.createObject(thumbnail)
@@ -230,7 +225,7 @@ Page {
                 }
                 leftMargin: 0
                 rightMargin: Theme.horizontalPageMargin
-                height: visible ? Theme.itemSizeSmall : Theme.paddingMedium
+                height: visible ? implicitHeight : Theme.paddingMedium
                 value: visible ? progress : 0
                 visible: status === TransferModel.TransferStarted
                 indeterminate: progress < 0 || 1 < progress
