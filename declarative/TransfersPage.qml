@@ -121,7 +121,7 @@ Page {
             property Item thumbnailItem
 
             menu: contextMenuComponent
-            showMenuOnPressAndHold: false
+            openMenuOnPressAndHold: false
             contentHeight: Math.max(thumbnail.height, fileNameLabel.y + fileNameLabel.height + Theme.paddingMedium)
 
             // Load thumbs on demand and only once. Note that share thumbnail is used only for local images/thumbs
@@ -130,7 +130,7 @@ Page {
             onAppIconUrlChanged: if (thumbnailItem == null) thumbnailItem = appThumbnail.createObject(thumbnail)
 
             // Close open context menu, if the status changes
-            onTransferStatusChanged: hideMenu()
+            onTransferStatusChanged: closeMenu()
 
             // Component for local thumbnails. Used for Upload or 'finished' entries.
             Component {
@@ -264,7 +264,7 @@ Page {
 
             onPressAndHold: {
                 if (down) {
-                    showTransferContextMenu()
+                    openTransferContextMenu()
                 }
             }
 
@@ -315,17 +315,17 @@ Page {
                     return;
                 }
 
-                showTransferContextMenu()
+                openTransferContextMenu()
             }
 
-            function showTransferContextMenu() {
+            function openTransferContextMenu() {
                 // There must be something enabled in order to show context menu
                 var canRemove = status != TransferModel.TransferStarted
                 var canCancel = model.cancelEnabled && status == TransferModel.TransferStarted
                 var canRestart = model.restartEnabled
                         && (status == TransferModel.TransferInterrupted || status == TransferModel.TransferCanceled)
                 if (canRemove || canCancel || canRestart) {
-                    showMenu({"transferId": transferId,
+                    openMenu({"transferId": transferId,
                               "removeEnabled": canRemove,
                               "cancelEnabled": canCancel,
                               "restartEnabled": canRestart})
