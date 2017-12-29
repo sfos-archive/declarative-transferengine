@@ -367,7 +367,7 @@ Page {
         }
 
         ViewPlaceholder {
-            enabled: transferModel.count === 0
+            enabled: transferModel.count === 0 && transferModel.status == TransferModel.Finished
             //% "No Transfers"
             text: qsTrId("transferui-la-no_transfers")
         }
