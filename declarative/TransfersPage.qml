@@ -230,6 +230,7 @@ Page {
                 visible: status === TransferModel.TransferStarted
                 indeterminate: progress < 0 || 1 < progress
                 clip: true
+                highlighted: transferEntry.highlighted
 
                 Behavior on height { NumberAnimation {} }
             }
