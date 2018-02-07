@@ -16,9 +16,14 @@ SilicaListView {
     height: Theme.itemSizeSmall * transferMethodsModel.count
 
     delegate: BackgroundItem {
-        id: backgroundItem
-
         width: rootList.width
+
+        Image {
+            id: icon
+            x: Theme.horizontalPageMargin
+            anchors.verticalCenter: parent.verticalCenter
+            source: model.accountIcon
+        }
 
         Label {
             id: displayNameLabel
@@ -26,15 +31,18 @@ SilicaListView {
             // This module already loads plugin translations so let's make sure that also
             // display name is translated if it contains the id..
             text: qsTrId(displayName)
-            color: backgroundItem.highlighted ? Theme.highlightColor : Theme.primaryColor
+            color: highlighted ? Theme.highlightColor : Theme.primaryColor
             truncationMode: TruncationMode.Fade
-            x: Theme.horizontalPageMargin
-            anchors.verticalCenter: parent.verticalCenter
-            width: Math.min(implicitWidth, parent.width - 2*Theme.horizontalPageMargin)
+            anchors {
+                left: icon.right
+                leftMargin: Theme.paddingMedium
+                verticalCenter: parent.verticalCenter
+            }
+            width: Math.min(implicitWidth, parent.width - x - Theme.horizontalPageMargin)
         }
         SecondaryLabel {
             text: userName
-            color: backgroundItem.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+            color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
             truncationMode: TruncationMode.Fade
             anchors {
                 left: displayNameLabel.right
