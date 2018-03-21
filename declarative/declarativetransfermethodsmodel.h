@@ -6,6 +6,7 @@
 
 class QDBusPendingCallWatcher;
 class DeclarativeTransferMethodsModelPrivate;
+
 class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
@@ -13,8 +14,8 @@ class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlPar
     Q_PROPERTY(bool ready READ ready NOTIFY readyChanged)
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
     Q_INTERFACES(QQmlParserStatus)
-public:
 
+public:
     explicit  DeclarativeTransferMethodsModel(QObject *parent = 0);
     ~DeclarativeTransferMethodsModel();
 
@@ -22,8 +23,8 @@ public:
     void componentComplete();
 
     QHash<int, QByteArray> roleNames() const;
-    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-    int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     bool ready() const;
 

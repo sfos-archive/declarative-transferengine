@@ -10,7 +10,6 @@ uri = Sailfish.TransferEngine
 CONFIG += link_pkgconfig
 PKGCONFIG += nemotransferengine-qt5 accounts-qt5
 
-# Input
 SOURCES += \
     declarative_plugin.cpp \
     declarativeshare.cpp \
@@ -25,14 +24,7 @@ HEADERS += \
     declarativetransfermethodsmodel.h \
     declarativetransfermethodsmodel_p.h
 
-OTHER_FILES = qmldir \
-              *.qml \
-    ShareMethodList.qml \
-    ShareMenu.qml \
-    PrimaryLabel.qml \
-    SecondaryLabel.qml \
-    ShareDialog.qml
-
+OTHER_FILES = qmldir *.qml
 
 TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
 EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
