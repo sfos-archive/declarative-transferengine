@@ -71,4 +71,3 @@ qmldir.path = $$installPath
 target.path = $$installPath
 
 INSTALLS += target qmldir translations_install engineering_english_install
-

@@ -15,6 +15,7 @@ SilicaListView {
     property alias containerPage: accountCreator.endDestination
     property alias serviceFilter: accountCreator.serviceFilter
     property bool showAddAccount: true
+    property var shareEndDestination
 
     // allows to show extra items for sharing possibilities
     property Component additionalShareComponent
@@ -40,7 +41,8 @@ SilicaListView {
                                methodId: methodId,
                                displayName: displayName,
                                accountId: accountId,
-                               accountName: userName
+                               accountName: userName,
+                               shareEndDestination: rootList.shareEndDestination
                            })
         }
     }
