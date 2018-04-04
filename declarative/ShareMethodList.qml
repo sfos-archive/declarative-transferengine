@@ -69,6 +69,15 @@ SilicaListView {
         }
     }
 
+    ViewPlaceholder {
+        enabled: !rootList.showAddAccount && !rootList.additionalShareComponent
+                 && transferMethodsModel.count === 0 && transferMethodsModel.ready
+
+        //: Empty state placeholder for share page
+        //% "No sharing accounts available. You can add accounts in settings"
+        text: qsTrId("transferui-la-no_accounts")
+    }
+
     SignonUiService {
         id: jolla_signon_ui_service
     }

@@ -9,6 +9,7 @@ Page {
     property alias content: shareMethodList.content
     property alias additionalShareComponent: shareMethodList.additionalShareComponent
     property alias serviceFilter: shareMethodList.serviceFilter
+    property alias showAddAccount: shareMethodList.showAddAccount
 
     //: Page header for share method selection
     //% "Share"
