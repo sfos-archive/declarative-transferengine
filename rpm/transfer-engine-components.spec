@@ -1,10 +1,10 @@
 Name: declarative-transferengine-qt5
-Version: 0.3.2
-Release: 0
+Version: 0.3.5
+Release: 1
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 Group: System/Libraries
 License: Proprietary
-URL: TBD
+URL: http://sailfishos.org
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(Qt5DBus)
@@ -83,9 +83,8 @@ Translation source for Sailfish TransferEngine
 
 %qmake5
 
-make %{?jobs:-j%jobs}
+make %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
 %qmake5_install
-
