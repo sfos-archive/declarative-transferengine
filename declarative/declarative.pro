@@ -24,7 +24,7 @@ HEADERS += \
     declarativetransfermethodsmodel.h \
     declarativetransfermethodsmodel_p.h
 
-OTHER_FILES = qmldir *.qml
+OTHER_FILES = plugins.qmltypes qmldir *.qml
 
 TS_FILE = $$OUT_PWD/sailfish_transferengine.ts
 EE_QM = $$OUT_PWD/sailfish_transferengine_eng_en.qm
@@ -65,9 +65,12 @@ PRE_TARGETDEPS += translations engineering_english
 
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
-qmldir.files = qmldir *.qml
+qmldir.files = plugins.qmltypes qmldir *.qml
 qmldir.path = $$installPath
 
 target.path = $$installPath
 
 INSTALLS += target qmldir translations_install engineering_english_install
+
+qmltypes.commands = qmlplugindump -nonrelocatable $$uri 1.0 > $$PWD/plugins.qmltypes
+QMAKE_EXTRA_TARGETS += qmltypes

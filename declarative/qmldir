@@ -5,3 +5,4 @@ ShareMethodList 1.0 ShareMethodList.qml
 ShareMethodItem 1.0 ShareMethodItem.qml
 ShareDialog 1.0 ShareDialog.qml
 SharePage 1.0 SharePage.qml
+typeinfo plugins.qmltypes
