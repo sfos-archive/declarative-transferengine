@@ -58,7 +58,7 @@ SilicaListView {
         ShareMethodItem {
             id: addItem
 
-            visible: rootList.showAddAccount
+            visible: rootList.showAddAccount && transferMethodsModel.ready
             iconSource: "image://theme/icon-m-add" + (addItem.highlighted ? "?" + Theme.highlightColor : "")
             //% "Add account"
             text: qsTrId("transferui-la-add_account")
