@@ -35,15 +35,15 @@ SilicaListView {
         description: userName
 
         onClicked: {
-            pageStack.push(shareUIPath, {
-                               source: rootList.source,
-                               content: rootList.content,
-                               methodId: methodId,
-                               displayName: displayName,
-                               accountId: accountId,
-                               accountName: userName,
-                               shareEndDestination: rootList.shareEndDestination
-                           })
+            pageStack.animatorPush(shareUIPath, {
+                                       source: rootList.source,
+                                       content: rootList.content,
+                                       methodId: methodId,
+                                       displayName: displayName,
+                                       accountId: accountId,
+                                       accountName: userName,
+                                       shareEndDestination: rootList.shareEndDestination
+                                   })
         }
     }
 
