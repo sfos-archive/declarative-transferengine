@@ -28,6 +28,8 @@ Page {
     ShareMethodList {
         id: shareMethodList
 
+        opacity: model.ready ? 1.0 : 0.0
+        Behavior on opacity { FadeAnimator {}}
         height: parent.height
         header: PageHeader {
             title: page.header

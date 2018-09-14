@@ -16,22 +16,22 @@ ApplicationWindow {
 
             Button {
                 text: "Share Images"
-                onClicked: pageStack.push(Qt.resolvedUrl("GridPage.qml"))
+                onClicked: pageStack.animatorPush(Qt.resolvedUrl("GridPage.qml"))
             }
 
             Button {
                 text: "Test Download/Sync"
-                onClicked: pageStack.push(Qt.resolvedUrl("TransferItemTestPage.qml"))
+                onClicked: pageStack.animatorPush(Qt.resolvedUrl("TransferItemTestPage.qml"))
             }
 
             Button {
                 text: "Transfer Status"
-                onClicked: pageStack.push(transfersPage)
+                onClicked: pageStack.animatorPush(transfersPage)
             }
 
             Button {
                 text: "Accounts"
-                onClicked: pageStack.push( Qt.resolvedUrl("AccountsSelectionPage.qml") )
+                onClicked: pageStack.animatorPush( Qt.resolvedUrl("AccountsSelectionPage.qml") )
             }
         }
 

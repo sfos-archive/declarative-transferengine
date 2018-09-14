@@ -35,15 +35,15 @@ SilicaListView {
         description: userName
 
         onClicked: {
-            pageStack.push(shareUIPath, {
-                               source: rootList.source,
-                               content: rootList.content,
-                               methodId: methodId,
-                               displayName: displayName,
-                               accountId: accountId,
-                               accountName: userName,
-                               shareEndDestination: rootList.shareEndDestination
-                           })
+            pageStack.animatorPush(shareUIPath, {
+                                       source: rootList.source,
+                                       content: rootList.content,
+                                       methodId: methodId,
+                                       displayName: displayName,
+                                       accountId: accountId,
+                                       accountName: userName,
+                                       shareEndDestination: rootList.shareEndDestination
+                                   })
         }
     }
 
@@ -58,7 +58,7 @@ SilicaListView {
         ShareMethodItem {
             id: addItem
 
-            visible: rootList.showAddAccount
+            visible: rootList.showAddAccount && transferMethodsModel.ready
             iconSource: "image://theme/icon-m-add" + (addItem.highlighted ? "?" + Theme.highlightColor : "")
             //% "Add account"
             text: qsTrId("transferui-la-add_account")
