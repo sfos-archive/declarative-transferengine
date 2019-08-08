@@ -139,7 +139,7 @@ Page {
                     anchors.fill: parent
                     sourceSize.width: width
                     sourceSize.height: height
-                    opacity: mimeTypeImage.source == "" ? 1.0 : 0.8
+                    opacity: mimeTypeImage.source == "" ? 1.0 : Theme.opacityOverlay
                     source: thumbnailUrl != "" ? thumbnailUrl : fileUrl
                     priority: (status == Thumbnail.Ready || status == Thumbnail.Error)
                               ? Thumbnail.NormalPriority

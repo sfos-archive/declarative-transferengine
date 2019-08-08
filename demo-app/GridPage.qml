@@ -53,7 +53,7 @@ Page {
         // Background
         Rectangle {
             color: "black"
-            opacity: 0.85
+            opacity: Theme.opacityOverlay
             anchors.fill: parent
         }
 
