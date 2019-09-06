@@ -6,15 +6,15 @@
 
 #include <Accounts/Manager>
 
-DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent):
-    QObject(parent),
-    q_ptr(parent),
-    m_client(0),
-    m_data(),
-    m_filter(),
-    m_filteredData(),
-    m_accountManager(0),
-    m_ready(false)
+DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent)
+    : QObject(parent),
+      q_ptr(parent),
+      m_client(0),
+      m_data(),
+      m_filter(),
+      m_filteredData(),
+      m_accountManager(0),
+      m_ready(false)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                            "/org/nemo/transferengine",
