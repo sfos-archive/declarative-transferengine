@@ -2,6 +2,7 @@
 #include "declarativetransfermethodsmodel_p.h"
 #include "transferengineinterface.h"
 #include "transfermethodinfo.h"
+#include "transferplugininfo.h"
 
 #include <Accounts/Manager>
 
@@ -39,9 +40,12 @@ DeclarativeTransferMethodsModelPrivate::~DeclarativeTransferMethodsModelPrivate(
 void DeclarativeTransferMethodsModelPrivate::updateModel()
 {
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(m_client->transferMethods2(), this);
-
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
             this, SLOT(modelDataReceived(QDBusPendingCallWatcher*)));
+
+    QDBusPendingCallWatcher *pluginMetaDataWatcher = new QDBusPendingCallWatcher(m_client->pluginMetaData(), this);
+    connect(pluginMetaDataWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            this, SLOT(pluginMetaDataReceived(QDBusPendingCallWatcher*)));
 }
 
 void DeclarativeTransferMethodsModelPrivate::modelDataReceived(QDBusPendingCallWatcher *call)
@@ -94,6 +98,52 @@ int DeclarativeTransferMethodsModelPrivate::findMethod(const QString &methodId) 
     return -1;
 }
 
+bool DeclarativeTransferMethodsModelPrivate::filterAcceptsCapabilities(const QStringList &capabilities)
+{
+    if (m_filter.isEmpty() || m_filter == QLatin1String("*")) {
+        return true;
+    }
+
+    const int slashIndex = m_filter.indexOf('/');
+    const QString subTypeWildcard = slashIndex >= 0 ? m_filter.mid(0, slashIndex) + "/*" : QString();
+    return capabilities.contains(m_filter)
+            || capabilities.contains(subTypeWildcard)
+            || capabilities.contains(QStringLiteral("*"));
+}
+
+void DeclarativeTransferMethodsModelPrivate::pluginMetaDataReceived(QDBusPendingCallWatcher *call)
+{
+    Q_Q(DeclarativeTransferMethodsModel);
+    QDBusPendingReply<QList<QVariantMap> > reply = *call;
+    call->deleteLater();
+
+    if (reply.isError()) {
+        qWarning() << Q_FUNC_INFO << reply.error().message();
+        return;
+    }
+
+    QList<QVariantMap> metaDataList = reply.value();
+    if (m_pluginsMetaData == metaDataList) {
+        return;
+    }
+
+    m_pluginsMetaData = metaDataList;
+
+    QStringList accountProviderNames;
+    for (const QVariantMap &map : m_pluginsMetaData) {
+        const QString providerName = map.value(QStringLiteral("accountProviderName")).toString();
+        const QStringList capabilities = map.value(QStringLiteral("capabilities")).toStringList();
+        if (!providerName.isEmpty() && filterAcceptsCapabilities(capabilities)) {
+            accountProviderNames << providerName;
+        }
+    }
+
+    if (m_accountProviderNames != accountProviderNames) {
+        m_accountProviderNames = accountProviderNames;
+        emit q->accountProviderNamesChanged();
+    }
+}
+
 // Filtering model is made by storing indeces of the items in m_data
 // which match the filtering criteria. Stored indeces in m_filteredData
 // are used for  accessing data from m_data.
@@ -116,15 +166,10 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
         }
     } else {
         int index = 0;
-        int slashIndex = m_filter.indexOf('/');
-        QString subTypeWildcard = slashIndex >= 0 ? m_filter.mid(0, slashIndex) + "/*" : "";
-        Q_FOREACH(TransferMethodInfo info, m_data) {
-            if (info.capabilitities.contains(m_filter) ||
-                info.capabilitities.contains(subTypeWildcard) ||
-                info.capabilitities.contains(QLatin1String("*"))) {
+        Q_FOREACH(const TransferMethodInfo &info, m_data) {
+            if (filterAcceptsCapabilities(info.capabilitities)) {
                 m_filteredData.append(index);
             }
-
             ++index;
         }
     }
@@ -199,6 +244,12 @@ bool DeclarativeTransferMethodsModel::ready() const
 {
     Q_D(const DeclarativeTransferMethodsModel);
     return d->m_ready;
+}
+
+QStringList DeclarativeTransferMethodsModel::accountProviderNames() const
+{
+    Q_D(const DeclarativeTransferMethodsModel);
+    return d->m_accountProviderNames;
 }
 
 QString DeclarativeTransferMethodsModel::filter() const

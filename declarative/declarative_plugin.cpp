@@ -4,6 +4,7 @@
 #include "declarativetransfermethodsmodel.h"
 #include "transferdbrecord.h"
 #include "transfermethodinfo.h"
+#include "transferplugininfo.h"
 
 #include <QQmlEngine>
 #include <QCoreApplication>
@@ -71,6 +72,7 @@ void DeclarativePlugin::registerTypes(const char *uri)
 {
     TransferMethodInfo::registerType();
     TransferDBRecord::registerType();
+    TransferPluginInfo::registerType();
 
     // @uri Sailfish.TransferEngine
     qmlRegisterType<DeclarativeShare>(uri, 1, 0, "SailfishShare");
