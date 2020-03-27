@@ -37,6 +37,7 @@ ShareDialog {
         id: shareItem
 
         source: root.source
+        content: root.content
         serviceId: root.methodId
         mimeType: fileInfo.mimeType
         userData: {
