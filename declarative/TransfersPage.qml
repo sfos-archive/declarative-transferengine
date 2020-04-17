@@ -4,7 +4,6 @@ import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
 import org.nemomobile.notifications 1.0
 import org.nemomobile.transferengine 1.0
-import org.nemomobile.contentaction 1.0
 
 Page {
     id: transfersPage
@@ -285,39 +284,7 @@ Page {
 
                     // Only open the URL externally if it's not a http(s) URL
                     if (path.substr(0, 7) != 'http://' && path.substr(0, 8) != 'https://') {
-                        var ok = ContentAction.trigger(path)
-                        if (!ok) {
-                            switch (ContentAction.error) {
-                            case ContentAction.FileTypeNotSupported:
-                                if (mimeType != "") {
-                                    //: Notification text shown when user tries to open a file of a particular type that is not supported. %1 = the file type
-                                    //% "Cannot open file, '%1' file type not supported"
-                                    errorNotification.show(qsTrId("transferui-la-file_type_specific_not_supported").arg(mimeType))
-                                } else {
-                                    //: Notification text shown when user tries to open a file of a type that is not supported
-                                    //% "Cannot open file, file type not supported"
-                                    errorNotification.show(qsTrId("transferui-la-file_type_not_supported"))
-                                }
-                                break
-                            case ContentAction.FileDoesNotExist:
-                                //: Notification text shown when user tries to open a file but the file is not found locally.
-                                //% "Cannot open file, file was not found"
-                                errorNotification.show(qsTrId("transferui-la-file_not_found"))
-                                break
-                            case ContentAction.UrlSchemeNotSupported:
-                                //: Notification text shown when user tries to open a URL but the URL type is not supported. %1 = the URL
-                                //% "Cannot open URL, unsupported URL scheme for %1"
-                                errorNotification.show(qsTrId("transferui-la-url_scheme_not_supported").arg(url))
-                                break
-                            case ContentAction.InvalidUrl:
-                                //: Notification text shown when user tries to open a URL but the URL is invalid
-                                //% "Cannot open URL, URL is invalid"
-                                errorNotification.show(qsTrId("transferui-la-url_invalid"))
-                                break
-                            default:
-                                console.log("Unknown content action error!")
-                            }
-                        }
+                        Qt.openUrlExternally(path)
                     }
                     return;
                 }
