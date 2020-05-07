@@ -78,34 +78,11 @@ Page {
     }
 
     function mimeTypeIcon(mimeType, highlight) {
-        if (mimeType.length === 0)
-            return ""
-        var type = mimeType.split("/");
-        var imgSource = ""
-
-        // Handle basic media types
-        if (type[0] === "image") {
-            return ""   // no mime type icon for images
-        } else if (type[0] === "video") {
-            imgSource = "image://theme/icon-m-video"
-        } else if (type[0] === "audio") {
-            imgSource = "image://theme/icon-m-music"
-        } else if (type[1].indexOf("excel")
-                   || type[1].indexOf("pdf")
-                   || type[1].indexOf("word")
-                   || type[1].indexOf("powerpoint")) {
-            // TODO: CHECK the rest of document types
-            imgSource = "image://theme/icon-m-document"
-        } else if (type[1].indexOf("vcard")) {
-            // handle contacts
-            imgSource = "image://theme/icon-m-people"
+        if (mimeType.length > 0 && mimeType.split("/")[0] === "image") {
+            return "" // no icon for images as the preview is already shown
         } else {
-            imgSource = "image://theme/icon-m-other"
+            return Theme.iconForMimeType(mimeType) + (highlight ? "?" + Theme.highlightColor : "")
         }
-        if (highlight) {
-            imgSource += "?" + Theme.highlightColor
-        }
-        return imgSource
     }
 
     // Delegate for a transfer entry in a list
