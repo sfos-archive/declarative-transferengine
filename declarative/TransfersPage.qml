@@ -150,11 +150,12 @@ Page {
                 id: thumbnail
                 width: Theme.itemSizeLarge
                 height: Theme.itemSizeLarge
+                readonly property bool isNeeded: thumbnailItem == null || thumbnailItem.status === Thumbnail.Null || thumbnailItem.status === Thumbnail.Error
 
                 // Placeholder for entries without thumbnails
                 Rectangle {
                     anchors.fill: parent
-                    visible: thumbnailItem == null || thumbnailItem.status === Thumbnail.Null || thumbnailItem.status === Thumbnail.Error
+                    visible: thumbnail.isNeeded
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: Theme.rgba(Theme.primaryColor, 0.1) }
                         GradientStop { position: 1.0; color: "transparent" }
@@ -164,7 +165,7 @@ Page {
                 Image {
                     id: mimeTypeImage
                     anchors.centerIn: parent
-                    source: mimeTypeIcon(mimeType, transferEntry.highlighted)
+                    source: thumbnail.isNeeded ? mimeTypeIcon(mimeType, transferEntry.highlighted) : ""
                     asynchronous: true
                     z: 1    // place above the image thumbnail
                 }
