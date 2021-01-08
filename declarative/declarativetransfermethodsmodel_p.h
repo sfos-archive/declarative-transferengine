@@ -45,6 +45,7 @@ public:
     Accounts::Manager *m_accountManager;
     QList<QVariantMap> m_pluginsMetaData;
     bool m_ready;
+    bool m_error;
 };
 
 #endif // DECLARATIVETRANSFERMETHODSMODEL_P_H

@@ -12,6 +12,7 @@ class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlPar
     Q_OBJECT
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)
     Q_PROPERTY(bool ready READ ready NOTIFY readyChanged)
+    Q_PROPERTY(bool error READ error NOTIFY errorChanged)
     Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
     Q_PROPERTY(QStringList accountProviderNames READ accountProviderNames NOTIFY accountProviderNamesChanged)
     Q_INTERFACES(QQmlParserStatus)
@@ -28,6 +29,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     bool ready() const;
+    bool error() const;
     QStringList accountProviderNames() const;
 
     QString filter() const;
@@ -39,6 +41,7 @@ public:
 Q_SIGNALS:
     void rowCountChanged();
     void readyChanged();
+    void errorChanged();
     void filterChanged();
     void accountProviderNamesChanged();
 
