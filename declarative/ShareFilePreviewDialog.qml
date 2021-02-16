@@ -13,6 +13,7 @@ import Sailfish.Gallery 1.0
 import Sailfish.FileManager 1.0
 import Sailfish.TransferEngine 1.0
 import org.nemomobile.thumbnailer 1.0
+import Nemo.FileManager 1.0
 
 ShareDialog {
     id: root
@@ -31,7 +32,7 @@ ShareDialog {
 
     FileInfo {
         id: fileInfo
-        source: root.source
+        url: root.source
     }
 
     SailfishShare {

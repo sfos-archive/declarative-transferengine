@@ -17,6 +17,7 @@ BuildRequires: qt5-qttools-linguist
 
 Requires: nemo-transferengine-qt5 >= 0.2.2
 Requires: sailfishsilica-qt5 >= 1.1.46
+Requires: nemo-qml-plugin-filemanager
 
 %description -n declarative-transferengine-qt5
 %{summary}.
