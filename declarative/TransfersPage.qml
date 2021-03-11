@@ -265,7 +265,8 @@ Page {
                 if (status === TransferModel.TransferFinished) {
                     var path = url
                     if (path.length > 0 && path[0] == '/') {
-                        path = 'file://' + path
+                        // Note: qt 5.6 seems to have still problem encoding %, but newer version work better
+                        path = "file://" + path.split("/").map(encodeURIComponent).join("/")
                     }
 
                     // Only open the URL externally if it's not a http(s) URL
