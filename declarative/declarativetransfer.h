@@ -1,8 +1,20 @@
-#ifndef DECLARATIVESHARE_H
-#define DECLARATIVESHARE_H
+/****************************************************************************************
+**
+** Copyright (c) 2013 - 2021 Jolla Ltd.
+** Copyright (c) 2021 Open Mobile Platform LLC.
+** All rights reserved.
+**
+** License: Proprietary.
+**
+****************************************************************************************/
+#ifndef DECLARATIVETRANSFER_H
+#define DECLARATIVETRANSFER_H
 
 #include <QQuickItem>
 #include "transfertypes.h"
+
+class QDBusPendingCallWatcher;
+class TransferEngineInterface;
 
 /**
  * QML Share element is a non-visual item which can be used for starting a share operation from
@@ -10,7 +22,7 @@
  *
  * import Sailfish.TransferEngine 1.0
  *
- * SailfishShare {
+ * SailfishTransfer {
  *      source: url
  *      mimeType: "image/jpeg"
  *      serviceId: "Facebook" // This must be retrieved from ShareMethodList
@@ -26,7 +38,7 @@
  * be shared instead of the file url. This is done by specifying a "content" object map with a
  * "data" value, and optionally, a "name" value:
  *
- * SailfishShare {
+ * SailfishTransfer {
  *      content: {"data": "BEGIN:VCARD\nVERSION:4.0\nN:Smith;John;;;\nEND:VCARD", "name": "JohnSmith.vcf"}
  * }
  *
@@ -43,22 +55,18 @@
  *  All the other keys are not stored by transfer engine, but the user data is passed
  *  to the C++ share plugin and it's in plugin reponsible to use user data.
  */
-class DeclarativeSharePrivate;
-class DeclarativeShare : public QQuickItem
+class DeclarativeTransfer : public QQuickItem
 {
     Q_OBJECT
-    Q_ENUMS(Status)
-
     Q_PROPERTY(QUrl source WRITE setSource READ source NOTIFY sourceChanged)
     Q_PROPERTY(QVariantMap content WRITE setContent READ content NOTIFY contentChanged)
-    Q_PROPERTY(QString serviceId WRITE setServiceId READ serviceId NOTIFY serviceIdChanged)
     Q_PROPERTY(QString mimeType WRITE setMimeType READ mimeType NOTIFY mimeTypeChanged)
     Q_PROPERTY(QVariantMap userData WRITE setUserData READ userData NOTIFY userDataChanged)
     Q_PROPERTY(bool metadataStripped WRITE setMetadataStripped READ metadataStripped NOTIFY metadataStrippedChanged)
     Q_PROPERTY(bool notificationsEnabled WRITE setNotificationsEnabled READ notificationsEnabled NOTIFY notificationsEnabledChanged)
+    Q_PROPERTY(QVariantMap transferMethodInfo WRITE setTransferMethodInfo READ transferMethodInfo NOTIFY transferMethodInfoChanged)
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
-
 
 public:
 
@@ -69,18 +77,16 @@ public:
         TransferFinished    = TransferEngineData::TransferFinished,
         TransferInterrupted = TransferEngineData::TransferInterrupted
     };
+    Q_ENUM(Status)
 
-    DeclarativeShare(QQuickItem *parent = 0);
-    ~DeclarativeShare();
+    DeclarativeTransfer(QQuickItem *parent = 0);
+    ~DeclarativeTransfer();
 
     void setContent(const QVariantMap &content);
     QVariantMap content() const;
 
     void setSource(const QUrl source);
     QUrl source() const;
-
-    void setServiceId(const QString &id);
-    QString serviceId() const;
 
     void setMimeType(const QString &mimeType);
     QString mimeType() const;
@@ -94,10 +100,14 @@ public:
     void setNotificationsEnabled(bool enable);
     bool notificationsEnabled() const;
 
+    void setTransferMethodInfo(const QVariantMap &transferMethodInfo);
+    QVariantMap transferMethodInfo() const;
+
     qreal progress() const;
 
-    DeclarativeShare::Status status() const;
+    DeclarativeTransfer::Status status() const;
 
+    Q_INVOKABLE void loadConfiguration(const QVariantMap &shareActionConfiguration);
     Q_INVOKABLE void start();
     Q_INVOKABLE void cancel();
 
@@ -109,16 +119,29 @@ Q_SIGNALS:
     void userDataChanged();
     void metadataStrippedChanged();
     void notificationsEnabledChanged();
+    void transferMethodInfoChanged();
     void progressChanged(qreal progress);
     void statusChanged(Status status);
 
 private:
-    DeclarativeSharePrivate *d_ptr;
-    Q_DECLARE_PRIVATE(DeclarativeShare)
-    Q_DISABLE_COPY(DeclarativeShare)
-};
+    void init();
+    void transferProgressChanged(int transferId, double progress);
+    void transferStatusChanged(int transferId, int status);
+    void transferIdReceived(QDBusPendingCallWatcher *call);
 
-QML_DECLARE_TYPE(DeclarativeShare)
+    QUrl m_source;
+    QVariantMap m_content;
+    QString m_mimeType;
+    QVariantMap m_userData;
+    QVariantMap m_transferMethodInfo;
+    bool m_metadataStripped = false;
+    bool m_notificationsEnabled = false;
+    int m_transferId = -1;
+    qreal m_progress = 0;
+    DeclarativeTransfer::Status m_status = DeclarativeTransfer::NotStarted;
+    DeclarativeTransfer::Status m_cachedStatus = DeclarativeTransfer::NotStarted;
+    TransferEngineInterface *m_client = nullptr;
+};
 
 #endif
 
