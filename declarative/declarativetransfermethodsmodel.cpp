@@ -5,17 +5,11 @@
 #include "transferplugininfo.h"
 
 #include <Accounts/Manager>
+#include <QDebug>
 
 DeclarativeTransferMethodsModelPrivate::DeclarativeTransferMethodsModelPrivate(DeclarativeTransferMethodsModel * parent)
-    : QObject(parent),
-      q_ptr(parent),
-      m_client(0),
-      m_data(),
-      m_filter(),
-      m_filteredData(),
-      m_accountManager(0),
-      m_ready(false),
-      m_error(false)
+    : QObject(parent)
+    , q_ptr(parent)
 {
     m_client = new TransferEngineInterface("org.nemo.transferengine",
                                            "/org/nemo/transferengine",
@@ -107,15 +101,19 @@ int DeclarativeTransferMethodsModelPrivate::findMethod(const QString &methodId) 
     return -1;
 }
 
-bool DeclarativeTransferMethodsModelPrivate::filterAcceptsCapabilities(const QStringList &capabilities)
+bool DeclarativeTransferMethodsModelPrivate::filterAccepts(const QStringList &capabilities, bool supportsMultipleFiles)
 {
-    if (m_filter.isEmpty() || m_filter == QLatin1String("*")) {
+    if (m_filterByMultipleFileSupport && !supportsMultipleFiles) {
+        return false;
+    }
+
+    if (m_mimeTypeFilter.isEmpty() || m_mimeTypeFilter == QLatin1String("*")) {
         return true;
     }
 
-    const int slashIndex = m_filter.indexOf('/');
-    const QString subTypeWildcard = slashIndex >= 0 ? m_filter.mid(0, slashIndex) + "/*" : QString();
-    return capabilities.contains(m_filter)
+    const int slashIndex = m_mimeTypeFilter.indexOf('/');
+    const QString subTypeWildcard = slashIndex >= 0 ? m_mimeTypeFilter.mid(0, slashIndex) + "/*" : QString();
+    return capabilities.contains(m_mimeTypeFilter)
             || capabilities.contains(subTypeWildcard)
             || capabilities.contains(QStringLiteral("*"));
 }
@@ -142,7 +140,8 @@ void DeclarativeTransferMethodsModelPrivate::pluginMetaDataReceived(QDBusPending
     for (const QVariantMap &map : m_pluginsMetaData) {
         const QString providerName = map.value(QStringLiteral("accountProviderName")).toString();
         const QStringList capabilities = map.value(QStringLiteral("capabilities")).toStringList();
-        if (!providerName.isEmpty() && filterAcceptsCapabilities(capabilities)) {
+
+        if (!providerName.isEmpty() && filterAccepts(capabilities, false)) {
             accountProviderNames << providerName;
         }
     }
@@ -168,15 +167,17 @@ void DeclarativeTransferMethodsModelPrivate::filterModel()
     const int oldRowCount = m_filteredData.count();
     m_filteredData.clear();
 
-    // Accept everything if using wildcard or filter is empty
-    if (m_filter.isEmpty() || m_filter == QLatin1String("*")) {
+    // Accept everything if multi-file support is not required, and capabilities filter accepts all
+    // file types.
+    if (!m_filterByMultipleFileSupport
+            && (m_mimeTypeFilter.isEmpty() || m_mimeTypeFilter == QLatin1String("*"))) {
         for (int i=0; i < m_data.count(); i++) {
             m_filteredData.append(i);
         }
     } else {
         int index = 0;
         Q_FOREACH(const TransferMethodInfo &info, m_data) {
-            if (filterAcceptsCapabilities(info.capabilitities)) {
+            if (filterAccepts(info.capabilitities, info.supportsMultipleFiles())) {
                 m_filteredData.append(index);
             }
             ++index;
@@ -216,12 +217,13 @@ void DeclarativeTransferMethodsModel::componentComplete()
 QHash<int, QByteArray> DeclarativeTransferMethodsModel::roleNames() const
 {
     QHash<int, QByteArray> roleNames;
-    roleNames[TransferMethodInfo::DisplayName]      = "displayName";
-    roleNames[TransferMethodInfo::UserName]         = "userName";
-    roleNames[TransferMethodInfo::MethodId]         = "methodId";
-    roleNames[TransferMethodInfo::ShareUIPath]      = "shareUIPath";
-    roleNames[TransferMethodInfo::AccountId]        = "accountId";
-    roleNames[TransferMethodInfo::AccountIcon]      = "accountIcon";
+    roleNames[TransferMethodInfo::DisplayName] = "displayName";
+    roleNames[TransferMethodInfo::UserName] = "userName";
+    roleNames[TransferMethodInfo::MethodId] = "methodId";
+    roleNames[TransferMethodInfo::ShareUIPath] = "shareUIPath";
+    roleNames[TransferMethodInfo::AccountId] = "accountId";
+    roleNames[TransferMethodInfo::AccountIcon] = "accountIcon";
+    roleNames[TransferMethodInfo::SupportsMultipleFiles] = "supportsMultipleFiles";
 
     return roleNames;
 }
@@ -267,19 +269,35 @@ QStringList DeclarativeTransferMethodsModel::accountProviderNames() const
     return d->m_accountProviderNames;
 }
 
-QString DeclarativeTransferMethodsModel::filter() const
+QString DeclarativeTransferMethodsModel::mimeTypeFilter() const
 {
     Q_D(const DeclarativeTransferMethodsModel);
-    return d->m_filter;
+    return d->m_mimeTypeFilter;
 }
 
-void DeclarativeTransferMethodsModel::setFilter(const QString &filter)
+void DeclarativeTransferMethodsModel::setMimeTypeFilter(const QString &filter)
 {
     Q_D(DeclarativeTransferMethodsModel);
-    if (d->m_filter != filter) {
-        d->m_filter = filter;
+    if (d->m_mimeTypeFilter != filter) {
+        d->m_mimeTypeFilter = filter;
         d->filterModel();
-        emit filterChanged();
+        emit mimeTypeFilterChanged();
+    }
+}
+
+bool DeclarativeTransferMethodsModel::filterByMultipleFileSupport() const
+{
+    Q_D(const DeclarativeTransferMethodsModel);
+    return d->m_filterByMultipleFileSupport;
+}
+
+void DeclarativeTransferMethodsModel::setFilterByMultipleFileSupport(bool filterByMultipleFileSupport)
+{
+    Q_D(DeclarativeTransferMethodsModel);
+    if (d->m_filterByMultipleFileSupport != filterByMultipleFileSupport) {
+        d->m_filterByMultipleFileSupport = filterByMultipleFileSupport;
+        d->filterModel();
+        emit filterByMultipleFileSupportChanged();
     }
 }
 

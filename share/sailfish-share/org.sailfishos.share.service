@@ -1,0 +1,4 @@
+[D-BUS Service]
+Interface=/
+Name=org.sailfishos.share
+Exec=/usr/bin/invoker --type=silica-qt5 --desktop-file=sailfish-share.desktop -s -n -d 5 /usr/libexec/sailfish-share -prestart

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+NoDisplay=true
+Name=Sailfish Share
+Exec=/usr/bin/invoker --type=silica-qt5 --desktop-file=sailfish-share.desktop -s -n -d 5 /usr/libexec/sailfish-share
+X-Maemo-Service=org.sailfishos.share
+X-Maemo-Object-Path=/
+X-Maemo-Method=org.sailfishos.share.share

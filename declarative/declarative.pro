@@ -8,19 +8,18 @@ uri = Sailfish.TransferEngine
 
 
 CONFIG += link_pkgconfig
-PKGCONFIG += nemotransferengine-qt5 accounts-qt5
+PKGCONFIG += nemotransferengine-qt5 accounts-qt5 nemodbus
 
 SOURCES += \
     declarative_plugin.cpp \
-    declarativeshare.cpp \
+    declarativetransfer.cpp \
     declarativetransferinterface.cpp \
     declarativetransfermethodsmodel.cpp
 
 HEADERS += \
     declarative_plugin.h \
-    declarativeshare.h \
+    declarativetransfer.h \
     declarativetransferinterface.h \
-    declarativeshare_p.h \
     declarativetransfermethodsmodel.h \
     declarativetransfermethodsmodel_p.h
 

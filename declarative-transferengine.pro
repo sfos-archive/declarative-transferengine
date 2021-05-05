@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = declarative demo-app
+SUBDIRS = declarative share demo-app
 
 OTHER_FILES += rpm/* settings
 

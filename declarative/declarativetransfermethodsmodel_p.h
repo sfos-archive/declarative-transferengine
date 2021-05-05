@@ -23,7 +23,7 @@ public:
     QVariant value(int row, int role) const;
     QVariantMap get(int row) const;
     int findMethod(const QString &methodId) const;
-    bool filterAcceptsCapabilities(const QStringList &capabilities);
+    bool filterAccepts(const QStringList &capabilities, bool supportsMultipleFiles);
 
     void filterModel();
 
@@ -37,15 +37,16 @@ public:
     DeclarativeTransferMethodsModel *q_ptr;
     Q_DECLARE_PUBLIC(DeclarativeTransferMethodsModel)
 
-    TransferEngineInterface *m_client;
+    TransferEngineInterface *m_client = nullptr;
     QList<TransferMethodInfo> m_data;
-    QString m_filter;
+    QString m_mimeTypeFilter;
     QList<int> m_filteredData;
     QStringList m_accountProviderNames;
-    Accounts::Manager *m_accountManager;
+    Accounts::Manager *m_accountManager = nullptr;
     QList<QVariantMap> m_pluginsMetaData;
-    bool m_ready;
-    bool m_error;
+    bool m_ready = false;
+    bool m_error = false;
+    bool m_filterByMultipleFileSupport = false;
 };
 
 #endif // DECLARATIVETRANSFERMETHODSMODEL_P_H

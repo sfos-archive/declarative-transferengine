@@ -13,12 +13,13 @@ class DeclarativeTransferMethodsModel: public QAbstractListModel, public QQmlPar
     Q_PROPERTY(int count READ rowCount NOTIFY rowCountChanged)
     Q_PROPERTY(bool ready READ ready NOTIFY readyChanged)
     Q_PROPERTY(bool error READ error NOTIFY errorChanged)
-    Q_PROPERTY(QString filter READ filter WRITE setFilter NOTIFY filterChanged)
+    Q_PROPERTY(bool filterByMultipleFileSupport READ filterByMultipleFileSupport WRITE setFilterByMultipleFileSupport NOTIFY filterByMultipleFileSupportChanged)
+    Q_PROPERTY(QString mimeTypeFilter READ mimeTypeFilter WRITE setMimeTypeFilter NOTIFY mimeTypeFilterChanged)
     Q_PROPERTY(QStringList accountProviderNames READ accountProviderNames NOTIFY accountProviderNamesChanged)
     Q_INTERFACES(QQmlParserStatus)
 
 public:
-    explicit  DeclarativeTransferMethodsModel(QObject *parent = 0);
+    explicit DeclarativeTransferMethodsModel(QObject *parent = 0);
     ~DeclarativeTransferMethodsModel();
 
     void classBegin();
@@ -32,8 +33,11 @@ public:
     bool error() const;
     QStringList accountProviderNames() const;
 
-    QString filter() const;
-    void setFilter(const QString &filter);
+    QString mimeTypeFilter() const;
+    void setMimeTypeFilter(const QString &mimeTypeFilter);
+
+    bool filterByMultipleFileSupport() const;
+    void setFilterByMultipleFileSupport(bool filterByMultipleFileSupport);
 
     Q_INVOKABLE QVariantMap get(int index) const;
     Q_INVOKABLE int findMethod(const QString &methodId) const;
@@ -42,7 +46,8 @@ Q_SIGNALS:
     void rowCountChanged();
     void readyChanged();
     void errorChanged();
-    void filterChanged();
+    void mimeTypeFilterChanged();
+    void filterByMultipleFileSupportChanged();
     void accountProviderNamesChanged();
 
 private:

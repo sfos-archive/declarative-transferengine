@@ -8,7 +8,6 @@
 **
 ****************************************************************************************/
 #include "declarativetransfer.h"
-#include "declarativetransfer_p.h"
 #include "transferengineinterface.h"
 #include <QQmlInfo>
 #include <QtDBus>
@@ -135,13 +134,31 @@ DeclarativeTransfer::Status DeclarativeTransfer::status() const
 
 void DeclarativeTransfer::loadConfiguration(const QVariantMap &shareActionConfiguration)
 {
-    for (auto it = shareActionConfiguration.constBegin();
+    for (QVariantMap::const_iterator it = shareActionConfiguration.constBegin();
          it != shareActionConfiguration.constEnd(); ++it) {
-        if (it.key() == QStringLiteral("fileResources")) {
-            setSource(QUrl::fromLocalFile(it.value().toStringList().value(0)));
-        } else if (it.key() == QStringLiteral("contentResources")) {
-            setContent(it.value().toList().value(0).toMap());
-        } else if (it.key() == QStringLiteral("capabilitiesFilter")) {
+        if (it.key() == QStringLiteral("resources")) {
+            const QVariantList &resourceList = it.value().toList();
+            if (resourceList.count() > 0) {
+                const QVariant &value = resourceList.at(0);
+                if (value.type() == QVariant::Map) {
+                    setContent(value.toMap());
+                } else if (value.type() == QVariant::Url) {
+                    setSource(value.toUrl());
+                } else if (value.type() == QVariant::String) {
+                    const QString filePath = value.toString();
+                    QUrl url(filePath);
+                    if (url.isLocalFile()) {
+                        setSource(url);
+                    } else {
+                        setSource(QUrl::fromLocalFile(filePath));
+                    }
+                } else {
+                    qmlInfo(this) << "Unrecognized resource type '" << value.typeName();
+                }
+            }
+        } else if (it.key() == QStringLiteral("mimeType")) {
+            // ignore
+        } else if (it.key() == QStringLiteral("title")) {
             // ignore
         } else if (it.key() == QStringLiteral("selectedTransferMethodInfo")) {
             setTransferMethodInfo(it.value().toMap());
