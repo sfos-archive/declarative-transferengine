@@ -14,6 +14,7 @@ BuildRequires: pkgconfig(accounts-qt5)
 BuildRequires: pkgconfig(nemotransferengine-qt5)
 BuildRequires: pkgconfig(nemonotifications-qt5)
 BuildRequires: pkgconfig(nemodbus)
+BuildRequires: pkgconfig(qdeclarative5-boostable)
 BuildRequires: qt5-qttools
 BuildRequires: qt5-qttools-linguist
 
