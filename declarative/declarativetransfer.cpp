@@ -9,8 +9,11 @@
 ****************************************************************************************/
 #include "declarativetransfer.h"
 #include "transferengineinterface.h"
+
+#include <QFile>
 #include <QQmlInfo>
 #include <QtDBus>
+#include <QDBusPendingCall>
 #include <QDBusPendingCallWatcher>
 
 DeclarativeTransfer::DeclarativeTransfer(QQuickItem *parent)
@@ -43,10 +46,16 @@ QVariantMap DeclarativeTransfer::DeclarativeTransfer::content() const
     return m_content;
 }
 
-void DeclarativeTransfer::setSource(const QUrl source)
+void DeclarativeTransfer::setSource(const QUrl &source)
 {
-    if (m_source != source) {
-        m_source = source;
+    // Coerce into a file:/// url if necessary.
+    QUrl localFileUrl(source);
+    if (!localFileUrl.isLocalFile()) {
+        localFileUrl = QUrl::fromLocalFile(source.toString());
+    }
+
+    if (m_source != localFileUrl) {
+        m_source = localFileUrl;
         emit sourceChanged();
     }
 }
@@ -145,13 +154,7 @@ void DeclarativeTransfer::loadConfiguration(const QVariantMap &shareActionConfig
                 } else if (value.type() == QVariant::Url) {
                     setSource(value.toUrl());
                 } else if (value.type() == QVariant::String) {
-                    const QString filePath = value.toString();
-                    QUrl url(filePath);
-                    if (url.isLocalFile()) {
-                        setSource(url);
-                    } else {
-                        setSource(QUrl::fromLocalFile(filePath));
-                    }
+                    setSource(QUrl(value.toString()));
                 } else {
                     qmlInfo(this) << "Unrecognized resource type '" << value.typeName();
                 }
@@ -170,7 +173,6 @@ void DeclarativeTransfer::loadConfiguration(const QVariantMap &shareActionConfig
 
 void DeclarativeTransfer::start()
 {
-
     if (m_status != NotStarted) {
         qmlInfo(this) << "Transfer has already started!";
         return;

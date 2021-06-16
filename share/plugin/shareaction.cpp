@@ -11,9 +11,14 @@
 #include <nemo-dbus/dbus.h>
 
 #include <QQmlInfo>
+#include <QMimeDatabase>
 #include <QDBusMessage>
 #include <QDBusConnection>
-#include <QMimeDatabase>
+#include <QDBusUnixFileDescriptor>
+#include <QFile>
+#include <QFileInfo>
+#include <QStandardPaths>
+#include <QTemporaryDir>
 
 /*!
     \qmltype ShareAction
@@ -202,6 +207,14 @@ QVariantMap ShareAction::toConfiguration() const
     return config;
 }
 
+/*!
+    \internal
+
+    Loads the ShareAction using the specified \a configuration.
+
+    Each ShareAction property that matches a key in the \a configuration will have its property
+    value set to the associated configuration value for that key.
+*/
 void ShareAction::loadConfiguration(const QVariantMap &configuration)
 {
     QVariantList resources;
@@ -229,4 +242,173 @@ void ShareAction::loadConfiguration(const QVariantMap &configuration)
     setMimeType(mimeType);
     setTitle(title);
     setSelectedTransferMethodInfo(selectedTransferMethodInfo);
+}
+
+/*!
+    \internal
+
+    Replaces any file path resources with a QVariantMap of metadata, which includes an opened file descriptor.
+
+    For example, if the resources are:
+
+    \qml
+    resources: ["/path/to/myfile.jpg"]
+    \endqml
+
+    This function will open \c myfile.jpg and replace the resource with a QVariantMap containing
+    the following attributes:
+
+    \qml
+    {
+        "name": "myfile.jpg",
+        "type": "image/jpeg",
+        "fileDescriptor": <opened-file-descriptor>
+    }
+    \endqml
+
+    The file is closed when the ShareAction is destroyed.
+*/
+void ShareAction::replaceFileResourcesWithFileDescriptors()
+{
+    QVariantList resources;
+    static QMimeDatabase mimeDb;
+
+    for (int i = 0; i < m_resources.count(); ++i) {
+        if (m_resources[i].type() == QVariant::String) {
+            QFile *file = new QFile(m_resources[i].toString(), this);
+            if (file->open(QFile::ReadOnly) && file->handle() > 0) {
+                QVariantMap content;
+                QFileInfo fileInfo(file->fileName());
+                const QString mimeType = mimeDb.mimeTypeForFile(fileInfo).name();
+
+                content.insert("name", fileInfo.fileName());
+                content.insert("size", fileInfo.size());
+                if (!mimeType.isEmpty()) {
+                    content.insert("type", mimeType);
+                }
+                const QDBusUnixFileDescriptor fileDescriptor(file->handle());
+                content.insert("fileDescriptor", QVariant::fromValue<QDBusUnixFileDescriptor>(fileDescriptor));
+                resources.append(content);
+                continue;
+            } else {
+                qmlInfo(this) << "Failed to open " << file->fileName()
+                              << ", will not replace with file descriptor";
+            }
+        }
+        resources.append(m_resources[i]);
+    }
+
+    setResources(resources);
+}
+
+QString ShareAction::writeContentToFile(const QVariantMap &contents, int maximumFileSize)
+{
+    const QString resourceName = contents.value("name").toString();
+    if (resourceName.isEmpty()) {
+        qmlInfo(this) << "writeContentToFile() failed: no name specified";
+        return QString();
+    }
+
+    static const QString saveLocation(QStandardPaths::writableLocation(QStandardPaths::TempLocation));
+    static const QString saveDirectory(QLatin1String("sailfish-share_XXXXXX"));
+
+    QTemporaryDir tempDir(saveLocation + QDir::separator() + saveDirectory);
+    tempDir.setAutoRemove(false);
+    if (!tempDir.isValid()) {
+        qmlInfo(this) << "Invalid temporary dir: " << tempDir.path();
+        return QString();
+    }
+
+    QFile outputFile(tempDir.path() + QDir::separator() + resourceName);
+    if (!outputFile.open(QFile::WriteOnly)) {
+        qmlInfo(this) << "Unable to open file for writing: " << outputFile.fileName();
+        return QString();
+    }
+
+    if (contents.contains("fileDescriptor")) {
+        const QVariant fileDescriptor = contents.value("fileDescriptor");
+        const int fd = fileDescriptor.value<QDBusUnixFileDescriptor>().fileDescriptor();
+        if (fd <= 0) {
+            qmlInfo(this) << "writeContentToFile() failed: Invalid file descriptor: " << fd;
+            outputFile.remove();
+            return QString();
+        }
+
+        QFile inputFile;
+        if (!inputFile.open(fd, QFile::ReadOnly)) {
+            qmlInfo(this) << "Unable to open file using file descriptor: " << fd;
+            outputFile.remove();
+            return QString();
+        }
+
+        int resourceSize = contents.value("size").toInt();
+        if (resourceSize > maximumFileSize) {
+            qmlInfo(this) << "writeContentToFile() failed: resource size " << resourceSize
+                          << " exceeds maximumFileSize " << maximumFileSize;
+            outputFile.remove();
+            return QString();
+        }
+        if (resourceSize > INT_MAX) {
+            qmlInfo(this) << "writeContentToFile() failed: resource size " << resourceSize
+                          << " exceeds INT_MAX";
+            outputFile.remove();
+            return QString();
+        }
+
+        int maxSize = qMin(resourceSize, 1024 * 128);
+        char buf[maxSize];
+
+        qint64 bytesRead = 0;
+        while (bytesRead >= 0) {
+            bytesRead = inputFile.read(buf, maxSize);
+            if (bytesRead > 0) {
+                if (outputFile.write(buf, bytesRead) < 0) {
+                    qmlInfo(this) << "Unable to write to file: " << outputFile.fileName()
+                                  << " error: " << outputFile.errorString();
+                    outputFile.remove();
+                    return QString();
+                }
+            } else if (bytesRead < 0) {
+                qmlInfo(this) << "Unable to read from file: " << inputFile.fileName()
+                              << " error: " << inputFile.errorString();
+                outputFile.remove();
+                return QString();
+            } else {
+                break;
+            }
+        }
+
+    } else if (contents.contains("data")) {
+        const QByteArray rawData = contents.value("data").toByteArray();
+        if (rawData.length() > maximumFileSize) {
+            qmlInfo(this) << "writeContentToFile() failed: resource size " << rawData.length()
+                          << " exceeds maximumFileSize " << maximumFileSize;
+            outputFile.remove();
+            return QString();
+        }
+        if (outputFile.write(rawData) < 0) {
+            qmlInfo(this) << "Unable to write to file: " << outputFile.fileName()
+                          << " error: " << outputFile.errorString();
+            outputFile.remove();
+            return QString();
+        }
+
+    } else {
+        qmlInfo(this) << "writeContentToFile() failed, no fileDescriptor or data found in contents!";
+        outputFile.remove();
+        return QString();
+    }
+
+    return outputFile.fileName();
+}
+
+void ShareAction::removeFilesAndRmdir(const QStringList &files)
+{
+    for (const QString &file : files) {
+        if (!QFile::remove(file)) {
+            qmlInfo(this) << "Unable to delete file: " << file;
+        }
+        QDir dir = QFileInfo(file).dir();
+        dir.rmdir(dir.absolutePath());
+    }
 }

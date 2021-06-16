@@ -13,6 +13,8 @@
 #include <QVariantMap>
 #include <QList>
 
+#include <limits.h>
+
 class ShareAction : public QObject
 {
     Q_OBJECT
@@ -40,6 +42,9 @@ public slots:
     void trigger();
     void loadConfiguration(const QVariantMap &configuration);
     QVariantMap toConfiguration() const;
+    void replaceFileResourcesWithFileDescriptors();
+    QString writeContentToFile(const QVariantMap &contents, int maximumFileSize = INT_MAX);
+    void removeFilesAndRmdir(const QStringList &files);
 
 Q_SIGNALS:
     void done();
@@ -57,4 +62,3 @@ private:
 };
 
 #endif
-

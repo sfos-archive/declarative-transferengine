@@ -85,7 +85,7 @@ public:
     void setContent(const QVariantMap &content);
     QVariantMap content() const;
 
-    void setSource(const QUrl source);
+    void setSource(const QUrl &source);
     QUrl source() const;
 
     void setMimeType(const QString &mimeType);
