@@ -87,7 +87,7 @@ SilicaFlickable {
             onClicked: {
                 sailfishTransfer.userData = {
                     "accountId": sailfishTransfer.transferMethodInfo.accountId,
-                    "status": sailfishTransfer.content.status
+                    "status": statusTextField.text
                 }
                 if (supportsUrlType) {
                     sailfishTransfer.userData.link = linkTextField.text
