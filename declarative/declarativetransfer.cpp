@@ -157,7 +157,7 @@ void DeclarativeTransfer::loadConfiguration(const QVariantMap &shareActionConfig
                 }
             }
         } else if (it.key() == QStringLiteral("mimeType")) {
-            // ignore
+            setMimeType(it.value().toString());
         } else if (it.key() == QStringLiteral("title")) {
             // ignore
         } else if (it.key() == QStringLiteral("selectedTransferMethodInfo")) {
