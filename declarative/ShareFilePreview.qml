@@ -53,12 +53,13 @@ Item {
     Thumbnail {
         id: preview
 
-        width: root._isPortrait ? root.width : root.width / 2.5
-        height: root._isPortrait ? Screen.height / 4.5 : mainSettings.height
+        x: Theme.paddingLarge
+        width: root._isPortrait ? (root.width - Theme.paddingLarge*2) : (root.width / 2.5)
+        height: root._isPortrait ? (Screen.height / 4.5) : mainSettings.height
         sourceSize.width: width
         sourceSize.height: height
 
-        visible: status === Thumbnail.Ready
+        visible: status === Thumbnail.Ready || status === Thumbnail.Loading
         fillMode: Thumbnail.PreserveAspectCrop
         clip: true
         mimeType: fileInfo.mimeType
@@ -78,15 +79,15 @@ Item {
         Label {
             id: nameField
 
-            x: Theme.horizontalPageMargin
-            width: parent.width - x*2
+            x: root._isPortrait ? Theme.horizontalPageMargin : Theme.paddingLarge
+            width: parent.width - x - Theme.horizontalPageMargin
             text: sailfishTransfer.content.name || fileInfo.fileName
             color: Theme.highlightColor
         }
 
         Label {
-            x: Theme.horizontalPageMargin
-            width: parent.width - x*2
+            x: root._isPortrait ? Theme.horizontalPageMargin : Theme.paddingLarge
+            width: parent.width - x - Theme.horizontalPageMargin
             height: implicitHeight + Theme.paddingMedium
             text: {
                 var fileSize = fileInfo.fileName.length > 0
@@ -125,70 +126,65 @@ Item {
             label: qsTrId("sailfishshare-la-destination_folder")
             placeholderText: label
         }
-    }
 
-    Item {
-        parent: descriptionTextField.visible ? secondarySettingsTargetFolderContainer : mainSettings
-        width: parent.width
-        height: Theme.itemSizeMedium
-        visible: nameLabel.text.length > 0
+        Item {
+            x: root._isPortrait ? Theme.horizontalPageMargin : Theme.paddingLarge
+            width: parent.width - x - Theme.horizontalPageMargin
+            height: Theme.itemSizeMedium
+            visible: accountMainLabel.text.length > 0
 
-        Image {
-            id: icon
+            Image {
+                id: icon
 
-            anchors {
-                left: parent.left
-                leftMargin: Theme.horizontalPageMargin
-                verticalCenter: parent.verticalCenter
+                anchors {
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                }
+                source: sailfishTransfer.transferMethodInfo.accountIcon
+                sourceSize.width: Theme.iconSizeMedium
+                sourceSize.height: Theme.iconSizeMedium
             }
-            source: sailfishTransfer.transferMethodInfo.accountIcon
-            sourceSize.width: Theme.iconSizeMedium
-            sourceSize.height: Theme.iconSizeMedium
-        }
 
-        Label {
-            id: nameLabel
+            Label {
+                id: accountMainLabel
 
-            anchors {
-                left: icon.right
-                leftMargin: Theme.paddingMedium
-                right: parent.right
-                rightMargin: Theme.horizontalPageMargin
-                verticalCenter: icon.verticalCenter
-                verticalCenterOffset: usernameLabel.text.length > 0 ? -usernameLabel.height/2 : 0
+                anchors {
+                    left: icon.right
+                    leftMargin: Theme.paddingMedium
+                    right: parent.right
+                    verticalCenter: icon.verticalCenter
+                    verticalCenterOffset: accountSubLabel.text.length > 0 ? -accountSubLabel.height/2 : 0
+                }
+                text: sailfishTransfer.transferMethodInfo.userName
+                      || sailfishTransfer.transferMethodInfo.displayName
+                truncationMode: TruncationMode.Fade
+                color: Theme.highlightColor
             }
-            text: sailfishTransfer.transferMethodInfo.userName
-            truncationMode: TruncationMode.Fade
-            color: Theme.highlightColor
-        }
 
-        Label {
-            id: usernameLabel
+            Label {
+                id: accountSubLabel
 
-            anchors {
-                top: nameLabel.bottom
-                left: icon.right
-                leftMargin: Theme.paddingMedium
-                right: parent.right
-                rightMargin: Theme.horizontalPageMargin
+                anchors {
+                    top: accountMainLabel.bottom
+                    left: icon.right
+                    leftMargin: Theme.paddingMedium
+                    right: parent.right
+                }
+                text: sailfishTransfer.transferMethodInfo.userName
+                truncationMode: TruncationMode.Fade
+                font.pixelSize: Theme.fontSizeExtraSmall
+                color: Theme.secondaryHighlightColor
             }
-            text: sailfishTransfer.transferMethodInfo.displayName
-            truncationMode: TruncationMode.Fade
-            font.pixelSize: Theme.fontSizeExtraSmall
-            color: Theme.secondaryHighlightColor
         }
     }
 
     Column {
         id: secondarySettings
 
-        anchors.top: mainSettings.bottom
+        y: root._isPortrait
+           ? mainSettings.y + mainSettings.height
+           : Math.max(preview.y + preview.height, mainSettings.y + mainSettings.height)
         width: parent.width
-
-        Column {
-            id: secondarySettingsTargetFolderContainer
-            width: parent.width
-        }
 
         ComboBox {
             id: scaleComboBox

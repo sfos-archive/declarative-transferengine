@@ -21,6 +21,10 @@ SystemDialog {
     property var shareActionConfiguration
 
     readonly property int _windowMargin: Theme.paddingMedium
+    readonly property int _topWindowMargin: (orientation === Qt.PortraitOrientation
+                                             || orientation === Qt.InvertedPortraitOrientation)
+                                            ? Theme.itemSizeHuge
+                                            : 0
     readonly property real _windowWidthInPortrait: Screen.width - _windowMargin*2
     readonly property real _windowWidthInLandscape: (Screen.height * 3/4) - _windowMargin*2
 
@@ -108,7 +112,7 @@ SystemDialog {
             var screenHeight = (orientation === Qt.PortraitOrientation || orientation === Qt.InvertedPortraitOrientation
                                 ? Screen.height
                                 : Screen.width) - __silica_applicationwindow_instance.pageStack.panelSize
-            return Math.min(screenHeight - _windowMargin*2, contentHeight)
+            return Math.min(screenHeight - _windowMargin*2 - _topWindowMargin, contentHeight)
         }
 
         contentHeight: shareMethodsColumn.visible
@@ -223,6 +227,7 @@ SystemDialog {
                         shareAction.selectedTransferMethodInfo = transferMethodsModel.get(model.index)
                         shareMethodLoader.setSource(shareUIPath,
                                                     { "shareAction": shareAction })
+                        content.contentY = 0
                     }
                 }
             }
