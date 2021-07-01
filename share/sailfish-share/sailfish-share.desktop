@@ -6,3 +6,6 @@ Exec=/usr/bin/invoker --type=silica-qt5 --desktop-file=sailfish-share.desktop -s
 X-Maemo-Service=org.sailfishos.share
 X-Maemo-Object-Path=/
 X-Maemo-Method=org.sailfishos.share.share
+
+[X-Sailjail]
+Sandboxing=Disabled
