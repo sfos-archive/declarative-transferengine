@@ -115,7 +115,8 @@ bool DeclarativeTransferMethodsModelPrivate::filterAccepts(const QStringList &ca
     const QString subTypeWildcard = slashIndex >= 0 ? m_mimeTypeFilter.mid(0, slashIndex) + "/*" : QString();
     return capabilities.contains(m_mimeTypeFilter)
             || capabilities.contains(subTypeWildcard)
-            || capabilities.contains(QStringLiteral("*"));
+            || capabilities.contains(QStringLiteral("*"))
+            || capabilities.contains(QStringLiteral("*/*"));
 }
 
 void DeclarativeTransferMethodsModelPrivate::pluginMetaDataReceived(QDBusPendingCallWatcher *call)
