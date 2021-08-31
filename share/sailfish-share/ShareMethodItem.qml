@@ -43,7 +43,7 @@ BackgroundItem {
             verticalCenterOffset: usernameLabel.text.length > 0 ? -usernameLabel.height/2 : 0
         }
         truncationMode: TruncationMode.Fade
-        text: qsTrId(model.displayName)
+        text: model.displayName
     }
 
     Label {

@@ -31,18 +31,10 @@ void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
     AppTranslator *translatorEngEn = new AppTranslator(engine);
     AppTranslator *translator = new AppTranslator(engine);
 
-    AppTranslator *sharePluginsTranslatorEngEn = new AppTranslator(engine);
-    AppTranslator *sharePluginsTranslator = new AppTranslator(engine);
-
     const QString path("/usr/share/translations");
 
     translatorEngEn->load("sailfish_transferengine_eng_en", path);
     translator->load(QLocale(), "sailfish_transferengine", "-", path);
-
-    // This module is responsible of loading translations for the UIs provided by share plugins.
-    // FIXME: would be better just moving responsibility to share plugins
-    sharePluginsTranslatorEngEn->load("sailfish_transferengine_plugins_eng_en", path);
-    sharePluginsTranslator->load(QLocale(), "sailfish_transferengine_plugins", "-", path);
 
     // Load 3rd party share plugin translation files
     // TODO: to be considered if the whole third party translation loading system is worth it
