@@ -1,0 +1,2 @@
+include(sailfishshare-project.qdocconf)
+include(sailfishshare-html-templates.qdocconf)

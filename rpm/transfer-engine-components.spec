@@ -108,6 +108,23 @@ Translation source for Sailfish TransferEngine
 %defattr(-,root,root,-)
 %{_datadir}/translations/source/sailfish_transferengine.ts
 
+
+%package doc
+Summary: Documentation for Sailfish Sharing API
+BuildRequires: qt5-qttools-qthelp-devel
+BuildRequires: qt5-tools
+BuildRequires: qt5-qtdeclarative-doc
+BuildRequires: qt5-qtdeclarative-qtquick-doc
+BuildRequires: mer-qdoc-template
+
+%description doc
+%{summary}
+
+%files doc
+%defattr(-,root,root,-)
+%{_docdir}/%{name}
+
+
 %prep
 %setup -q -n %{name}-%{version}
 
@@ -115,10 +132,12 @@ Translation source for Sailfish TransferEngine
 
 %qmake5
 
+export QT_INSTALL_DOCS=%{_docdir}/qt5
 make %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot}
+export QT_INSTALL_DOCS=%{_docdir}/qt5
 %qmake5_install
 
 mkdir -p %{buildroot}%{_datadir}/mapplauncherd/privileges.d

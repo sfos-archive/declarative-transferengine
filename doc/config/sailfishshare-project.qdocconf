@@ -1,0 +1,63 @@
+indexes         = $$QT_INSTALL_DOCS/qtqml/qtqml.index \
+                  $$QT_INSTALL_DOCS/qtquick/qtquick.index
+
+language        = Cpp
+
+project         = Sailfish Share
+description     = Sailfish Share Library Reference Documentation
+versionsym      =
+version         = 1.0
+url             = 
+
+# don't include ../../components/*.qml in sourcedirs, that causes qdoc3 to parse the
+# .qml files, not find any docs, and conclude they are internal
+sourcedirs = ../../share \
+             ../src
+
+#excludedirs = 
+
+#exampledirs = ../../examples
+
+imagedirs = images \
+            ../src/images
+
+tagfile = ../html/sailfishshare.tags
+
+outputprefixes = QML
+outputprefixes.QML = qml-sailfishshare-
+
+qhp.projects            = SailfishShare
+
+qhp.SailfishShare.file               = sailfishshare.qhp
+qhp.SailfishShare.namespace          = Sailfish.Share.100
+qhp.SailfishShare.virtualFolder      = sailfishshare
+# HACK: when qdoc fails to locate index page by project.indexTitle it tries
+# index.html but still uses the project.indexTitle in the table of contents.
+# This allows to have a conventional TOC entry "Sailfish Share" while the title
+# of the page remains "Creating applications with Sailfish Share"
+qhp.SailfishShare.indexTitle         = Sailfish Share
+qhp.SailfishShare.indexRoot          =
+
+qhp.SailfishShare.filterAttributes   = sailfishshare 1.0.0
+qhp.SailfishShare.customFilters.SailfishShare.name = Sailfish Share 1.0.0
+qhp.SailfishShare.customFilters.SailfishShare.filterAttributes = sailfishshare 1.0.0
+
+qhp.SailfishShare.subprojects        = manual qmltypes
+
+qhp.SailfishShare.subprojects.manual.title = Manual
+qhp.SailfishShare.subprojects.manual.indexTitle = Creating applications with Sailfish Share
+qhp.SailfishShare.subprojects.manual.selectors = fake:page
+
+qhp.SailfishShare.subprojects.qmltypes.title = QML Types
+qhp.SailfishShare.subprojects.qmltypes.indexTitle = Sailfish Share QML Types
+qhp.SailfishShare.subprojects.qmltypes.selectors = qmlclass
+qhp.SailfishShare.subprojects.qmltypes.sortPages = true
+
+#qhp.SailfishShare.subprojects.examples.title = Examples
+#qhp.SailfishShare.subprojects.examples.indexTitle = Sailfish Share Examples
+#qhp.SailfishShare.subprojects.examples.selectors = fake:example
+#qhp.SailfishShare.subprojects.examples.sortPages = true
+#qhp.SailfishShare.subprojects.tutorials.title = Tutorials
+#qhp.SailfishShare.subprojects.tutorials.indexTitle = Sailfish Share Tutorials
+#qhp.SailfishShare.subprojects.tutorials.selectors = fake:tutorial
+#qhp.SailfishShare.subprojects.tutorials.sortPages = true

@@ -22,6 +22,7 @@
 
 /*!
     \qmltype ShareAction
+    \inqmlmodule Sailfish.Share
 
     Launches the Sharing UI from a predefined configuration.
 */
@@ -31,7 +32,7 @@ ShareAction::ShareAction(QObject *parent)
 }
 
 /*!
-    \qmlproperty QVariantList ShareAction::resources
+    \qmlproperty list ShareAction::resources
 
     A list of resources to be shared. The following resource types are allowed:
 
@@ -45,11 +46,13 @@ ShareAction::ShareAction(QObject *parent)
     Example:
 
     \qml
-    resources: [
-        "/path/to/my/file.txt",
-        { "data": <raw-bytes>, "name": "my-data-file" }
-    ]
-    \qml
+    ShareAction {
+        resources: [
+            "/path/to/my/file.txt",
+            { "data": "<raw-bytes>", "name": "my-data-file" }
+        ]
+    }
+    \endqml
 */
 QVariantList ShareAction::ShareAction::resources() const
 {
@@ -113,7 +116,7 @@ void ShareAction::setResources(const QVariantList &resources)
 }
 
 /*!
-    \qmlproperty QString ShareAction::mimeType
+    \qmlproperty string ShareAction::mimeType
 
     The mime type of the resources to be shared.
 
@@ -144,7 +147,7 @@ void ShareAction::setMimeType(const QString &mimeType)
 }
 
 /*!
-    \qmlproperty QString ShareAction::title
+    \qmlproperty string ShareAction::title
 
     The title text to show in the sharing UI.
 */
@@ -252,19 +255,21 @@ void ShareAction::loadConfiguration(const QVariantMap &configuration)
     For example, if the resources are:
 
     \qml
-    resources: ["/path/to/myfile.jpg"]
+    ShareAction {
+        resources: ["/path/to/myfile.jpg"]
+    }
     \endqml
 
     This function will open \c myfile.jpg and replace the resource with a QVariantMap containing
     the following attributes:
 
-    \qml
+    \code
     {
         "name": "myfile.jpg",
         "type": "image/jpeg",
         "fileDescriptor": <opened-file-descriptor>
     }
-    \endqml
+    \endcode
 
     The file is closed when the ShareAction is destroyed.
 */
