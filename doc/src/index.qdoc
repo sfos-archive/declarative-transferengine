@@ -1,0 +1,32 @@
+/****************************************************************************************
+**
+** Copyright (c) 2021 Jolla Ltd.
+** All rights reserved.
+**
+** License: Proprietary.
+**
+****************************************************************************************/
+
+/*!
+\contentspage {Sailfish Share Contents}
+\page index.html
+
+\title Sailfish Share API
+
+The Sailfish Share API allows the Sharing UI to be loaded out-of-process, and display the sharing
+capabilities to allow the user to share files and content via any available sharing method, such
+as Bluetooth, SMS, email, social media accounts, etc.
+
+Reference documentation:
+
+\list
+\li \l {Sailfish Share QML Types}
+\endlist
+
+*/
+
+/*!
+\qmlmodule Sailfish.Share 1.0
+\title Sailfish Share QML Types
+
+*/

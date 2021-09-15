@@ -3,6 +3,8 @@ SUBDIRS = declarative share demo-app
 
 OTHER_FILES += rpm/* settings
 
+include (doc/doc.pri)
+
 settings_entry.files = settings/transferui.json
 settings_entry.path = /usr/share/jolla-settings/entries/
 
