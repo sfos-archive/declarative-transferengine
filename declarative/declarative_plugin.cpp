@@ -1,10 +1,17 @@
+/*
+ * Copyright (c) 2013 - 2018 Jolla Ltd.
+ * Copyright (c) 2019 - 2021 Open Mobile Platform LLC.
+ *
+ * License: Proprietary
+ */
+
 #include "declarative_plugin.h"
 #include "declarativetransfer.h"
 #include "declarativetransferinterface.h"
-#include "declarativetransfermethodsmodel.h"
+#include "declarativesharingmethodsmodel.h"
 #include "transferdbrecord.h"
-#include "transfermethodinfo.h"
-#include "transferplugininfo.h"
+#include "sharingmethodinfo.h"
+#include "sharingplugininfo.h"
 
 #include <QQmlEngine>
 #include <QCoreApplication>
@@ -35,39 +42,14 @@ void DeclarativePlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
     translatorEngEn->load("sailfish_transferengine_eng_en", path);
     translator->load(QLocale(), "sailfish_transferengine", "-", path);
-
-    // Load 3rd party share plugin translation files
-    // TODO: to be considered if the whole third party translation loading system is worth it
-    // or should it just be left for plugins themselves to handle.
-    const QDir pluginDir("/usr/share/translations/nemotransferengine");
-    if (pluginDir.exists()) {
-        QStringList qmFiles = pluginDir.entryList(QStringList() << "*.qm", QDir::Files);
-        QSet<QString> uniqueNames;
-
-        for (const QString &qmFile : qmFiles) {
-            if (qmFile.endsWith("_eng_en.qm")) {
-                AppTranslator *sharePlugin3rdPartyTranslatorEngEn = new AppTranslator(engine);
-                sharePlugin3rdPartyTranslatorEngEn->load(qmFile, pluginDir.absolutePath());
-            } else {
-                uniqueNames.insert(qmFile.left(qmFile.lastIndexOf(QLatin1Char('-'))));
-            }
-        }
-
-        for (const QString &qmFile : uniqueNames) {
-            AppTranslator *sharePlugin3rdPartyTranslator = new AppTranslator(engine);
-            sharePlugin3rdPartyTranslator->load(QLocale(), qmFile, "-", pluginDir.absolutePath());
-        }
-    }
 }
 
 void DeclarativePlugin::registerTypes(const char *uri)
 {
-    TransferMethodInfo::registerType();
     TransferDBRecord::registerType();
-    TransferPluginInfo::registerType();
 
     // @uri Sailfish.TransferEngine
     qmlRegisterType<DeclarativeTransfer>(uri, 1, 0, "SailfishTransfer");
     qmlRegisterType<DeclarativeTransferInterface>(uri, 1, 0, "SailfishTransferInterface");
-    qmlRegisterType<DeclarativeTransferMethodsModel>(uri, 1, 0, "SailfishTransferMethodsModel");
+    qmlRegisterType<DeclarativeSharingMethodsModel>(uri, 1, 0, "SailfishSharingMethodsModel");
 }

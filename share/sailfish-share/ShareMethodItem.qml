@@ -13,7 +13,7 @@ import Sailfish.Silica 1.0
 BackgroundItem {
     id: root
 
-    height: nameLabel.height + usernameLabel.height + Theme.paddingSmall*2
+    height: nameLabel.height + subtitleLabel.height + Theme.paddingSmall*2
     _showPress: false
 
     HighlightImage {
@@ -24,7 +24,7 @@ BackgroundItem {
             leftMargin: Theme.horizontalPageMargin
             verticalCenter: parent.verticalCenter
         }
-        source: model.accountIcon
+        source: model.methodIcon
         width: Theme.iconSizeMedium
         height: Theme.iconSizeMedium
         sourceSize.width: Theme.iconSizeMedium
@@ -40,14 +40,14 @@ BackgroundItem {
             right: parent.right
             rightMargin: Theme.horizontalPageMargin
             verticalCenter: icon.verticalCenter
-            verticalCenterOffset: usernameLabel.text.length > 0 ? -usernameLabel.height/2 : 0
+            verticalCenterOffset: subtitleLabel.text.length > 0 ? -subtitleLabel.height/2 : 0
         }
         truncationMode: TruncationMode.Fade
         text: model.displayName
     }
 
     Label {
-        id: usernameLabel
+        id: subtitleLabel
 
         anchors {
             top: nameLabel.bottom
@@ -57,7 +57,7 @@ BackgroundItem {
             rightMargin: Theme.horizontalPageMargin
         }
         truncationMode: TruncationMode.Fade
-        text: model.userName
+        text: model.subtitle
         font.pixelSize: Theme.fontSizeExtraSmall
         color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
     }

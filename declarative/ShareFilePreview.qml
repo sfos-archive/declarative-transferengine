@@ -140,7 +140,7 @@ Item {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
-                source: sailfishTransfer.transferMethodInfo.accountIcon
+                source: sailfishTransfer.transferMethodInfo.methodIcon
                 sourceSize.width: Theme.iconSizeMedium
                 sourceSize.height: Theme.iconSizeMedium
             }
@@ -155,7 +155,7 @@ Item {
                     verticalCenter: icon.verticalCenter
                     verticalCenterOffset: accountSubLabel.text.length > 0 ? -accountSubLabel.height/2 : 0
                 }
-                text: sailfishTransfer.transferMethodInfo.userName
+                text: sailfishTransfer.transferMethodInfo.subtitle
                       || sailfishTransfer.transferMethodInfo.displayName
                 truncationMode: TruncationMode.Fade
                 color: Theme.highlightColor
@@ -170,7 +170,7 @@ Item {
                     leftMargin: Theme.paddingMedium
                     right: parent.right
                 }
-                text: sailfishTransfer.transferMethodInfo.userName
+                text: sailfishTransfer.transferMethodInfo.subtitle
                 truncationMode: TruncationMode.Fade
                 font.pixelSize: Theme.fontSizeExtraSmall
                 color: Theme.secondaryHighlightColor

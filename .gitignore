@@ -5,6 +5,13 @@ moc_*
 *.so
 *.ts
 *.qm
-demo-app/qrc_share-demo.cpp
-demo-app/transfer-demo
-demo-app/demoappadaptor.*
+*.list
+*.qch
+/html/
+/installroot/
+/RPMS/
+/demo-app/qrc_share-demo.cpp
+/demo-app/transfer-demo
+/demo-app/demoappadaptor.*
+/share/plugin/plugin.moc
+/share/sailfish-share/sailfish-share

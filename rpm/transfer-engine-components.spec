@@ -1,5 +1,5 @@
 Name: declarative-transferengine-qt5
-Version: 0.3
+Version: 0.4
 Release: 1
 Summary: Sailfish declarative bindings for Nemo Transfer Engine.
 License: Proprietary
@@ -11,7 +11,7 @@ BuildRequires: pkgconfig(Qt5DBus)
 BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(Qt5Quick)
 BuildRequires: pkgconfig(accounts-qt5)
-BuildRequires: pkgconfig(nemotransferengine-qt5)
+BuildRequires: pkgconfig(nemotransferengine-qt5) >= 2.0.0
 BuildRequires: pkgconfig(nemonotifications-qt5)
 BuildRequires: pkgconfig(nemodbus)
 BuildRequires: pkgconfig(qdeclarative5-boostable)
@@ -19,6 +19,7 @@ BuildRequires: qt5-qttools
 BuildRequires: qt5-qttools-linguist
 
 Requires: nemo-transferengine-qt5 >= 0.2.2
+Requires: libnemotransferengine-qt5 >= 2.0.0
 Requires: sailfishsilica-qt5 >= 1.1.46
 Requires: nemo-qml-plugin-filemanager
 

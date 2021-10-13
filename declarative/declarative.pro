@@ -14,14 +14,14 @@ SOURCES += \
     declarative_plugin.cpp \
     declarativetransfer.cpp \
     declarativetransferinterface.cpp \
-    declarativetransfermethodsmodel.cpp
+    declarativesharingmethodsmodel.cpp
 
 HEADERS += \
     declarative_plugin.h \
     declarativetransfer.h \
     declarativetransferinterface.h \
-    declarativetransfermethodsmodel.h \
-    declarativetransfermethodsmodel_p.h
+    declarativesharingmethodsmodel.h \
+    declarativesharingmethodsmodel_p.h
 
 OTHER_FILES = plugins.qmltypes qmldir *.qml
 

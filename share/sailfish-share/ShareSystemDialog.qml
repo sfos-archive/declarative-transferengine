@@ -86,8 +86,8 @@ SystemDialog {
         onDone: root.dismiss()
     }
 
-    SailfishTransferMethodsModel {
-        id: transferMethodsModel
+    SailfishSharingMethodsModel {
+        id: sharingMethodsModel
 
         mimeTypeFilter: shareAction.mimeType
         filterByMultipleFileSupport: shareAction.resources.length > 1
@@ -180,7 +180,7 @@ SystemDialog {
                         centerIn: parent
                         verticalCenterOffset: -Theme.paddingLarge
                     }
-                    running: !transferMethodsModel.ready
+                    running: !sharingMethodsModel.ready
                              || shareMethodLoader.status === Loader.Loading
                     size: BusyIndicatorSize.Large
                 }
@@ -191,12 +191,12 @@ SystemDialog {
                     anchors.centerIn: busyIndicator
                     width: parent.width - Theme.horizontalPageMargin*2
                     visible: shareMethodLoader.status === Loader.Error
-                             || (transferMethodsModel.ready && transferMethodsModel.count === 0)
+                             || (sharingMethodsModel.ready && sharingMethodsModel.count === 0)
 
                     text: shareMethodLoader.status === Loader.Error
                             //% "Unable to load sharing app"
                           ? qsTrId("sailfishshare-la-load_app_error")
-                          : (transferMethodsModel.filterByMultipleFileSupport
+                          : (sharingMethodsModel.filterByMultipleFileSupport
                                //: User is trying to share multiple files, but there are no apps that support this action
                                //% "No apps available for multi-file sharing"
                              ? qsTrId("sailfishshare-la-no_apps_available_for_multi_file_sharing")
@@ -215,16 +215,16 @@ SystemDialog {
             bottomPadding: Theme.paddingLarge
             width: parent.width
 
-            visible: transferMethodsModel.ready
-                     && transferMethodsModel.count > 0
+            visible: sharingMethodsModel.ready
+                     && sharingMethodsModel.count > 0
                      && shareMethodLoader.status === Loader.Null
 
             Repeater {
-                model: transferMethodsModel
+                model: sharingMethodsModel
 
                 delegate: ShareMethodItem {
                     onClicked: {
-                        shareAction.selectedTransferMethodInfo = transferMethodsModel.get(model.index)
+                        shareAction.selectedTransferMethodInfo = sharingMethodsModel.get(model.index)
                         shareMethodLoader.setSource(shareUIPath,
                                                     { "shareAction": shareAction })
                         content.contentY = 0
