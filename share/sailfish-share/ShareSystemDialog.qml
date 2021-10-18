@@ -28,8 +28,6 @@ SystemDialog {
     readonly property real _windowWidthInPortrait: Screen.width - _windowMargin*2
     readonly property real _windowWidthInLandscape: (Screen.height * 3/4) - _windowMargin*2
 
-    signal ready()
-
     contentHeight: content.height
     category: SystemDialogWindow.Alarm
 
@@ -91,12 +89,6 @@ SystemDialog {
 
         mimeTypeFilter: shareAction.mimeType
         filterByMultipleFileSupport: shareAction.resources.length > 1
-
-        onReadyChanged: {
-            if (ready) {
-                root.ready()
-            }
-        }
     }
 
     SilicaPrivate.RoundedWindowCorners {
@@ -115,13 +107,18 @@ SystemDialog {
             return Math.min(screenHeight - _windowMargin*2 - _topWindowMargin, contentHeight)
         }
 
-        contentHeight: shareMethodsColumn.visible
-                       ? shareMethodsColumn.y + shareMethodsColumn.height
-                       : shareMethodLoader.y + shareMethodLoader.height
+        contentHeight: {
+            if (loadingIndicator.running || delayLoadingIndicator.running) {
+                return loadingIndicator.y + loadingIndicator.height
+            } else if (shareMethodsColumn.visible) {
+                return shareMethodsColumn.y + shareMethodsColumn.height
+            } else {
+                return shareMethodLoader.y + shareMethodLoader.height
+            }
+        }
         clip: true
 
         Behavior on contentHeight {
-            enabled: shareMethodLoader.status !== Loader.Null
             NumberAnimation { duration: 150 }
         }
 
@@ -155,7 +152,7 @@ SystemDialog {
             height: status === Loader.Ready ? item.height : placeholder.height
             asynchronous: true
 
-            visible: !shareMethodsColumn.visible
+            visible: !loadingIndicator.running && !delayLoadingIndicator.running && !shareMethodsColumn.visible
             opacity: visible ? 1 : 0
             Behavior on opacity { FadeAnimator {} }
 
@@ -207,6 +204,27 @@ SystemDialog {
             }
         }
 
+        BusyIndicator {
+            id: loadingIndicator
+
+            anchors {
+                top: dialogHeader.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            height: Theme.itemSizeLarge
+            running: !delayLoadingIndicator.running
+                     && !shareMethodsColumn.visible
+                     && shareMethodLoader.status === Loader.Null
+        }
+
+        Timer {
+            id: delayLoadingIndicator
+
+            interval: 100
+            running: !shareMethodsColumn.visible
+                     && shareMethodLoader.status === Loader.Null
+        }
+
         Column {
             id: shareMethodsColumn
 
@@ -218,6 +236,8 @@ SystemDialog {
             visible: sharingMethodsModel.ready
                      && sharingMethodsModel.count > 0
                      && shareMethodLoader.status === Loader.Null
+            opacity: visible ? 1 : 0
+            Behavior on opacity { FadeAnimator {} }
 
             Repeater {
                 model: sharingMethodsModel

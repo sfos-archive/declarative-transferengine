@@ -37,7 +37,7 @@ ApplicationWindow {
         id: shareDialogComponent
 
         ShareSystemDialog {
-            onReady: {
+            Component.onCompleted: {
                 if (!autoDestroy.running) {
                     activate()
                 }
