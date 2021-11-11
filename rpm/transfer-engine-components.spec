@@ -63,7 +63,6 @@ Summary: Translation source for sailfishshare-components
 
 %package -n jolla-transferdemo-qt5
 Summary: Jolla Transfer Demo Application
-Group: Applications/Multimedia
 Requires: nemo-transferengine-qt5
 Requires: declarative-transferengine-qt5
 Obsoletes: jolla-transferdemo <= 0.0.23
@@ -81,7 +80,6 @@ Provides: jolla-transferdemo > 0.0.23
 
 %package -n jolla-settings-transferui-qt5
 Summary: Jolla Transfer UI extension for the Settings FW
-Group: Applications/Multimedia
 Requires: declarative-transferengine-qt5
 Requires: jolla-settings
 Obsoletes: jolla-settings-transferui <= 0.0.23
@@ -100,7 +98,6 @@ Requires: ambient-icons-closed
 
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine
-Group:     System/Libraries
 
 %description ts-devel
 Translation source for Sailfish TransferEngine
@@ -116,7 +113,7 @@ BuildRequires: qt5-qttools-qthelp-devel
 BuildRequires: qt5-tools
 BuildRequires: qt5-qtdeclarative-doc
 BuildRequires: qt5-qtdeclarative-qtquick-doc
-BuildRequires: mer-qdoc-template
+BuildRequires: sailfish-qdoc-template
 
 %description doc
 %{summary}
