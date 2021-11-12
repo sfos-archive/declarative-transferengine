@@ -12,7 +12,7 @@ import Sailfish.Lipstick 1.0
 import Sailfish.Gallery 1.0
 import Sailfish.FileManager 1.0
 import Sailfish.TransferEngine 1.0
-import org.nemomobile.thumbnailer 1.0
+import Nemo.Thumbnailer 1.0
 import Nemo.FileManager 1.0
 
 Item {
