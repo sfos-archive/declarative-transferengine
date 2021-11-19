@@ -15,6 +15,8 @@
 #include <qqml.h>
 
 #include "shareaction.h"
+#include "shareprovider.h"
+#include "shareresource.h"
 
 class SailfishSharePlugin : public QQmlExtensionPlugin
 {
@@ -33,6 +35,8 @@ public:
         Q_UNUSED(uri)
         Q_ASSERT(QLatin1String(uri) == QLatin1String("Sailfish.Share"));
         qmlRegisterType<ShareAction>(uri, 1, 0, "ShareAction");
+        qmlRegisterType<ShareProvider>(uri, 1, 0, "ShareProvider");
+        qmlRegisterUncreatableType<ShareResource>(uri, 1, 0, "ShareResource", "This is not a creatable type");
     }
 };
 
