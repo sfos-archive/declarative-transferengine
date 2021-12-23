@@ -9,11 +9,19 @@ QT += quick dbus
 CONFIG += link_pkgconfig plugin
 PKGCONFIG += nemodbus
 
+INCLUDEPATH += ../common
+
 HEADERS += \
-    shareaction.h
+    shareaction.h \
+    shareprovider.h \
+    shareresource.h \
+    ../common/mimetypefilter.h
 
 SOURCES += \
     shareaction.cpp \
+    shareprovider.cpp \
+    shareresource.cpp \
+    ../common/mimetypefilter.cpp \
     plugin.cpp
 
 qml.files = plugins.qmltypes qmldir

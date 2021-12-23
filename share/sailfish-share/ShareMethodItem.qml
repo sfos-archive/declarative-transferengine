@@ -44,6 +44,7 @@ BackgroundItem {
         }
         truncationMode: TruncationMode.Fade
         text: model.displayName
+        textFormat: Text.PlainText
     }
 
     Label {
@@ -60,6 +61,7 @@ BackgroundItem {
         text: model.subtitle
         font.pixelSize: Theme.fontSizeExtraSmall
         color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+        textFormat: Text.PlainText
     }
 
 }

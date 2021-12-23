@@ -3,8 +3,11 @@ TARGET = sailfish-share
 
 CONFIG += link_pkgconfig
 QT += qml quick
+PKGCONFIG += mlite5
 
-SOURCES += main.cpp
+HEADERS += sharemethodinfo.h
+
+SOURCES += main.cpp sharemethodinfo.cpp
 
 OTHER_FILES += *.qml
 
@@ -25,7 +28,7 @@ qml.files = *.qml
 TS_FILE = $$OUT_PWD/sailfishshare.ts
 EE_QM = $$OUT_PWD/sailfishshare_eng_en.qm
 
-ts.commands += lupdate $$PWD -ts $$TS_FILE
+ts.commands += lupdate $$PWD $$PWD/../appsharemethodplugin -ts $$TS_FILE
 ts.CONFIG += no_check_exist
 ts.output = $$TS_FILE
 ts.input = .

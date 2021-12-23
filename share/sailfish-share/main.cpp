@@ -12,6 +12,8 @@
 #include <MDeclarativeCache>
 #endif
 
+#include "sharemethodinfo.h"
+
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
 #ifdef HAS_BOOSTER
@@ -32,6 +34,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     QCoreApplication::setOrganizationName(QStringLiteral("org.sailfishos"));
     QCoreApplication::setApplicationName(QStringLiteral("Sailfish Share"));
+
+    qmlRegisterType<ShareMethodInfo>("Sailfish.Share.AppShare", 1, 0, "ShareMethodInfo");
 
     QQmlEngine engine;
     QObject::connect(&engine, &QQmlEngine::quit, app.data(), &QGuiApplication::quit);

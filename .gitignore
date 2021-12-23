@@ -7,11 +7,12 @@ moc_*
 *.qm
 *.list
 *.qch
-/html/
+doc/html/
 /installroot/
 /RPMS/
 /demo-app/qrc_share-demo.cpp
 /demo-app/transfer-demo
 /demo-app/demoappadaptor.*
-/share/plugin/plugin.moc
+/share/plugin/*.moc
 /share/sailfish-share/sailfish-share
+/share/update-cache/sailfish-share-update-cache

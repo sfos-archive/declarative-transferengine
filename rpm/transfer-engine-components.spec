@@ -1,7 +1,7 @@
 Name: declarative-transferengine-qt5
 Version: 0.4
 Release: 1
-Summary: Sailfish declarative bindings for Nemo Transfer Engine.
+Summary: Sailfish declarative bindings for Nemo Transfer Engine
 License: Proprietary
 URL: http://sailfishos.org
 Source0: %{name}-%{version}.tar.gz
@@ -33,12 +33,13 @@ Requires: nemo-qml-plugin-filemanager
 
 
 %package -n sailfishshare-components
-Summary: QML application and components for sharing features.
+Summary: QML application and components for sharing features
 Requires: nemo-qml-plugin-dbus-qt5
 BuildRequires: nemo-qml-plugin-dbus-qt5-devel
+BuildRequires: pkgconfig(mlite5) >= 0.4.0
 
 %description -n sailfishshare-components
-%{summary}
+%{summary}.
 
 %files -n sailfishshare-components
 %defattr(-,root,root,-)
@@ -49,12 +50,17 @@ BuildRequires: nemo-qml-plugin-dbus-qt5-devel
 %{_datadir}/dbus-1/services/org.sailfishos.share.service
 %{_datadir}/translations/sailfishshare_eng_en.qm
 %{_datadir}/mapplauncherd/privileges.d/*
+%{_libdir}/nemo-transferengine/plugins/sharing/libappsharemethodplugin.so
+%dir %{_sharedstatedir}/sailfish-share
+%ghost %{_sharedstatedir}/sailfish-share/desktopfiles.list
+%{_bindir}/sailfish-share-update-cache
+
 
 %package -n sailfishshare-components-ts-devel
 Summary: Translation source for sailfishshare-components
 
 %description -n sailfishshare-components-ts-devel
-%{summary}
+%{summary}.
 
 %files -n sailfishshare-components-ts-devel
 %defattr(-,root,root,-)
@@ -96,11 +102,12 @@ Requires: ambient-icons-closed
 %{_datadir}/jolla-settings/pages/transferui/mainpage.qml
 %{_datadir}/nemo-transferengine/*.conf
 
+
 %package ts-devel
 Summary:   Translation source for Sailfish TransferEngine
 
 %description ts-devel
-Translation source for Sailfish TransferEngine
+%{summary}.
 
 %files ts-devel
 %defattr(-,root,root,-)
@@ -116,7 +123,7 @@ BuildRequires: qt5-qtdeclarative-qtquick-doc
 BuildRequires: sailfish-qdoc-template
 
 %description doc
-%{summary}
+%{summary}.
 
 %files doc
 %defattr(-,root,root,-)
@@ -127,16 +134,24 @@ BuildRequires: sailfish-qdoc-template
 %setup -q -n %{name}-%{version}
 
 %build
-
 %qmake5
 
 export QT_INSTALL_DOCS=%{_docdir}/qt5
-make %{?_smp_mflags}
+%make_build
 
 %install
-rm -rf %{buildroot}
 export QT_INSTALL_DOCS=%{_docdir}/qt5
 %qmake5_install
 
 mkdir -p %{buildroot}%{_datadir}/mapplauncherd/privileges.d
 install -m 644 -p %{SOURCE1} %{buildroot}%{_datadir}/mapplauncherd/privileges.d/
+mkdir -p %{buildroot}%{_sharedstatedir}/sailfish-share
+
+%post -n sailfishshare-components
+sailfish-share-update-cache || :
+
+%transfiletriggerin -n sailfishshare-components -- /usr/share/applications
+sailfish-share-update-cache || :
+
+%transfiletriggerpostun -n sailfishshare-components -- /usr/share/applications
+sailfish-share-update-cache || :

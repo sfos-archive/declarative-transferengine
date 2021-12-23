@@ -41,4 +41,35 @@ Module {
             Parameter { name: "files"; type: "QStringList" }
         }
     }
+    Component {
+        name: "ShareProvider"
+        prototype: "QObject"
+        exports: ["Sailfish.Share/ShareProvider 1.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "method"; type: "string" }
+        Property { name: "registerName"; type: "bool" }
+        Property { name: "capabilities"; type: "QStringList" }
+        Signal {
+            name: "triggered"
+            Parameter { name: "resources"; type: "QVariantList" }
+        }
+    }
+    Component {
+        name: "ShareResource"
+        prototype: "QObject"
+        exports: ["Sailfish.Share/ShareResource 1.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "ResourceType"
+            values: {
+                "StringDataType": 1,
+                "FilePathType": 2
+            }
+        }
+        Property { name: "type"; type: "ResourceType"; isReadonly: true }
+        Property { name: "name"; type: "string"; isReadonly: true }
+        Property { name: "data"; type: "string"; isReadonly: true }
+        Property { name: "filePath"; type: "string"; isReadonly: true }
+    }
 }
