@@ -158,7 +158,7 @@ private:
 
         [X-Share Method images]
         Description=Send to friends
-        Capabilities=images/png;images/jpeg
+        Capabilities=image/png;image/jpeg
         SupportsMultipleFiles=yes
     \endcode
 
