@@ -35,12 +35,12 @@ Page {
                 //% "Failed"
                 s += qsTrId("transferui-la_transfer_failed")
                 s += " \u2022 "
-                s += Format.formatDate(transferDate, Formatter.TimepointRelativeCurrentDay)
+                s += Format.formatDate(transferDate, Formatter.TimepointRelative)
             } else if (status === TransferModel.TransferCanceled) {
                 //% "Stopped"
                 s += qsTrId("transferui-la-transfer_stopped")
             } else {
-                s += Format.formatDate(transferDate, Formatter.TimepointRelativeCurrentDay)
+                s += Format.formatDate(transferDate, Formatter.TimepointRelative)
             }
             return s
         }
