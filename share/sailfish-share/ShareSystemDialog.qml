@@ -215,6 +215,7 @@ SystemDialog {
             running: !delayLoadingIndicator.running
                      && !shareMethodsColumn.visible
                      && shareMethodLoader.status === Loader.Null
+                     && !sharingMethodsModel.ready
         }
 
         Timer {
