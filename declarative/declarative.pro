@@ -71,5 +71,18 @@ target.path = $$installPath
 
 INSTALLS += target qmldir translations_install engineering_english_install
 
-qmltypes.commands = qmlplugindump -nonrelocatable $$uri 1.0 > $$PWD/plugins.qmltypes
+# HACK: Invoke qmlimportscanner manually and filter com.jolla.lipstick out of
+# its output to avoid initialization failure.
+#
+# HACK: pass -nocomposites to work around the issue with types leaked
+# (mostly) from Silica. All of these are composite types and we have no other
+# composite types.
+qtPrepareTool(QMLIMPORTSCANNER, qmlimportscanner)
+qmltypes.commands = \
+    echo -e $$shell_quote('import $$uri 1.0\nQtObject{}\n') \
+        |$$QMLIMPORTSCANNER -qmlFiles - -importPath $$[QT_INSTALL_QML] \
+        |sed -e $$shell_quote('/"com.jolla.lipstick"/,/{/d') \
+                > dependencies.json && \
+    qmlplugindump -nonrelocatable -noinstantiate -nocomposites \
+        -dependencies dependencies.json $$uri 1.0 > $$PWD/plugins.qmltypes
 QMAKE_EXTRA_TARGETS += qmltypes
