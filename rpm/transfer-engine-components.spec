@@ -23,10 +23,10 @@ Requires: libnemotransferengine-qt5 >= 2.0.0
 Requires: sailfishsilica-qt5 >= 1.1.46
 Requires: nemo-qml-plugin-filemanager
 
-%description -n declarative-transferengine-qt5
+%description
 %{summary}.
 
-%files -n declarative-transferengine-qt5
+%files
 %defattr(-,root,root,-)
 %license LICENSE.BSD
 %{_libdir}/qt5/qml/Sailfish/TransferEngine/*
